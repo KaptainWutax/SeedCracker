@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "kaptainwutax.seedcracker.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "DisableableProfilerMixin",
+    "GameRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
