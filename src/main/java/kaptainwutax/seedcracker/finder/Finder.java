@@ -1,7 +1,10 @@
 package kaptainwutax.seedcracker.finder;
 
+import kaptainwutax.seedcracker.render.Renderer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -11,6 +14,11 @@ public abstract class Finder {
 
     protected static final List<BlockPos> CHUNK_POSITIONS = new ArrayList<>();
     protected static final List<BlockPos> SUB_CHUNK_POSITIONS = new ArrayList<>();
+
+    protected MinecraftClient mc = MinecraftClient.getInstance();
+    protected List<Renderer> renderers = new ArrayList<>();
+    protected World world;
+    protected ChunkPos chunkPos;
 
     static {
         for(int x = 0; x < 16; x++) {
@@ -24,10 +32,32 @@ public abstract class Finder {
         }
     }
 
-    public Finder() {
-
+    public Finder(World world, ChunkPos chunkPos) {
+        this.world = world;
+        this.chunkPos = chunkPos;
     }
 
-    public abstract List<BlockPos> findInChunk(World world, ChunkPos chunkPos);
+    public abstract List<BlockPos> findInChunk();
+
+    public boolean shouldRender() {
+        Vec3d playerPos = mc.player.getPos();
+
+        double distance = playerPos.squaredDistanceTo(
+                this.chunkPos.x * 16,
+                playerPos.y,
+                this.chunkPos.z * 16
+        );
+
+        int renderDistance = mc.options.viewDistance * 16 + 16;
+        return distance <= renderDistance * renderDistance + 32;
+    }
+
+    public void render() {
+        this.renderers.forEach(Renderer::render);
+    }
+
+    public boolean isUseless() {
+        return this.renderers.isEmpty();
+    }
 
 }

@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker.finder;
 
+import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -23,14 +24,15 @@ public class BuriedTreasureFinder extends BlockFinder {
         CHEST_HOLDERS.add(Blocks.DIORITE.getDefaultState());
     }
 
-    public BuriedTreasureFinder() {
-        super(Blocks.CHEST);
+    public BuriedTreasureFinder(World world, ChunkPos chunkPos) {
+
+        super(world, chunkPos, Blocks.CHEST);
     }
 
     @Override
-    public List<BlockPos> findInChunk(World world, ChunkPos chunkPos) {
+    public List<BlockPos> findInChunk() {
         //Gets all the positions with a chest in the chunk.
-        List<BlockPos> result = super.findInChunk(world, chunkPos);
+        List<BlockPos> result = super.findInChunk();
 
         result.removeIf(pos -> {
             //Buried treasure chests always generate at (9, 9) within a chunk.
@@ -47,8 +49,10 @@ public class BuriedTreasureFinder extends BlockFinder {
             if(!biome.hasStructureFeature(Feature.BURIED_TREASURE))return true;
 
             //Damn that chest be lucky!
-            return true;
+            return false;
         });
+
+        result.forEach(pos -> this.renderers.add(new Cube(pos)));
 
         return result;
     }

@@ -2,18 +2,18 @@ package kaptainwutax.seedcracker.render;
 
 import java.util.*;
 
-public class RenderTracker {
+public class RenderQueue {
 
-    private static RenderTracker INSTANCE = new RenderTracker();
+    private final static RenderQueue INSTANCE = new RenderQueue();
 
     private Map<String, List<Runnable>> typeRunnableMap = new HashMap<>();
     private boolean trackRender = false;
 
-    public static RenderTracker get() {
+    public static RenderQueue get() {
         return INSTANCE;
     }
 
-    public void addRenderRunnable(String type, Runnable runnable) {
+    public void add(String type, Runnable runnable) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(runnable);
 
@@ -25,7 +25,7 @@ public class RenderTracker {
         runnableList.add(runnable);
     }
 
-    public void removeRenderRunnable(String type, Runnable runnable) {
+    public void remove(String type, Runnable runnable) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(runnable);
 

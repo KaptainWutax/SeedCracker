@@ -1,15 +1,13 @@
 package kaptainwutax.seedcracker;
 
-import kaptainwutax.seedcracker.finder.BlockFinder;
+import kaptainwutax.seedcracker.render.RenderQueue;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.block.Blocks;
 
 public class SeedCracker implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		BlockFinder finder1 = new BlockFinder(Blocks.CHEST.getDefaultState());
-		BlockFinder finder2 = new BlockFinder(Blocks.CHEST);
+		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
 	}
 
 }

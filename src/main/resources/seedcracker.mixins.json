@@ -6,7 +6,9 @@
   ],
   "client": [
     "DisableableProfilerMixin",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "ClientWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1
