@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import kaptainwutax.seedcracker.finder.BuriedTreasureFinder;
+import kaptainwutax.seedcracker.finder.DungeonFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -26,7 +27,12 @@ public class FinderQueue {
     public void onChunkData(World world, ChunkPos chunkPos) {
         BuriedTreasureFinder buriedTreasure = new BuriedTreasureFinder(world, chunkPos);
         buriedTreasure.findInChunk();
+
+        DungeonFinder dungeonFinder = new DungeonFinder(world, chunkPos);
+        dungeonFinder.findInChunk();
+
         this.activeFinders.add(buriedTreasure);
+        this.activeFinders.add(dungeonFinder);
     }
 
     public void renderFinders() {

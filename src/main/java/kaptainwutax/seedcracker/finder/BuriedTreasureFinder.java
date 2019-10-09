@@ -3,6 +3,7 @@ package kaptainwutax.seedcracker.finder;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -52,7 +53,7 @@ public class BuriedTreasureFinder extends BlockFinder {
             return false;
         });
 
-        result.forEach(pos -> this.renderers.add(new Cube(pos)));
+        result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(1.0f, 1.0f, 0.0f, 1.0f))));
 
         return result;
     }
