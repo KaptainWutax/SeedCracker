@@ -1,9 +1,7 @@
 package kaptainwutax.seedcracker;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import kaptainwutax.seedcracker.finder.BuriedTreasureFinder;
-import kaptainwutax.seedcracker.finder.DungeonFinder;
-import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.finder.*;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
@@ -31,8 +29,20 @@ public class FinderQueue {
         DungeonFinder dungeonFinder = new DungeonFinder(world, chunkPos);
         dungeonFinder.findInChunk();
 
+        SwampHutFinder swampHutFinder = new SwampHutFinder(world, chunkPos);
+        swampHutFinder.findInChunk();
+
+        DesertTempleFinder desertTempleFinder = new DesertTempleFinder(world, chunkPos);
+        desertTempleFinder.findInChunk();
+
+        JungleTempleFinder jungleTempleFinder = new JungleTempleFinder(world, chunkPos);
+        jungleTempleFinder.findInChunk();
+
         this.activeFinders.add(buriedTreasure);
         this.activeFinders.add(dungeonFinder);
+        this.activeFinders.add(swampHutFinder);
+        this.activeFinders.add(desertTempleFinder);
+        this.activeFinders.add(jungleTempleFinder);
     }
 
     public void renderFinders() {
