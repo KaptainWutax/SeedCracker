@@ -1,6 +1,5 @@
 package kaptainwutax.seedcracker.finder;
 
-import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -14,7 +13,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DesertTempleFinder extends AbstractTempleFinder {
     
@@ -24,17 +25,22 @@ public class DesertTempleFinder extends AbstractTempleFinder {
 
     @Override
     public List<BlockPos> findInChunk() {
-        List<BlockPos> result = super.findInChunk();
+        Map<PieceFinder, List<BlockPos>> result = super.findInChunkPieces();
+        List<BlockPos> combinedResult = new ArrayList<>();
 
-        result.removeIf(pos -> {
-            Biome biome = world.getBiome(pos);
-            if(!biome.hasStructureFeature(Feature.DESERT_PYRAMID))return true;
+        result.forEach((pieceFinder, positions) -> {
+            positions.removeIf(pos -> {
+                Biome biome = world.getBiome(pos);
+                if(!biome.hasStructureFeature(Feature.DESERT_PYRAMID))return true;
 
-            return false;
+                return false;
+            });
+
+            combinedResult.addAll(positions);
+            positions.forEach(pos -> this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f))));
         });
 
-        result.forEach(pos -> this.renderers.add(new Cuboid(pos, this.posToLayout.get(pos), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f))));
-        return result;
+        return combinedResult;
     }
 
     @Override
@@ -204,6 +210,15 @@ public class DesertTempleFinder extends AbstractTempleFinder {
         finder.addBlock(Blocks.AIR.getDefaultState(), 10, -10, 12);
         finder.addBlock(Blocks.CHISELED_SANDSTONE.getDefaultState(), 10, -10, 13);
         finder.addBlock(Blocks.CUT_SANDSTONE.getDefaultState(), 10, -11, 13);
+    }
+
+    public static List<Finder> create(World world, ChunkPos chunkPos) {
+        List<Finder> finders = new ArrayList<>();
+        finders.add(new DesertTempleFinder(world, chunkPos));
+        finders.add(new DesertTempleFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z)));
+        finders.add(new DesertTempleFinder(world, new ChunkPos(chunkPos.x, chunkPos.z - 1)));
+        finders.add(new DesertTempleFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z - 1)));
+        return finders;
     }
     
 }

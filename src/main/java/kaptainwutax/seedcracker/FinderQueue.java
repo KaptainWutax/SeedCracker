@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import kaptainwutax.seedcracker.finder.*;
+import kaptainwutax.seedcracker.util.FinderBuilder;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
@@ -11,11 +12,17 @@ import java.util.List;
 public class FinderQueue {
 
     private final static FinderQueue INSTANCE = new FinderQueue();
+
+    private List<FinderBuilder> finderBuilders = new ArrayList<>();
     private List<Finder> activeFinders = new ArrayList<>();
 
-
-    public FinderQueue() {
-
+    private FinderQueue() {
+        this.finderBuilders.add(DungeonFinder::create);
+        this.finderBuilders.add(BuriedTreasureFinder::create);
+        this.finderBuilders.add(SwampHutFinder::create);
+        this.finderBuilders.add(DesertTempleFinder::create);
+        this.finderBuilders.add(JungleTempleFinder::create);
+        this.finderBuilders.add(EndPillarsFinder::create);
     }
 
     public static FinderQueue get() {
@@ -23,26 +30,18 @@ public class FinderQueue {
     }
 
     public void onChunkData(World world, ChunkPos chunkPos) {
-        BuriedTreasureFinder buriedTreasure = new BuriedTreasureFinder(world, chunkPos);
-        buriedTreasure.findInChunk();
+        this.finderBuilders.forEach(finderBuilder -> {
+            List<Finder> finders = finderBuilder.build(world, chunkPos);
 
-        DungeonFinder dungeonFinder = new DungeonFinder(world, chunkPos);
-        dungeonFinder.findInChunk();
+            finders.forEach(finder -> {
+                if(finder.isValidDimension(finder.getWorld().dimension.getType())) {
+                    finder.findInChunk();
+                    this.activeFinders.add(finder);
+                }
+            });
+        });
 
-        SwampHutFinder swampHutFinder = new SwampHutFinder(world, chunkPos);
-        swampHutFinder.findInChunk();
-
-        DesertTempleFinder desertTempleFinder = new DesertTempleFinder(world, chunkPos);
-        desertTempleFinder.findInChunk();
-
-        JungleTempleFinder jungleTempleFinder = new JungleTempleFinder(world, chunkPos);
-        jungleTempleFinder.findInChunk();
-
-        this.activeFinders.add(buriedTreasure);
-        this.activeFinders.add(dungeonFinder);
-        this.activeFinders.add(swampHutFinder);
-        this.activeFinders.add(desertTempleFinder);
-        this.activeFinders.add(jungleTempleFinder);
+        this.activeFinders.removeIf(Finder::isUseless);
     }
 
     public void renderFinders() {
@@ -50,8 +49,6 @@ public class FinderQueue {
 
         //Makes it render through blocks.
         GlStateManager.disableDepthTest();
-
-        this.activeFinders.removeIf(Finder::isUseless);
 
         this.activeFinders.forEach(finder -> {
             if(finder.shouldRender()) {

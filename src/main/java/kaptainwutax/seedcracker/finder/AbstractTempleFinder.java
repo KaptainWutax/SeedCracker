@@ -5,6 +5,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,17 +17,17 @@ public abstract class AbstractTempleFinder extends Finder {
     protected List<PieceFinder> finders = new ArrayList<>();
     protected final Vec3i size;
 
-    protected Map<BlockPos, Vec3i> posToLayout = new HashMap<>();
-
     public AbstractTempleFinder(World world, ChunkPos chunkPos, Vec3i size) {
         super(world, chunkPos);
 
         Direction.Type.HORIZONTAL.forEach(direction -> {
-            PieceFinder finder = new PieceFinder(world, chunkPos, direction, size, pos -> {
-                if(pos.getX() != 0)return false;
-                if(pos.getY() < 63)return false;
-                if(pos.getZ() != 0)return false;
-                return true;
+            PieceFinder finder = new PieceFinder(world, chunkPos, direction, size);
+
+            finder.searchPositions.removeIf(pos -> {
+                if(pos.getX() != 0)return true;
+                if(pos.getY() < 63)return true;
+                if(pos.getZ() != 0)return true;
+                return false;
             });
 
             buildStructure(finder);
@@ -36,14 +37,15 @@ public abstract class AbstractTempleFinder extends Finder {
         this.size = size;
     }
 
-    @Override
-    public List<BlockPos> findInChunk() {
-        List<BlockPos> result = new ArrayList<>();
+    public List<BlockPos> findInChunkPiece(PieceFinder pieceFinder) {
+        return pieceFinder.findInChunk();
+    }
 
-        this.finders.forEach(finder -> {
-            List<BlockPos> rawResult = finder.findInChunk();
-            rawResult.forEach(raw -> posToLayout.put(raw, finder.getLayout()));
-            result.addAll(rawResult);
+    public Map<PieceFinder, List<BlockPos>> findInChunkPieces() {
+        Map<PieceFinder, List<BlockPos>> result = new HashMap<>();
+
+        this.finders.forEach(pieceFinder -> {
+            result.put(pieceFinder, this.findInChunkPiece(pieceFinder));
         });
 
         return result;
@@ -51,4 +53,8 @@ public abstract class AbstractTempleFinder extends Finder {
 
     public abstract void buildStructure(PieceFinder finder);
 
+    @Override
+    public boolean isValidDimension(DimensionType dimension) {
+        return dimension == DimensionType.OVERWORLD;
+    }
 }

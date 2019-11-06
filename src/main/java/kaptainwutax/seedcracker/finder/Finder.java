@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,21 @@ public abstract class Finder {
         this.chunkPos = chunkPos;
     }
 
+    public World getWorld() {
+        return this.world;
+    }
+
+    public ChunkPos getChunkPos() {
+        return this.chunkPos;
+    }
+
     public abstract List<BlockPos> findInChunk();
 
     public boolean shouldRender() {
+        DimensionType finderDim = this.world.dimension.getType();
+        DimensionType playerDim = mc.player.world.dimension.getType();
+
+        if(finderDim != playerDim)return false;
         Vec3d playerPos = mc.player.getPos();
 
         double distance = playerPos.squaredDistanceTo(
@@ -59,5 +72,7 @@ public abstract class Finder {
     public boolean isUseless() {
         return this.renderers.isEmpty();
     }
+
+    public abstract boolean isValidDimension(DimensionType dimension);
 
 }

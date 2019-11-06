@@ -8,36 +8,32 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class PieceFinder extends Finder {
 
     protected Map<BlockPos, BlockState> structure = new HashMap<>();
     private MutableIntBoundingBox boundingBox;
-    private final Predicate<BlockPos> searchPredicate;
+    protected List<BlockPos> searchPositions = new ArrayList<>();
 
     protected Direction facing;
     private BlockMirror mirror;
     private BlockRotation rotation;
 
-    //SizeX, width here for clarity when comparing with original code.
     protected int width;
-
-    //SizeY, width here for clarity when comparing with original code.
     protected int height;
-
-    //SizeZ, width here for clarity when comparing with original code.
     protected int depth;
 
-    public PieceFinder(World world, ChunkPos chunkPos, Direction facing, Vec3i size, Predicate<BlockPos> searchPredicate) {
+    public PieceFinder(World world, ChunkPos chunkPos, Direction facing, Vec3i size) {
         super(world, chunkPos);
-        this.setOrientation(facing);
+        this.searchPositions.addAll(CHUNK_POSITIONS);
 
+        this.setOrientation(facing);
         this.width = size.getX();
         this.height = size.getY();
         this.depth = size.getZ();
@@ -53,8 +49,6 @@ public class PieceFinder extends Finder {
                     size.getZ() - 1, size.getY() - 1, size.getX() - 1
             );
         }
-
-        this.searchPredicate = searchPredicate;
     }
 
     public Vec3i getLayout() {
@@ -72,9 +66,7 @@ public class PieceFinder extends Finder {
         ChunkWrapper chunkWrapper = new ChunkWrapper(this.world, this.chunkPos);
         Chunk chunk = chunkWrapper.getChunk();
 
-        for(BlockPos center: CHUNK_POSITIONS) {
-            if(!this.searchPredicate.test(center))continue;
-
+        for(BlockPos center: this.searchPositions) {
             boolean found = true;
 
             for(Map.Entry<BlockPos, BlockState> entry: this.structure.entrySet()) {
@@ -212,4 +204,8 @@ public class PieceFinder extends Finder {
         }
     }
 
+    @Override
+    public boolean isValidDimension(DimensionType dimension) {
+        return true;
+    }
 }

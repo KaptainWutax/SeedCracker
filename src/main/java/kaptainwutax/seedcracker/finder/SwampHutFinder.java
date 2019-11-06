@@ -14,7 +14,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SwampHutFinder extends AbstractTempleFinder {
 
@@ -24,17 +26,22 @@ public class SwampHutFinder extends AbstractTempleFinder {
 
     @Override
     public List<BlockPos> findInChunk() {
-        List<BlockPos> result = super.findInChunk();
+        Map<PieceFinder, List<BlockPos>> result = super.findInChunkPieces();
+        List<BlockPos> combinedResult = new ArrayList<>();
 
-        result.removeIf(pos -> {
-            Biome biome = world.getBiome(pos);
-            if(!biome.hasStructureFeature(Feature.SWAMP_HUT))return true;
+        result.forEach((pieceFinder, positions) -> {
+            positions.removeIf(pos -> {
+                Biome biome = world.getBiome(pos);
+                if(!biome.hasStructureFeature(Feature.SWAMP_HUT))return true;
 
-            return false;
+                return false;
+            });
+
+            combinedResult.addAll(positions);
+            positions.forEach(pos -> this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f))));
         });
 
-        result.forEach(pos -> this.renderers.add(new Cuboid(pos, this.posToLayout.get(pos), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f))));
-        return result;
+        return combinedResult;
     }
 
     @Override
@@ -72,6 +79,12 @@ public class SwampHutFinder extends AbstractTempleFinder {
         finder.addBlock(northStairs.with(StairsBlock.SHAPE, StairShape.OUTER_LEFT), 6, 4, 1);
         finder.addBlock(southStairs.with(StairsBlock.SHAPE, StairShape.OUTER_LEFT), 0, 4, 8);
         finder.addBlock(southStairs.with(StairsBlock.SHAPE, StairShape.OUTER_RIGHT), 6, 4, 8);
+    }
+
+    public static List<Finder> create(World world, ChunkPos chunkPos) {
+        List<Finder> finders = new ArrayList<>();
+        finders.add(new SwampHutFinder(world, chunkPos));
+        return finders;
     }
 
 }

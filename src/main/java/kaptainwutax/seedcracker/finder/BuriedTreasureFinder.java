@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.ArrayList;
@@ -26,8 +27,16 @@ public class BuriedTreasureFinder extends BlockFinder {
     }
 
     public BuriedTreasureFinder(World world, ChunkPos chunkPos) {
-
         super(world, chunkPos, Blocks.CHEST);
+
+        this.searchPositions.removeIf(pos -> {
+            //Buried treasure chests always generate at (9, 9) within a chunk.
+            int localX = pos.getX() & 15;
+            int localZ = pos.getZ() & 15;
+            //if(localX != 9 || localZ != 9)return true;
+
+            return false;
+        });
     }
 
     @Override
@@ -36,11 +45,6 @@ public class BuriedTreasureFinder extends BlockFinder {
         List<BlockPos> result = super.findInChunk();
 
         result.removeIf(pos -> {
-            //Buried treasure chests always generate at (9, 9) within a chunk.
-            int localX = pos.getX() & 15;
-            int localZ = pos.getZ() & 15;
-            if(localX != 9 || localZ != 9)return true;
-
             //Only so many blocks can hold a treasure chest.
             BlockState chestHolder = world.getBlockState(pos.down());
             if(!CHEST_HOLDERS.contains(chestHolder))return true;
@@ -56,6 +60,17 @@ public class BuriedTreasureFinder extends BlockFinder {
         result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(1.0f, 1.0f, 0.0f, 1.0f))));
 
         return result;
+    }
+
+    @Override
+    public boolean isValidDimension(DimensionType dimension) {
+        return dimension == DimensionType.OVERWORLD;
+    }
+
+    public static List<Finder> create(World world, ChunkPos chunkPos) {
+        List<Finder> finders = new ArrayList<>();
+        finders.add(new BuriedTreasureFinder(world, chunkPos));
+        return finders;
     }
 
 }

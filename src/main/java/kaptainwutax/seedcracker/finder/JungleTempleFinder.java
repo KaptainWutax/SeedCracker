@@ -13,7 +13,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class JungleTempleFinder extends AbstractTempleFinder {
 
@@ -23,41 +25,46 @@ public class JungleTempleFinder extends AbstractTempleFinder {
 
     @Override
     public List<BlockPos> findInChunk() {
-        List<BlockPos> result = super.findInChunk();
+        Map<PieceFinder, List<BlockPos>> result = super.findInChunkPieces();
+        List<BlockPos> combinedResult = new ArrayList<>();
 
-        result.removeIf(pos -> {
-            Biome biome = world.getBiome(pos);
-            if(!biome.hasStructureFeature(Feature.JUNGLE_TEMPLE))return true;
+        result.forEach((pieceFinder, positions) -> {
+            positions.removeIf(pos -> {
+                Biome biome = world.getBiome(pos);
+                if(!biome.hasStructureFeature(Feature.JUNGLE_TEMPLE))return true;
 
-            return false;
+                return false;
+            });
+
+            combinedResult.addAll(positions);
+            positions.forEach(pos -> this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f))));
         });
 
-        result.forEach(pos -> this.renderers.add(new Cuboid(pos, this.posToLayout.get(pos), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f))));
-        return result;
+        return combinedResult;
     }
 
     @Override
     public void buildStructure(PieceFinder finder) {
-        BlockState blockState_1 = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.EAST);
-        BlockState blockState_2 = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.WEST);
-        BlockState blockState_3 = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.SOUTH);
-        BlockState blockState_4 = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.NORTH);
-        finder.addBlock(blockState_4, 5, 9, 6);
-        finder.addBlock(blockState_4, 6, 9, 6);
-        finder.addBlock(blockState_3, 5, 9, 8);
-        finder.addBlock(blockState_3, 6, 9, 8);
-        finder.addBlock(blockState_4, 4, 0, 0);
-        finder.addBlock(blockState_4, 5, 0, 0);
-        finder.addBlock(blockState_4, 6, 0, 0);
-        finder.addBlock(blockState_4, 7, 0, 0);
-        finder.addBlock(blockState_4, 4, 1, 8);
-        finder.addBlock(blockState_4, 4, 2, 9);
-        finder.addBlock(blockState_4, 4, 3, 10);
-        finder.addBlock(blockState_4, 7, 1, 8);
-        finder.addBlock(blockState_4, 7, 2, 9);
-        finder.addBlock(blockState_4, 7, 3, 10);
-        finder.addBlock(blockState_1, 4, 4, 5);
-        finder.addBlock(blockState_2, 7, 4, 5);
+        BlockState eastStairs = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.EAST);
+        BlockState westStairs = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.WEST);
+        BlockState southStairs = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.SOUTH);
+        BlockState northStairs = Blocks.COBBLESTONE_STAIRS.getDefaultState().with(StairsBlock.FACING, Direction.NORTH);
+        finder.addBlock(northStairs, 5, 9, 6);
+        finder.addBlock(northStairs, 6, 9, 6);
+        finder.addBlock(southStairs, 5, 9, 8);
+        finder.addBlock(southStairs, 6, 9, 8);
+        finder.addBlock(northStairs, 4, 0, 0);
+        finder.addBlock(northStairs, 5, 0, 0);
+        finder.addBlock(northStairs, 6, 0, 0);
+        finder.addBlock(northStairs, 7, 0, 0);
+        finder.addBlock(northStairs, 4, 1, 8);
+        finder.addBlock(northStairs, 4, 2, 9);
+        finder.addBlock(northStairs, 4, 3, 10);
+        finder.addBlock(northStairs, 7, 1, 8);
+        finder.addBlock(northStairs, 7, 2, 9);
+        finder.addBlock(northStairs, 7, 3, 10);
+        finder.addBlock(eastStairs, 4, 4, 5);
+        finder.addBlock(westStairs, 7, 4, 5);
         finder.addBlock((Blocks.TRIPWIRE_HOOK.getDefaultState().with(TripwireHookBlock.FACING, Direction.EAST)).with(TripwireHookBlock.ATTACHED, true), 1, -3, 8);
         finder.addBlock((Blocks.TRIPWIRE_HOOK.getDefaultState().with(TripwireHookBlock.FACING, Direction.WEST)).with(TripwireHookBlock.ATTACHED, true), 4, -3, 8);
         finder.addBlock(((Blocks.TRIPWIRE.getDefaultState().with(TripwireBlock.EAST, true)).with(TripwireBlock.WEST, true)).with(TripwireBlock.ATTACHED, true), 2, -3, 8);
@@ -112,6 +119,12 @@ public class JungleTempleFinder extends AbstractTempleFinder {
         finder.addBlock(Blocks.STICKY_PISTON.getDefaultState().with(PistonBlock.FACING, Direction.WEST), 10, -2, 8);
         finder.addBlock(Blocks.STICKY_PISTON.getDefaultState().with(PistonBlock.FACING, Direction.WEST), 10, -1, 8);
         finder.addBlock(Blocks.REPEATER.getDefaultState().with(RepeaterBlock.FACING, Direction.NORTH), 10, -2, 10);
+    }
+
+    public static List<Finder> create(World world, ChunkPos chunkPos) {
+        List<Finder> finders = new ArrayList<>();
+        finders.add(new JungleTempleFinder(world, chunkPos));
+        return finders;
     }
     
 }

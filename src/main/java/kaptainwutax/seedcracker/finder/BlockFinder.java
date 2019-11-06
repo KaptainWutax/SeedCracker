@@ -8,23 +8,24 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class BlockFinder extends Finder {
 
     private Set<BlockState> targetBlockStates = new HashSet<>();
+    protected List<BlockPos> searchPositions = new ArrayList<>();
 
     public BlockFinder(World world, ChunkPos chunkPos, Block block) {
         super(world, chunkPos);
+        this.searchPositions.addAll(CHUNK_POSITIONS);
         this.targetBlockStates.addAll(block.getStateFactory().getStates());
     }
 
-    public BlockFinder(World world, ChunkPos chunkPos, BlockState blockState) {
+    public BlockFinder(World world, ChunkPos chunkPos, BlockState... blockStates) {
         super(world, chunkPos);
-        this.targetBlockStates.add(blockState);
+        this.searchPositions.addAll(CHUNK_POSITIONS);
+        this.targetBlockStates.addAll(Arrays.stream(blockStates).collect(Collectors.toList()));
     }
 
     @Override
@@ -33,7 +34,7 @@ public abstract class BlockFinder extends Finder {
         ChunkWrapper chunkWrapper = new ChunkWrapper(this.world, this.chunkPos);
         Chunk chunk = chunkWrapper.getChunk();
 
-        for(BlockPos blockPos: CHUNK_POSITIONS) {
+        for(BlockPos blockPos: this.searchPositions) {
             BlockState currentState = chunk.getBlockState(blockPos);
 
             if(this.targetBlockStates.contains(currentState)) {
