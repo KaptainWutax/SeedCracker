@@ -1,6 +1,5 @@
 package kaptainwutax.seedcracker.finder;
 
-import kaptainwutax.seedcracker.world.ChunkWrapper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -31,8 +30,7 @@ public abstract class BlockFinder extends Finder {
     @Override
     public List<BlockPos> findInChunk() {
         List<BlockPos> result = new ArrayList<>();
-        ChunkWrapper chunkWrapper = new ChunkWrapper(this.world, this.chunkPos);
-        Chunk chunk = chunkWrapper.getChunk();
+        Chunk chunk = this.world.getChunk(this.chunkPos.getCenterBlockPos());
 
         for(BlockPos blockPos: this.searchPositions) {
             BlockState currentState = chunk.getBlockState(blockPos);
