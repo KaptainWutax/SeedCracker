@@ -13,7 +13,7 @@ public class StructureData {
 
     public StructureData(ChunkPos chunkPos, Feature feature) {
         this.feature = feature;
-        this.feature.buildCalls(this, chunkPos);
+        this.feature.build(this, chunkPos);
     }
 
     public int getRegionX() {
@@ -49,7 +49,7 @@ public class StructureData {
             this.templeDistance = templeDistance;
         }
 
-        public void buildCalls(StructureData data, ChunkPos chunkPos) {
+        public void build(StructureData data, ChunkPos chunkPos) {
             int chunkX = chunkPos.x;
             int chunkZ = chunkPos.z;
 
@@ -74,13 +74,6 @@ public class StructureData {
     }
 
 
-    public static final Feature SWAMP_HUT = new Feature(14357620, 32) {
-        @Override
-        public boolean test(ChunkRandom rand, int x, int z) {
-            return rand.nextInt(24) == x && rand.nextInt(24) == z;
-        }
-    };
-
     public static final Feature DESERT_PYRAMID = new Feature(14357617, 32) {
         @Override
         public boolean test(ChunkRandom rand, int x, int z) {
@@ -88,7 +81,42 @@ public class StructureData {
         }
     };
 
+    public static final Feature IGLOO = new Feature(14357618, 32) {
+        @Override
+        public boolean test(ChunkRandom rand, int x, int z) {
+            return rand.nextInt(24) == x && rand.nextInt(24) == z;
+        }
+    };
+
     public static final Feature JUNGLE_TEMPLE = new Feature(14357619, 32) {
+        @Override
+        public boolean test(ChunkRandom rand, int x, int z) {
+            return rand.nextInt(24) == x && rand.nextInt(24) == z;
+        }
+    };
+
+    public static final Feature SWAMP_HUT = new Feature(14357620, 32) {
+        @Override
+        public boolean test(ChunkRandom rand, int x, int z) {
+            return rand.nextInt(24) == x && rand.nextInt(24) == z;
+        }
+    };
+
+    public static final Feature OCEAN_RUIN = new Feature(14357621, 32) {
+        @Override
+        public boolean test(ChunkRandom rand, int x, int z) {
+            return rand.nextInt(24) == x && rand.nextInt(24) == z;
+        }
+    };
+
+    public static final Feature SHIPWRECK = new Feature(165745295, 32) {
+        @Override
+        public boolean test(ChunkRandom rand, int x, int z) {
+            return rand.nextInt(24) == x && rand.nextInt(24) == z;
+        }
+    };
+
+    public static final Feature PILLAGER_OUTPOST = new Feature(165745296, 32) {
         @Override
         public boolean test(ChunkRandom rand, int x, int z) {
             return rand.nextInt(24) == x && rand.nextInt(24) == z;

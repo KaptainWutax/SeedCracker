@@ -63,7 +63,7 @@ public class SeedCracker implements ModInitializer {
 				for(long i = 0; i < (1L << 16); i++) {
 					long worldSeed = (i << 48) | seed1;
 					BiomeLayerSampler[] biomeLayerSamplers = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT, BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings());
-					System.out.println(worldSeed + ", " + biomeLayerSamplers[0].sample(0, 0));
+					//System.out.println(worldSeed + ", " + biomeLayerSamplers[0].sample(0, 0));
 				}
 			});
 		});
@@ -75,7 +75,6 @@ public class SeedCracker implements ModInitializer {
 
 		for(long i = 0; i < (1L << 32); i++) {
 			long structureSeed = this.timeMachine(i, pillarSeed);
-			//if(structureSeed != 229625539606330L)continue;
 			boolean goodSeed = true;
 
 			for(StructureData structureData: structureDataList) {
