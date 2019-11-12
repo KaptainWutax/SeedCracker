@@ -22,6 +22,7 @@ public class Rand implements Cloneable {
 
     public void setSeed(long seed, boolean scramble) {
         this.seed = seed ^ (scramble ? JAVA_LCG.multiplier : 0L);
+        this.seed &= JAVA_LCG.modulo - 1;
     }
 
     public int next(int bits) {
