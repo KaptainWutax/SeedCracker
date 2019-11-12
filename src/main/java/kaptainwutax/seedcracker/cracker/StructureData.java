@@ -73,7 +73,6 @@ public class StructureData {
         public abstract boolean test(ChunkRandom rand, int x, int z);
     }
 
-
     public static final Feature DESERT_PYRAMID = new Feature(14357617, 32) {
         @Override
         public boolean test(ChunkRandom rand, int x, int z) {
@@ -102,17 +101,17 @@ public class StructureData {
         }
     };
 
-    public static final Feature OCEAN_RUIN = new Feature(14357621, 32) {
+    public static final Feature OCEAN_RUIN = new Feature(14357621, 16) {
         @Override
         public boolean test(ChunkRandom rand, int x, int z) {
-            return rand.nextInt(24) == x && rand.nextInt(24) == z;
+            return rand.nextInt(8) == x && rand.nextInt(8) == z;
         }
     };
 
-    public static final Feature SHIPWRECK = new Feature(165745295, 32) {
+    public static final Feature SHIPWRECK = new Feature(165745295, 16) {
         @Override
         public boolean test(ChunkRandom rand, int x, int z) {
-            return rand.nextInt(24) == x && rand.nextInt(24) == z;
+            return rand.nextInt(8) == x && rand.nextInt(8) == z;
         }
     };
 

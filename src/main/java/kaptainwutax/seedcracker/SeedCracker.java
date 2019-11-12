@@ -1,9 +1,10 @@
 package kaptainwutax.seedcracker;
 
+import kaptainwutax.seedcracker.cracker.BiomeData;
+import kaptainwutax.seedcracker.cracker.PillarData;
 import kaptainwutax.seedcracker.cracker.StructureData;
+import kaptainwutax.seedcracker.cracker.TimeMachine;
 import kaptainwutax.seedcracker.render.RenderQueue;
-import kaptainwutax.seedcracker.util.Rand;
-import kaptainwutax.seedcracker.util.math.LCG;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.layer.BiomeLayerSampler;
@@ -15,18 +16,99 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class SeedCracker implements ModInitializer {
 
 	public static final Logger LOG = LogManager.getLogger("Seed Cracker");
 
+	public List<Long> worldSeeds = null;
+	public List<Long> structureSeeds = null;
+	public List<Integer> pillarSeeds = null;
+
+	private TimeMachine timeMachine = new TimeMachine();
+	private List<StructureData> structureCache = new ArrayList<>();
+	private List<BiomeData> biomeCache = new ArrayList<>();
+
 	@Override
 	public void onInitialize() {
 		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
 	}
+
+	public void reset() {
+		this.worldSeeds = null;
+		this.structureSeeds = null;
+		this.pillarSeeds = null;
+		this.structureCache.clear();
+		this.biomeCache.clear();
+	}
+
+	public void onPillarData(PillarData pillarData) {
+		if(this.pillarSeeds == null) {
+			this.pillarSeeds = pillarData.getPillarSeeds();
+			this.onStructureData(null);
+		}
+	}
+
+	public void onStructureData(StructureData structureData) {
+		if(structureData != null) {
+			this.structureCache.add(structureData);
+		}
+
+		if(this.structureSeeds == null && this.pillarSeeds != null && this.structureCache.size() >= 3) {
+			this.structureSeeds = new ArrayList<>();
+
+			this.pillarSeeds.forEach(pillarSeed -> {
+				timeMachine.buildStructureSeeds(pillarSeed, this.structureCache, this.structureSeeds);
+			});
+
+			this.structureCache.clear();
+			this.onBiomeData(null);
+		} else if(this.structureSeeds != null && structureData != null) {
+			this.structureSeeds.removeIf(structureSeed -> {
+				ChunkRandom chunkRandom = new ChunkRandom();
+				chunkRandom.setStructureSeed(structureSeed, structureData.getRegionX(), structureData.getRegionZ(), structureData.getSalt());
+				return !structureData.test(chunkRandom);
+			});
+
+			this.structureCache.clear();
+			this.onBiomeData(null);
+		}
+	}
+
+	public void onBiomeData(BiomeData biomeData) {
+		if(biomeData != null) {
+			this.biomeCache.add(biomeData);
+		}
+
+		if(this.worldSeeds == null && this.structureSeeds != null && this.biomeCache.size() >= 3) {
+			this.worldSeeds = new ArrayList<>();
+
+			this.structureSeeds.forEach(structureSeed -> {
+				for(long i = 0; i < (1L << 16); i++) {
+					long worldSeed = (i << 48) | structureSeed;
+					boolean goodSeed = true;
+
+					for(BiomeData data: this.biomeCache) {
+						if(!data.test(worldSeed)) {
+							goodSeed = false;
+							break;
+						}
+					}
+
+					if(goodSeed) {
+						this.worldSeeds.add(worldSeed);
+					}
+				}
+			});
+
+			this.biomeCache.clear();
+		} else if(this.worldSeeds != null && biomeData != null) {
+			this.worldSeeds.removeIf(worldSeed -> !biomeData.test(worldSeed));
+		}
+	}
+
+
 
 	public static void main(String[] args) {
 		//91,94,82,85,88,79,97,76,100,103
@@ -69,73 +151,7 @@ public class SeedCracker implements ModInitializer {
 		});
 	}
 
-	public List<Long> getStructureSeeds(int pillarSeed, List<StructureData> structureDataList) {
-		List<Long> structureSeeds = new ArrayList<>();
-		ChunkRandom chunkRandom = new ChunkRandom();
 
-		for(long i = 0; i < (1L << 32); i++) {
-			long structureSeed = this.timeMachine(i, pillarSeed);
-			boolean goodSeed = true;
-
-			for(StructureData structureData: structureDataList) {
-				chunkRandom.setStructureSeed(structureSeed, structureData.getRegionX(),
-						structureData.getRegionZ(), structureData.getSalt());
-
-				if(!structureData.test(chunkRandom)) {
-					goodSeed = false;
-					break;
-				}
-			}
-
-			if(goodSeed) {
-				structureSeeds.add(structureSeed);
-			}
-		}
-		return structureSeeds;
-	}
-
-	private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
-
-	public long timeMachine(long partialWorldSeed, int pillarSeed) {
-		long currentSeed = 0L;
-		currentSeed |= (partialWorldSeed & 0xFFFF0000L) << 16;
-		currentSeed |= (long)pillarSeed << 16;
-		currentSeed |= partialWorldSeed & 0xFFFFL;
-
-		currentSeed = inverseLCG.nextSeed(currentSeed);
-		currentSeed ^= Rand.JAVA_LCG.multiplier;
-		return currentSeed;
-	}
-
-
-	public List<Integer> getSpikeSeeds(List<Integer> heights) {
-		List<Integer> result = new ArrayList<>();
-
-		for(int spikeSeed = 0; spikeSeed < (1 << 16); spikeSeed++) {
-			List<Integer> h = this.getSpikeHeights(spikeSeed);
-			if(h.equals(heights))result.add(spikeSeed);
-		}
-
-		return result;
-	}
-
-	public List<Integer> getSpikeHeights(int spikeSeed) {
-		List<Integer> indices = new ArrayList<>();
-
-		for (int i = 0; i < 10; i++) {
-			indices.add(i);
-		}
-
-		Collections.shuffle(indices, new Random(spikeSeed));
-
-		List<Integer> heights = new ArrayList<>();
-
-		for (Integer index: indices) {
-			heights.add(76 + index * 3);
-		}
-
-		return heights;
-	}
 
 	/*
 	public List<Integer> getSpikeHeights(long worldSeed) {
