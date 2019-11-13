@@ -40,6 +40,17 @@ public class StructureData {
         return this.feature.test(rand, this.offsetX, this.offsetZ);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this)return true;
+
+        if(obj instanceof StructureData) {
+            return ((StructureData)obj).regionX == this.regionX && ((StructureData)obj).regionZ == this.regionZ;
+        }
+
+        return false;
+    }
+
     public abstract static class Feature {
         public final int salt;
         public final int templeDistance;
@@ -135,6 +146,13 @@ public class StructureData {
         public boolean test(ChunkRandom rand, int x, int z) {
             return (rand.nextInt(27) + rand.nextInt(27)) / 2 == x
                     && (rand.nextInt(27) + rand.nextInt(27)) / 2 == z;
+        }
+    };
+
+    public static final Feature BURIED_TREASURE = new Feature(10387320, 1) {
+        @Override
+        public boolean test(ChunkRandom rand, int x, int z) {
+            return rand.nextFloat() < 0.1f;
         }
     };
 

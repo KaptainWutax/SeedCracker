@@ -1,5 +1,7 @@
 package kaptainwutax.seedcracker.finder;
 
+import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.StructureData;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.WallMountLocation;
@@ -30,14 +32,18 @@ public class JungleTempleFinder extends AbstractTempleFinder {
 
         result.forEach((pieceFinder, positions) -> {
             positions.removeIf(pos -> {
-                Biome biome = world.getBiome(pos);
+                Biome biome = world.getBiome(pos.add(9, 0, 9));
                 if(!biome.hasStructureFeature(Feature.JUNGLE_TEMPLE))return true;
 
                 return false;
             });
 
             combinedResult.addAll(positions);
-            positions.forEach(pos -> this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f))));
+
+            positions.forEach(pos -> {
+                this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f)));
+                SeedCracker.get().onStructureData(new StructureData(this.chunkPos, StructureData.JUNGLE_TEMPLE));
+            });
         });
 
         return combinedResult;

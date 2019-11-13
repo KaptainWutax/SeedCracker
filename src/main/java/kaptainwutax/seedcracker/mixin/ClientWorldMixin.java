@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.mixin;
 
 import kaptainwutax.seedcracker.FinderQueue;
+import kaptainwutax.seedcracker.SeedCracker;
 import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,6 +13,7 @@ public abstract class ClientWorldMixin {
 
     @Inject(method = "disconnect", at = @At("TAIL"))
     private void disconnect(CallbackInfo ci) {
+        SeedCracker.get().clear();
         FinderQueue.get().clear();
     }
 

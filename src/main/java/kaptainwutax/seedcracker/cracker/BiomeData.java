@@ -4,9 +4,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.BiomeLayerSampler;
-import net.minecraft.world.biome.layer.BiomeLayers;
-import net.minecraft.world.biome.source.BiomeSourceType;
-import net.minecraft.world.level.LevelGeneratorType;
 
 public class BiomeData {
 
@@ -28,15 +25,19 @@ public class BiomeData {
         this(x, z, Registry.BIOME.get(biomeId));
     }
 
-    public boolean test(long worldSeed) {
-        BiomeLayerSampler[] samplers = this.buildLayerSamplers(worldSeed);
-        return samplers[0].sample(this.x, this.z) == this.biome;
+    public boolean test(long worldSeed, BiomeLayerSampler sampler) {
+        return sampler.sample(this.x, this.z) == this.biome;
     }
 
-    private BiomeLayerSampler[] buildLayerSamplers(long worldSeed) {
-        return BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
-                BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings()
-        );
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this)return true;
+
+        if(obj instanceof BiomeData) {
+            return ((BiomeData)obj).biome == this.biome;
+        }
+
+        return false;
     }
 
 }

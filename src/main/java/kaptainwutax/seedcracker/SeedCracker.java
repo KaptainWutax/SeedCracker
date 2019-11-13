@@ -6,7 +6,6 @@ import kaptainwutax.seedcracker.cracker.StructureData;
 import kaptainwutax.seedcracker.cracker.TimeMachine;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.layer.BiomeLayerSampler;
 import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.BiomeSourceType;
@@ -21,8 +20,9 @@ import java.util.List;
 public class SeedCracker implements ModInitializer {
 
 	public static final Logger LOG = LogManager.getLogger("Seed Cracker");
+    private static final SeedCracker INSTANCE = new SeedCracker();
 
-	public List<Long> worldSeeds = null;
+    public List<Long> worldSeeds = null;
 	public List<Long> structureSeeds = null;
 	public List<Integer> pillarSeeds = null;
 
@@ -35,7 +35,11 @@ public class SeedCracker implements ModInitializer {
 		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
 	}
 
-	public void reset() {
+	public static SeedCracker get() {
+	    return INSTANCE;
+    }
+
+	public void clear() {
 		this.worldSeeds = null;
 		this.structureSeeds = null;
 		this.pillarSeeds = null;
@@ -45,7 +49,16 @@ public class SeedCracker implements ModInitializer {
 
 	public void onPillarData(PillarData pillarData) {
 		if(this.pillarSeeds == null) {
+			LOG.warn("Looking for pillar seeds...");
+
 			this.pillarSeeds = pillarData.getPillarSeeds();
+
+			if(this.pillarSeeds.size() > 0) {
+				LOG.warn("Finished search with " + this.pillarSeeds + (this.pillarSeeds.size() == 1 ? " seed." : " seeds."));
+			} else {
+				LOG.error("Finished search with no seeds.");
+			}
+
 			this.onStructureData(null);
 		}
 	}
@@ -55,12 +68,19 @@ public class SeedCracker implements ModInitializer {
 			this.structureCache.add(structureData);
 		}
 
-		if(this.structureSeeds == null && this.pillarSeeds != null && this.structureCache.size() >= 3) {
+		if(this.structureSeeds == null && this.pillarSeeds != null && this.structureCache.size() >= 5) {
 			this.structureSeeds = new ArrayList<>();
+			LOG.warn("Looking for structure seeds with " + this.structureCache.size() + " structure features.");
 
 			this.pillarSeeds.forEach(pillarSeed -> {
 				timeMachine.buildStructureSeeds(pillarSeed, this.structureCache, this.structureSeeds);
 			});
+
+			if(this.structureSeeds.size() > 0) {
+				LOG.warn("Finished search with " + this.structureSeeds.size() + (this.structureSeeds.size() == 1 ? " seed." : " seeds."));
+			} else {
+				LOG.error("Finished search with no seeds.");
+			}
 
 			this.structureCache.clear();
 			this.onBiomeData(null);
@@ -76,21 +96,31 @@ public class SeedCracker implements ModInitializer {
 		}
 	}
 
-	public void onBiomeData(BiomeData biomeData) {
-		if(biomeData != null) {
+	public boolean onBiomeData(BiomeData biomeData) {
+		boolean added = false;
+
+		if(biomeData != null && !this.biomeCache.contains(biomeData)) {
 			this.biomeCache.add(biomeData);
+			added = true;
 		}
 
-		if(this.worldSeeds == null && this.structureSeeds != null && this.biomeCache.size() >= 3) {
+		if(this.worldSeeds == null && this.structureSeeds != null && this.biomeCache.size() >= 6) {
 			this.worldSeeds = new ArrayList<>();
+			LOG.warn("Looking for world seeds with " + this.biomeCache.size() + " biomes.");
 
-			this.structureSeeds.forEach(structureSeed -> {
-				for(long i = 0; i < (1L << 16); i++) {
-					long worldSeed = (i << 48) | structureSeed;
+			for(int i = 0; i < this.structureSeeds.size(); i++) {
+				SeedCracker.LOG.warn("Progress " + (i * 100.0f) / this.structureSeeds.size() + "%...");
+
+				long structureSeed = this.structureSeeds.get(i);
+
+				for (long j = 0; j < (1L << 16); j++) {
+					long worldSeed = (j << 48) | structureSeed;
 					boolean goodSeed = true;
+					BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
+							BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings())[1];
 
-					for(BiomeData data: this.biomeCache) {
-						if(!data.test(worldSeed)) {
+					for (BiomeData data : this.biomeCache) {
+						if (!data.test(worldSeed, sampler)) {
 							goodSeed = false;
 							break;
 						}
@@ -100,17 +130,30 @@ public class SeedCracker implements ModInitializer {
 						this.worldSeeds.add(worldSeed);
 					}
 				}
-			});
+			}
+
+			if(this.worldSeeds.size() > 0) {
+				LOG.warn("Finished search with " + this.worldSeeds + (this.worldSeeds.size() == 1 ? " seed." : " seeds."));
+			} else {
+				LOG.error("Finished search with no seeds.");
+			}
 
 			this.biomeCache.clear();
 		} else if(this.worldSeeds != null && biomeData != null) {
-			this.worldSeeds.removeIf(worldSeed -> !biomeData.test(worldSeed));
+			this.worldSeeds.removeIf(worldSeed -> {
+				BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
+						BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings())[1];
+				return !biomeData.test(worldSeed, sampler);
+			});
 		}
+
+		return added;
 	}
 
 
 
 	public static void main(String[] args) {
+		/*
 		//91,94,82,85,88,79,97,76,100,103
 		SeedCracker cracker = new SeedCracker();
 		List<Integer> heights = new ArrayList<>();
@@ -148,7 +191,7 @@ public class SeedCracker implements ModInitializer {
 					//System.out.println(worldSeed + ", " + biomeLayerSamplers[0].sample(0, 0));
 				}
 			});
-		});
+		});*/
 	}
 
 

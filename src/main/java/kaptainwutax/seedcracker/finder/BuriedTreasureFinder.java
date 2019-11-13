@@ -1,5 +1,7 @@
 package kaptainwutax.seedcracker.finder;
 
+import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.StructureData;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -33,7 +35,7 @@ public class BuriedTreasureFinder extends BlockFinder {
             //Buried treasure chests always generate at (9, 9) within a chunk.
             int localX = pos.getX() & 15;
             int localZ = pos.getZ() & 15;
-            //if(localX != 9 || localZ != 9)return true;
+            if(localX != 9 || localZ != 9)return true;
 
             return false;
         });
@@ -57,7 +59,10 @@ public class BuriedTreasureFinder extends BlockFinder {
             return false;
         });
 
-        result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(1.0f, 1.0f, 0.0f, 1.0f))));
+        result.forEach(pos -> {
+            this.renderers.add(new Cube(pos, new Vector4f(1.0f, 1.0f, 0.0f, 1.0f)));
+            SeedCracker.get().onStructureData(new StructureData(this.chunkPos, StructureData.BURIED_TREASURE));
+        });
 
         return result;
     }

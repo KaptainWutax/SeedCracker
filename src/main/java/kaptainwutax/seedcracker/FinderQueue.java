@@ -23,6 +23,7 @@ public class FinderQueue {
         this.finderBuilders.add(DesertTempleFinder::create);
         this.finderBuilders.add(JungleTempleFinder::create);
         this.finderBuilders.add(EndPillarsFinder::create);
+        this.finderBuilders.add(BiomeFinder::create);
     }
 
     public static FinderQueue get() {

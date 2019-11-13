@@ -1,10 +1,12 @@
 package kaptainwutax.seedcracker.cracker;
 
+import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.world.gen.ChunkRandom;
 
 import java.util.List;
+import java.util.Set;
 
 public class TimeMachine {
 
@@ -18,6 +20,10 @@ public class TimeMachine {
         ChunkRandom chunkRandom = new ChunkRandom();
 
         for(long i = 0; i < (1L << 32); i++) {
+            if((i & ((1L << 28) - 1)) == 0) {
+                SeedCracker.LOG.warn("Progress " + (i * 100.0f) / (1L << 32) + "%...");
+            }
+
             long structureSeed = this.timeMachine(i, pillarSeed);
             boolean goodSeed = true;
 
@@ -45,7 +51,7 @@ public class TimeMachine {
         currentSeed |= (long)pillarSeed << 16;
         currentSeed |= partialWorldSeed & 0xFFFFL;
 
-        currentSeed = inverseLCG.nextSeed(currentSeed);
+        currentSeed = this.inverseLCG.nextSeed(currentSeed);
         currentSeed ^= Rand.JAVA_LCG.multiplier;
         return currentSeed;
     }

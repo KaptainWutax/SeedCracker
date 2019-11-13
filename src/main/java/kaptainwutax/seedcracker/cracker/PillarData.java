@@ -9,8 +9,8 @@ public class PillarData {
 
     private List<Integer> heights;
 
-    public PillarData() {
-
+    public PillarData(List<Integer> heights) {
+        this.heights = heights;
     }
 
     public List<Integer> getPillarSeeds() {
