@@ -31,7 +31,7 @@ public abstract class AbstractTempleFinder extends Finder {
             });
 
             buildStructure(finder);
-            finders.add(finder);
+            this.finders.add(finder);
         });
 
         this.size = size;

@@ -17,13 +17,7 @@ public class FinderQueue {
     private List<Finder> activeFinders = new ArrayList<>();
 
     private FinderQueue() {
-        this.finderBuilders.add(DungeonFinder::create);
-        this.finderBuilders.add(BuriedTreasureFinder::create);
-        this.finderBuilders.add(SwampHutFinder::create);
-        this.finderBuilders.add(DesertTempleFinder::create);
-        this.finderBuilders.add(JungleTempleFinder::create);
-        this.finderBuilders.add(EndPillarsFinder::create);
-        this.finderBuilders.add(BiomeFinder::create);
+        this.clear();
     }
 
     public static FinderQueue get() {
@@ -63,6 +57,16 @@ public class FinderQueue {
 
     public void clear() {
         this.activeFinders.clear();
+        this.finderBuilders.clear();
+
+        this.finderBuilders.add(DungeonFinder::create);
+        this.finderBuilders.add(BuriedTreasureFinder::create);
+        this.finderBuilders.add(SwampHutFinder::create);
+        this.finderBuilders.add(DesertTempleFinder::create);
+        this.finderBuilders.add(JungleTempleFinder::create);
+        this.finderBuilders.add(EndPillarsFinder::create);
+        this.finderBuilders.add(BiomeFinder::create);
+        this.finderBuilders.add(OceanMonumentFinder::create);
     }
 
 }

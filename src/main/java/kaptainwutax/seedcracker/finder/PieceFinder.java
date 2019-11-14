@@ -64,6 +64,16 @@ public class PieceFinder extends Finder {
 
         Chunk chunk = this.world.getChunk(this.chunkPos.getCenterBlockPos());
 
+        // FOR DEBUGGING PIECES.
+        int y = this.rotation.ordinal() * 10 + this.mirror.ordinal() * 20 + 60;
+
+        if(this.chunkPos.x % 2 == 0 && this.chunkPos.z % 2 == 0) {
+            this.structure.forEach((pos, state) -> {
+                //this.world.setBlockState(this.chunkPos.getCenterBlockPos().add(pos).add(0, y, 0), state);
+            });
+        }
+
+
         for(BlockPos center: this.searchPositions) {
             boolean found = true;
 
