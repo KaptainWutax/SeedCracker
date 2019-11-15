@@ -17,13 +17,11 @@ public abstract class BlockFinder extends Finder {
 
     public BlockFinder(World world, ChunkPos chunkPos, Block block) {
         super(world, chunkPos);
-        this.searchPositions.addAll(CHUNK_POSITIONS);
         this.targetBlockStates.addAll(block.getStateFactory().getStates());
     }
 
     public BlockFinder(World world, ChunkPos chunkPos, BlockState... blockStates) {
         super(world, chunkPos);
-        this.searchPositions.addAll(CHUNK_POSITIONS);
         this.targetBlockStates.addAll(Arrays.stream(blockStates).collect(Collectors.toList()));
     }
 

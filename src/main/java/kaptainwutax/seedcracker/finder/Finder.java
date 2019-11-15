@@ -10,6 +10,7 @@ import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public abstract class Finder {
 
@@ -74,5 +75,17 @@ public abstract class Finder {
     }
 
     public abstract boolean isValidDimension(DimensionType dimension);
+    
+    public static List<BlockPos> buildSearchPositions(List<BlockPos> base, Predicate<BlockPos> removeIf) {
+        List<BlockPos> newList = new ArrayList<>();
+        
+        for(BlockPos pos: base) {
+            if(!removeIf.test(pos)) {
+                newList.add(pos);
+            }
+        }
+        
+        return newList;
+    }
 
 }
