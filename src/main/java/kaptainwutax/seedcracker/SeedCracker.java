@@ -39,7 +39,7 @@ public class SeedCracker implements ModInitializer {
 	    return INSTANCE;
     }
 
-	public void clear() {
+	public synchronized void clear() {
 		this.worldSeeds = null;
 		this.structureSeeds = null;
 		this.pillarSeeds = null;
@@ -47,8 +47,8 @@ public class SeedCracker implements ModInitializer {
 		this.biomeCache.clear();
 	}
 
-	public void onPillarData(PillarData pillarData) {
-		if(this.pillarSeeds == null) {
+	public synchronized boolean onPillarData(PillarData pillarData) {
+		if(pillarData != null && (this.pillarSeeds == null || this.pillarSeeds.isEmpty())) {
 			LOG.warn("Looking for pillar seeds...");
 
 			this.pillarSeeds = pillarData.getPillarSeeds();
@@ -60,12 +60,18 @@ public class SeedCracker implements ModInitializer {
 			}
 
 			this.onStructureData(null);
+			return true;
 		}
-	}
 
-	public void onStructureData(StructureData structureData) {
-		if(structureData != null) {
+        return false;
+    }
+
+	public synchronized boolean onStructureData(StructureData structureData) {
+		boolean added = false;
+
+		if(structureData != null && !this.structureCache.contains(structureData)) {
 			this.structureCache.add(structureData);
+			added = true;
 		}
 
 		if(this.structureSeeds == null && this.pillarSeeds != null && this.structureCache.size() >= 5) {
@@ -91,12 +97,13 @@ public class SeedCracker implements ModInitializer {
 				return !structureData.test(chunkRandom);
 			});
 
-			this.structureCache.clear();
 			this.onBiomeData(null);
 		}
+
+		return added;
 	}
 
-	public boolean onBiomeData(BiomeData biomeData) {
+	public synchronized boolean onBiomeData(BiomeData biomeData) {
 		boolean added = false;
 
 		if(biomeData != null && !this.biomeCache.contains(biomeData)) {
@@ -137,8 +144,6 @@ public class SeedCracker implements ModInitializer {
 			} else {
 				LOG.error("Finished search with no seeds.");
 			}
-
-			this.biomeCache.clear();
 		} else if(this.worldSeeds != null && biomeData != null) {
 			this.worldSeeds.removeIf(worldSeed -> {
 				BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
