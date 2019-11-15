@@ -18,10 +18,14 @@ import java.util.stream.Collectors;
 
 public class EndPillarsFinder extends Finder {
 
+    private boolean alreadyFound;
     protected BedrockMarkerFinder[] bedrockMarkers = new BedrockMarkerFinder[10];
 
     public EndPillarsFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos);
+
+        this.alreadyFound = SeedCracker.get().onPillarData(null);
+        if(this.alreadyFound)return;
 
         for(int i = 0; i < this.bedrockMarkers.length; i++) {
             int x = MathHelper.floor(42.0D * Math.cos(2.0D * (-Math.PI + (Math.PI / 10.0D) * (double)i)));
@@ -35,12 +39,14 @@ public class EndPillarsFinder extends Finder {
         List<BlockPos> result = new ArrayList<>();
 
         for(BedrockMarkerFinder bedrockMarker: this.bedrockMarkers) {
+            if(bedrockMarker == null)continue;
             result.addAll(bedrockMarker.findInChunk());
         }
 
         if(result.size() == this.bedrockMarkers.length) {
+            PillarData pillarData = new PillarData(result.stream().map(Vec3i::getY).collect(Collectors.toList()));
+            SeedCracker.get().onPillarData(pillarData);
             result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(0.5f, 0.0f, 0.5f, 1.0f))));
-            SeedCracker.get().onPillarData(new PillarData(result.stream().map(Vec3i::getY).collect(Collectors.toList())));
         }
 
         return result;
@@ -57,21 +63,17 @@ public class EndPillarsFinder extends Finder {
         return finders;
     }
 
-    public class BedrockMarkerFinder extends BlockFinder {
+    public static class BedrockMarkerFinder extends BlockFinder {
+
+        protected static List<BlockPos> SEARCH_POSITIONS = buildSearchPositions(CHUNK_POSITIONS, pos -> {
+            if(pos.getY() < 76)return true;
+            if(pos.getY() > 76 + 3 * 10)return true;
+            return false;
+        });
 
         public BedrockMarkerFinder(World world, ChunkPos chunkPos, BlockPos xz) {
             super(world, chunkPos, Blocks.BEDROCK);
-
-            int localX = xz.getX() & 15;
-            int localZ = xz.getZ() & 15;
-
-            this.searchPositions.removeIf(pos -> {
-                if(pos.getX() != localX)return true;
-                if(pos.getY() < 76)return true;
-                if(pos.getY() > 76 + 3 * 10)return true;
-                if(pos.getZ() != localZ)return true;
-                return false;
-            });
+            this.searchPositions = SEARCH_POSITIONS;
         }
 
         @Override

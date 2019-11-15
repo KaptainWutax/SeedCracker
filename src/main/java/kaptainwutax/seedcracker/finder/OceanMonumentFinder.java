@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class OceanMonumentFinder extends Finder {
 
+    protected static List<BlockPos> SEARCH_POSITIONS = buildSearchPositions(CHUNK_POSITIONS, pos -> {
+        if(pos.getY() != 56)return true;
+        return false;
+    });
+
     protected List<PieceFinder> finders = new ArrayList<>();
     protected final Vec3i size = new Vec3i(8, 5, 8);
 
@@ -29,10 +34,7 @@ public class OceanMonumentFinder extends Finder {
 
         PieceFinder finder = new PieceFinder(world, chunkPos, Direction.NORTH, size);
 
-        finder.searchPositions.removeIf(pos -> {
-            if(pos.getY() != 56)return true;
-            return false;
-        });
+        finder.searchPositions = SEARCH_POSITIONS;
 
         buildStructure(finder);
         this.finders.add(finder);
@@ -52,10 +54,12 @@ public class OceanMonumentFinder extends Finder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
                 ChunkPos monumentStart = new ChunkPos(this.chunkPos.x + 1, this.chunkPos.z + 1);
-                this.renderers.add(new Cube(monumentStart.getCenterBlockPos().add(0, pos.getY(), 0), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
-                SeedCracker.get().onStructureData(new StructureData(monumentStart, StructureData.OCEAN_MONUMENT));
+
+                if(SeedCracker.get().onStructureData(new StructureData(monumentStart, StructureData.OCEAN_MONUMENT))) {
+                    this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
+                    this.renderers.add(new Cube(monumentStart.getCenterBlockPos().add(0, pos.getY(), 0), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
+                }
             });
         });
 

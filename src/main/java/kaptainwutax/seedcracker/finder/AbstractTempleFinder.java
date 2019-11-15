@@ -14,6 +14,13 @@ import java.util.Map;
 
 public abstract class AbstractTempleFinder extends Finder {
 
+    protected static List<BlockPos> SEARCH_POSITIONS = buildSearchPositions(CHUNK_POSITIONS, pos -> {
+        if(pos.getX() != 0)return true;
+        if(pos.getY() < 63)return true;
+        if(pos.getZ() != 0)return true;
+        return false;
+    });
+
     protected List<PieceFinder> finders = new ArrayList<>();
     protected final Vec3i size;
 
@@ -23,12 +30,7 @@ public abstract class AbstractTempleFinder extends Finder {
         Direction.Type.HORIZONTAL.forEach(direction -> {
             PieceFinder finder = new PieceFinder(world, chunkPos, direction, size);
 
-            finder.searchPositions.removeIf(pos -> {
-                if(pos.getX() != 0)return true;
-                if(pos.getY() < 63)return true;
-                if(pos.getZ() != 0)return true;
-                return false;
-            });
+            finder.searchPositions = SEARCH_POSITIONS;
 
             buildStructure(finder);
             this.finders.add(finder);
