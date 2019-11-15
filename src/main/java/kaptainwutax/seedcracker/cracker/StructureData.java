@@ -36,6 +36,10 @@ public class StructureData {
         return this.feature.salt;
     }
 
+    public Feature getFeature() {
+        return this.feature;
+    }
+
     public boolean test(ChunkRandom rand) {
         return this.feature.test(rand, this.offsetX, this.offsetZ);
     }
@@ -45,7 +49,8 @@ public class StructureData {
         if(obj == this)return true;
 
         if(obj instanceof StructureData) {
-            return ((StructureData)obj).regionX == this.regionX && ((StructureData)obj).regionZ == this.regionZ;
+            StructureData structureData = ((StructureData)obj);
+            return structureData.regionX == this.regionX && structureData.regionZ == this.regionZ && structureData.feature == this.feature;
         }
 
         return false;
@@ -53,29 +58,29 @@ public class StructureData {
 
     public abstract static class Feature {
         public final int salt;
-        public final int templeDistance;
+        public final int distance;
 
-        public Feature(int salt, int templeDistance) {
+        public Feature(int salt, int distance) {
             this.salt = salt;
-            this.templeDistance = templeDistance;
+            this.distance = distance;
         }
 
         public void build(StructureData data, ChunkPos chunkPos) {
             int chunkX = chunkPos.x;
             int chunkZ = chunkPos.z;
 
-            chunkX = chunkX < 0 ? chunkX - this.templeDistance + 1 : chunkX;
-            chunkZ = chunkZ < 0 ? chunkZ - this.templeDistance + 1 : chunkZ;
+            chunkX = chunkX < 0 ? chunkX - this.distance + 1 : chunkX;
+            chunkZ = chunkZ < 0 ? chunkZ - this.distance + 1 : chunkZ;
 
             //Pick out in which region the chunk is.
-            int regionX = (chunkX / this.templeDistance);
-            int regionZ = (chunkZ / this.templeDistance);
+            int regionX = (chunkX / this.distance);
+            int regionZ = (chunkZ / this.distance);
 
             data.regionX = regionX;
             data.regionZ = regionZ;
 
-            regionX *= this.templeDistance;
-            regionZ *= this.templeDistance;
+            regionX *= this.distance;
+            regionZ *= this.distance;
 
             data.offsetX = chunkPos.x - regionX;
             data.offsetZ = chunkPos.z - regionZ;
@@ -153,6 +158,14 @@ public class StructureData {
         @Override
         public boolean test(ChunkRandom rand, int x, int z) {
             return rand.nextFloat() < 0.1f;
+        }
+    };
+
+    public static final Feature WOODLAND_MANSION = new Feature(10387319, 80) {
+        @Override
+        public boolean test(ChunkRandom rand, int x, int z) {
+            return (rand.nextInt(60) + rand.nextInt(60)) / 2 == x
+                    && (rand.nextInt(60) + rand.nextInt(60)) / 2 == z;
         }
     };
 
