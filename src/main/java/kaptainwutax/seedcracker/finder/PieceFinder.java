@@ -30,7 +30,6 @@ public class PieceFinder extends Finder {
 
     public PieceFinder(World world, ChunkPos chunkPos, Direction facing, Vec3i size) {
         super(world, chunkPos);
-        this.searchPositions.addAll(CHUNK_POSITIONS);
 
         this.setOrientation(facing);
         this.width = size.getX();
@@ -64,15 +63,17 @@ public class PieceFinder extends Finder {
 
         Chunk chunk = this.world.getChunk(this.chunkPos.getCenterBlockPos());
 
-        // FOR DEBUGGING PIECES.
-        int y = this.rotation.ordinal() * 10 + this.mirror.ordinal() * 20 + 60;
 
-        if(this.chunkPos.x % 2 == 0 && this.chunkPos.z % 2 == 0) {
-            this.structure.forEach((pos, state) -> {
-                //this.world.setBlockState(this.chunkPos.getCenterBlockPos().add(pos).add(0, y, 0), state);
-            });
-        }
+        /*//FOR DEBUGGING PIECES.
+        MinecraftClient.getInstance().execute(() -> {
+            int y = this.rotation.ordinal() * 10 + this.mirror.ordinal() * 20 + 80;
 
+            if(this.chunkPos.x % 2 == 0 && this.chunkPos.z % 2 == 0) {
+                this.structure.forEach((pos, state) -> {
+                    this.world.setBlockState(this.chunkPos.getCenterBlockPos().add(pos).add(0, y, 0), state);
+                });
+            }
+        });*/
 
         for(BlockPos center: this.searchPositions) {
             boolean found = true;
@@ -193,6 +194,10 @@ public class PieceFinder extends Finder {
     }
 
     protected void addBlock(BlockState state, int x, int y, int z) {
+        if(state == null) {
+            return;
+        }
+
         BlockPos pos = new BlockPos(
                 this.applyXTransform(x, z),
                 this.applyYTransform(y),
