@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin {
 
     @Shadow private ClientWorld world;
 
-    @Inject(method = "onChunkData", at = @At("TAIL"))
+    @Inject(method = "onChunkData", at = @At("RETURN"))
     private void onChunkData(ChunkDataS2CPacket packet, CallbackInfo ci) {
         int chunkX = packet.getX();
         int chunkZ = packet.getZ();
