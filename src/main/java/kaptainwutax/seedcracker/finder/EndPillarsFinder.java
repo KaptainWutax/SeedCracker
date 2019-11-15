@@ -45,8 +45,8 @@ public class EndPillarsFinder extends Finder {
 
         if(result.size() == this.bedrockMarkers.length) {
             PillarData pillarData = new PillarData(result.stream().map(Vec3i::getY).collect(Collectors.toList()));
-            SeedCracker.get().onPillarData(pillarData);
             result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(0.5f, 0.0f, 0.5f, 1.0f))));
+            SeedCracker.get().onPillarData(pillarData);
         }
 
         return result;
