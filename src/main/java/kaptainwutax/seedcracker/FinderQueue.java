@@ -18,6 +18,7 @@ public class FinderQueue {
     private final static FinderQueue INSTANCE = new FinderQueue();
     public static final ExecutorService SERVICE = Executors.newFixedThreadPool(5);
 
+    public RenderType renderType = RenderType.XRAY;
     private List<FinderBuilder> finderBuilders = new ArrayList<>();
     private Set<Finder> activeFinders = new ConcurrentSet<>();
 
@@ -47,10 +48,14 @@ public class FinderQueue {
     }
 
     public void renderFinders() {
+        if(this.renderType == RenderType.OFF)return;
+
         GlStateManager.disableTexture();
 
         //Makes it render through blocks.
-        GlStateManager.disableDepthTest();
+        if(this.renderType == RenderType.XRAY) {
+            GlStateManager.disableDepthTest();
+        }
 
         this.activeFinders.forEach(finder -> {
             if(finder.shouldRender()) {
@@ -59,7 +64,10 @@ public class FinderQueue {
         });
 
         GlStateManager.enableTexture();
-        GlStateManager.enableDepthTest();
+
+        if(this.renderType == RenderType.XRAY) {
+            GlStateManager.enableDepthTest();
+        }
     }
 
     public void clear() {
@@ -76,6 +84,13 @@ public class FinderQueue {
         this.finderBuilders.add(OceanMonumentFinder::create);
         this.finderBuilders.add(EndCityFinder::create);
         this.finderBuilders.add(IglooFinder::create);
+
+        //this.finderBuilders.add(DiamondOreFinder::create);
+        //this.finderBuilders.add(InfestedStoneOreFinder::create);
+    }
+
+    public enum RenderType {
+        OFF, ON, XRAY
     }
 
 }
