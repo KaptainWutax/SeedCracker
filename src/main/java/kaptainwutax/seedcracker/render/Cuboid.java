@@ -20,6 +20,10 @@ public class Cuboid extends Renderer {
         this(pos, new BlockPos(1, 1, 1), new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
     }
 
+    public Cuboid(BlockPos start, BlockPos end, Vector4f color) {
+        this(start, new Vec3i(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ()), color);
+    }
+
     public Cuboid(BlockPos start, Vec3i size, Vector4f color) {
         this.start = start;
         this.size = size;
