@@ -28,7 +28,7 @@ public class DungeonFeature extends DecorationFeature {
 
         for(int xo = -dungeonSize.getX(); xo <= dungeonSize.getX(); xo++) {
             for(int zo = -dungeonSize.getZ(); zo <= dungeonSize.getZ(); zo++) {
-                Block block = this.world.getBlockState(pos.add(xo, -1, zo)).getBlock();
+                Block block = this.world.getBlockState(this.pos.add(xo, -1, zo)).getBlock();
 
                 if(block == Blocks.MOSSY_COBBLESTONE) {
                     floorCalls.add(MOSSY_COBBLESTONE_CALL);
