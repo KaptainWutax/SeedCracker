@@ -8,7 +8,8 @@
     "DisableableProfilerMixin",
     "GameRendererMixin",
     "ClientPlayNetworkHandlerMixin",
-    "ClientWorldMixin"
+    "ClientWorldMixin",
+    "ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
