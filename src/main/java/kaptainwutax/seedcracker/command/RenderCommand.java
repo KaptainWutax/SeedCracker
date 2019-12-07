@@ -1,7 +1,7 @@
 package kaptainwutax.seedcracker.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import kaptainwutax.seedcracker.FinderQueue;
+import kaptainwutax.seedcracker.finder.FinderQueue;
 import net.minecraft.server.command.ServerCommandSource;
 
 import static net.minecraft.server.command.CommandManager.literal;
@@ -17,10 +17,13 @@ public class RenderCommand extends ClientCommand {
     public void build(LiteralArgumentBuilder<ServerCommandSource> builder) {
         builder.then(literal("outlines")
                 .executes(context -> this.printRenderMode())
-                .then(literal("XRAY").executes(context -> this.setRenderMode(FinderQueue.RenderType.XRAY)))
-                .then(literal("ON").executes(context -> this.setRenderMode(FinderQueue.RenderType.ON)))
-                .then(literal("OFF").executes(context -> this.setRenderMode(FinderQueue.RenderType.OFF)))
         );
+
+        for(FinderQueue.RenderType renderType: FinderQueue.RenderType.values()) {
+            builder.then(literal("outlines")
+                    .then(literal(renderType.toString()).executes(context -> this.setRenderMode(renderType)))
+            );
+        }
     }
 
     private int printRenderMode() {

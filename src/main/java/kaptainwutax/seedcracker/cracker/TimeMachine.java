@@ -6,7 +6,6 @@ import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.world.gen.ChunkRandom;
 
 import java.util.List;
-import java.util.Set;
 
 public class TimeMachine {
 
@@ -16,7 +15,7 @@ public class TimeMachine {
 
     }
 
-    public List<Long> buildStructureSeeds(int pillarSeed, List<StructureData> structureDataList, List<Long> structureSeeds) {
+    public List<Long> buildStructureSeeds(int pillarSeed, List<StructureData> structureDataList, List<PopulationData> populationDataList, List<Long> structureSeeds) {
         ChunkRandom chunkRandom = new ChunkRandom();
 
         for(long i = 0; i < (1L << 32); i++) {
@@ -28,13 +27,15 @@ public class TimeMachine {
             boolean goodSeed = true;
 
             for(StructureData structureData: structureDataList) {
+                if(!goodSeed)break;
                 chunkRandom.setStructureSeed(structureSeed, structureData.getRegionX(),
                         structureData.getRegionZ(), structureData.getSalt());
+                if(!structureData.test(chunkRandom))goodSeed = false;
+            }
 
-                if(!structureData.test(chunkRandom)) {
-                    goodSeed = false;
-                    break;
-                }
+            for(PopulationData populationData: populationDataList) {
+                if(!goodSeed)break;
+                if(!populationData.test(structureSeed))goodSeed = false;
             }
 
             if(goodSeed) {

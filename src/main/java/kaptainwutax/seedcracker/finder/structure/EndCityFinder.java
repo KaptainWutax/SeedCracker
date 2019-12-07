@@ -1,7 +1,8 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.StructureData;
+import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;

@@ -1,11 +1,14 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.seedcracker.finder.Finder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +43,16 @@ public abstract class AbstractTempleFinder extends Finder {
     }
 
     public List<BlockPos> findInChunkPiece(PieceFinder pieceFinder) {
+        Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
+
+        if(!biome.hasStructureFeature(this.getStructureFeature())) {
+            return new ArrayList<>();
+        }
+
         return pieceFinder.findInChunk();
     }
+
+    protected abstract StructureFeature<?> getStructureFeature();
 
     public Map<PieceFinder, List<BlockPos>> findInChunkPieces() {
         Map<PieceFinder, List<BlockPos>> result = new HashMap<>();

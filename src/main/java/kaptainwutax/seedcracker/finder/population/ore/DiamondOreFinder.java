@@ -1,6 +1,6 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.population.ore;
 
-import kaptainwutax.seedcracker.render.Cube;
+import kaptainwutax.seedcracker.finder.Finder;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
@@ -10,14 +10,13 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-public class DiamondOreFinder extends OreFinder {
+public class DiamondOreFinder extends SimpleOreFinder {
 
     public static OreFeatureConfig CONFIG = new OreFeatureConfig(OreFeatureConfig.Target.NATURAL_STONE, Blocks.DIAMOND_ORE.getDefaultState(), 8);
 
     protected static List<BlockPos> SEARCH_POSITIONS = buildSearchPositions(CHUNK_POSITIONS, pos -> {
-        if(pos.getY() > 16)return true;
+        if(pos.getY() > 16 + 4)return true;
         return false;
     });
 
@@ -27,22 +26,8 @@ public class DiamondOreFinder extends OreFinder {
     }
 
     @Override
-    public void findOreVeins(List<Set<BlockPos>> veins) {
-        List<BlockPos> starts = new ArrayList<>();
-
-        for(Set<BlockPos> vein: veins) {
-            BlockPos oreStart = new BlockPos(
-                this.findX(vein, OreFinder.HIGHEST),
-                this.findY(vein, OreFinder.LOWEST) + 3,
-                this.findZ(vein, OreFinder.HIGHEST)
-            );
-
-            starts.add(oreStart);
-        }
-
-        starts.forEach(start -> {
-            this.renderers.add(new Cube(start, new Vector4f(1.0f, 1.0f, 1.0f, 1.0f)));
-        });
+    public Vector4f getRenderColor() {
+        return new Vector4f(0.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

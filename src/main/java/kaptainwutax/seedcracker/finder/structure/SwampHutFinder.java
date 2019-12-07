@@ -1,7 +1,8 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.StructureData;
+import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,8 +14,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +33,6 @@ public class SwampHutFinder extends AbstractTempleFinder {
         List<BlockPos> combinedResult = new ArrayList<>();
 
         result.forEach((pieceFinder, positions) -> {
-            positions.removeIf(pos -> {
-                Biome biome = world.getBiome(pos.add(9, 0, 9));
-                if(!biome.hasStructureFeature(Feature.SWAMP_HUT))return true;
-
-                return false;
-            });
-
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
@@ -49,6 +43,11 @@ public class SwampHutFinder extends AbstractTempleFinder {
         });
 
         return combinedResult;
+    }
+
+    @Override
+    protected StructureFeature<?> getStructureFeature() {
+        return Feature.SWAMP_HUT;
     }
 
     @Override

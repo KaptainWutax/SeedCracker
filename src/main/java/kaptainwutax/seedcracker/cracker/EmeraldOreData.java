@@ -1,0 +1,55 @@
+package kaptainwutax.seedcracker.cracker;
+
+import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedcracker.util.math.LCG;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.decorator.Decorator;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class EmeraldOreData extends PopulationData {
+
+    public static final LCG[] SKIP = {
+            Rand.JAVA_LCG.combine(0),
+            Rand.JAVA_LCG.combine(1),
+            Rand.JAVA_LCG.combine(2),
+            Rand.JAVA_LCG.combine(3)
+    };
+
+    private List<BlockPos> starts;
+
+    public EmeraldOreData(ChunkPos chunkPos, Biome biome, List<BlockPos> ores) {
+        super(chunkPos, Decorator.EMERALD_ORE, biome);
+
+        this.starts = ores.stream().map(pos -> {
+            return new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15);
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean testDecorator(long decoratorSeed) {
+        if(this.starts.isEmpty())return false;
+
+        //TODO: This currently only supports 1 emerald per chunk.
+        BlockPos start = this.starts.get(0);
+
+        Rand rand = new Rand(decoratorSeed, false);
+        int b = rand.nextInt(6);
+
+        for(int i = 0; i < b; i++) {
+            int x = rand.nextInt(16);
+            int y = rand.nextInt(28) + 4;
+            int z = rand.nextInt(16);
+
+            if(x == start.getX() && y == start.getY() && z == start.getZ()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+}

@@ -2,8 +2,8 @@ package kaptainwutax.seedcracker.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
-import kaptainwutax.seedcracker.ClientCommands;
-import kaptainwutax.seedcracker.FinderQueue;
+import kaptainwutax.seedcracker.command.ClientCommands;
+import kaptainwutax.seedcracker.finder.FinderQueue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

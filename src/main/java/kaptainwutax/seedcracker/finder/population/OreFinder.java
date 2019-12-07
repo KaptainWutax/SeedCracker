@@ -1,5 +1,6 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.population;
 
+import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.util.PosIterator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

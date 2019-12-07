@@ -1,7 +1,9 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.StructureData;
+import kaptainwutax.seedcracker.finder.BlockFinder;
+import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -41,6 +43,9 @@ public class BuriedTreasureFinder extends BlockFinder {
         CHEST_HOLDERS.add(Blocks.COAL_ORE.getDefaultState());
         CHEST_HOLDERS.add(Blocks.IRON_ORE.getDefaultState());
         CHEST_HOLDERS.add(Blocks.GOLD_ORE.getDefaultState());
+
+        //Ocean can turn stone into gravel.
+        CHEST_HOLDERS.add(Blocks.GRAVEL.getDefaultState());
     }
 
     public BuriedTreasureFinder(World world, ChunkPos chunkPos) {

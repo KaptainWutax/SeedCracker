@@ -1,18 +1,20 @@
 package kaptainwutax.seedcracker.cracker;
 
+import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.decorator.Decorator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DungeonData extends PopulationData {
 
-    public static final Feature DUNGEON = new Feature(GenerationStep.Feature.UNDERGROUND_STRUCTURES, Decorator.DUNGEONS) {};
+    public static LCG REVERSE_SKIP = Rand.JAVA_LCG.combine(-1);
+    public static LCG Y_START_SKIP = Rand.JAVA_LCG.combine(2);
+    public static LCG Y_SKIP = Rand.JAVA_LCG.combine(5);
+
     public static final Integer COBBLESTONE_CALL = 0;
     public static final Integer MOSSY_COBBLESTONE_CALL = 1;
 
@@ -20,28 +22,37 @@ public class DungeonData extends PopulationData {
     private final List<List<Integer>> floorCallsList;
 
     public DungeonData(ChunkPos chunkPos, Biome biome, List<BlockPos> starts, List<List<Integer>> floorCallsList) {
-        super(chunkPos, DUNGEON, biome);
+        super(chunkPos, Decorator.DUNGEONS, biome);
         this.starts = starts;
         this.floorCallsList = floorCallsList;
     }
 
     @Override
-    public boolean test(ChunkRandom chunkRandom) {
-        List<Integer> idsToCheck = new ArrayList<>();
+    public boolean testDecorator(long decoratorSeed) {
+        if(this.starts.isEmpty())return false;
+
+        //TODO: This currently only supports 1 dungeon per chunk.
+        BlockPos start = this.starts.get(0);
+
+        long currentSeed = decoratorSeed;
+        boolean valid = false;
 
         for(int i = 0; i < 8; i++) {
-            BlockPos pos = new BlockPos(chunkRandom.nextInt(16), chunkRandom.nextInt(256), chunkRandom.nextInt(16));
-            int a = this.starts.indexOf(pos);
-            if(a != -1)idsToCheck.add(a);
+            currentSeed = i == 0 ? Y_START_SKIP.nextSeed(currentSeed) : Y_SKIP.nextSeed(currentSeed);
 
-            //We assume the dungeon failed, skip 2 calls.
-            chunkRandom.nextBoolean();
-            chunkRandom.nextBoolean();
+            if(currentSeed >> 40 == start.getY()) {
+                valid = true;
+                break;
+            }
         }
 
-        if(idsToCheck.size() != this.starts.size())return false;
+        if(!valid)return false;
 
-        //TODO: Implement floor calls.
+        int x = (int)(REVERSE_SKIP.nextSeed(currentSeed) >> 44);
+        if(x != start.getX())return false;
+
+        int z = (int)(Rand.JAVA_LCG.nextSeed(currentSeed) >> 44);
+        if(z != start.getZ())return false;
 
         return true;
     }

@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker.cracker;
 
+import kaptainwutax.seedcracker.util.Rand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
@@ -10,26 +11,44 @@ import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.DecoratedFeatureConfig;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class PopulationData {
 
     private final ChunkPos chunkPos;
-    private final Feature feature;
+    private final Decorator<?> decorator;
     private final Biome biome;
 
-    public PopulationData(ChunkPos chunkPos, Feature feature, Biome biome) {
+    public PopulationData(ChunkPos chunkPos, Decorator<?> decorator, Biome biome) {
         this.chunkPos = chunkPos;
-        this.feature = feature;
+        this.decorator = decorator;
         this.biome = biome;
     }
 
-    public final boolean test(long worldSeed) {
-        ChunkRandom chunkRandom = this.feature.buildRand(worldSeed, this.biome, this.chunkPos);
-        return this.test(chunkRandom);
+    public final boolean test(long structureSeed) {
+        long decoratorSeed = this.getPopulationSeed(structureSeed, this.chunkPos.x << 4, this.chunkPos.z << 4);
+        int salt = DecoratorCache.get().getSalt(this.biome, this.decorator, true);
+
+        if(salt == DecoratorCache.INVALID) {
+            return false;
+        }
+
+        decoratorSeed += salt;
+        decoratorSeed ^= Rand.JAVA_LCG.multiplier;
+        decoratorSeed &= Rand.JAVA_LCG.modulo - 1;
+        return this.testDecorator(decoratorSeed);
     }
 
-    public abstract boolean test(ChunkRandom chunkRandom);
+    public long getPopulationSeed(long structureSeed, int x, int z) {
+        Rand rand = new Rand(structureSeed, true);
+        long a = rand.nextLong() | 1L;
+        long b = rand.nextLong() | 1L;
+        return (long)x * a + (long)z * b ^ structureSeed;
+    }
+
+    public abstract boolean testDecorator(long decoratorSeed);
 
     @Override
     public boolean equals(Object obj) {
@@ -37,7 +56,7 @@ public abstract class PopulationData {
 
         if(obj instanceof PopulationData) {
             PopulationData populationData = ((PopulationData)obj);
-            return populationData.chunkPos.equals(this.chunkPos) && populationData.feature == this.feature;
+            return populationData.chunkPos.equals(this.chunkPos) && populationData.decorator == this.decorator;
         }
 
         return false;
@@ -45,6 +64,8 @@ public abstract class PopulationData {
 
 
     public abstract static class Feature {
+        private Map<Biome, Long> CACHE = new HashMap<>();
+
         private GenerationStep.Feature genStep;
         private Decorator decorator;
 
@@ -54,6 +75,10 @@ public abstract class PopulationData {
         }
 
         public ChunkRandom buildRand(long worldSeed, Biome biome, ChunkPos chunkPos) {
+            if(CACHE.containsKey(biome)) {
+                return new ChunkRandom(CACHE.get(biome));
+            }
+
             List<ConfiguredFeature<?>> features = biome.getFeaturesForStep(this.genStep);
 
             for(int i = 0; i < features.size(); i++) {
@@ -65,7 +90,8 @@ public abstract class PopulationData {
                     BlockPos pos = new BlockPos(chunkPos.getStartX(), 0, chunkPos.getStartZ());
                     ChunkRandom chunkRandom = new ChunkRandom();
                     long populationSeed = chunkRandom.setSeed(worldSeed, pos.getX(), pos.getZ());
-                    chunkRandom.setFeatureSeed(populationSeed, i, this.genStep.ordinal());
+                    long seed = chunkRandom.setFeatureSeed(populationSeed, i, this.genStep.ordinal());
+                    CACHE.put(biome, seed ^ Rand.JAVA_LCG.multiplier);
                     return chunkRandom;
                 }
             }

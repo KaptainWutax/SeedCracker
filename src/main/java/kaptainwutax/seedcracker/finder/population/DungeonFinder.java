@@ -1,7 +1,9 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.population;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DungeonData;
+import kaptainwutax.seedcracker.finder.BlockFinder;
+import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.util.PosIterator;
 import net.minecraft.block.Block;

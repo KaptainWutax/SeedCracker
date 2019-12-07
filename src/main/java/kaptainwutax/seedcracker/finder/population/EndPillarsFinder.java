@@ -1,7 +1,9 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.population;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.PillarData;
+import kaptainwutax.seedcracker.finder.BlockFinder;
+import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.math.Vector4f;
@@ -45,8 +47,11 @@ public class EndPillarsFinder extends Finder {
 
         if(result.size() == this.bedrockMarkers.length) {
             PillarData pillarData = new PillarData(result.stream().map(Vec3i::getY).collect(Collectors.toList()));
-            result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(0.5f, 0.0f, 0.5f, 1.0f))));
-            SeedCracker.get().onPillarData(pillarData);
+
+            if(SeedCracker.get().onPillarData(pillarData)){
+                result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(0.5f, 0.0f, 0.5f, 1.0f))));
+            }
+
         }
 
         return result;

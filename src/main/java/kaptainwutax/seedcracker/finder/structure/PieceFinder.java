@@ -1,22 +1,23 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.seedcracker.finder.Finder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PieceFinder extends Finder {
 
-    protected Map<BlockPos, BlockState> structure = new HashMap<>();
+    protected Map<BlockPos, BlockState> structure = new LinkedHashMap<>();
     private MutableIntBoundingBox boundingBox;
     protected List<BlockPos> searchPositions = new ArrayList<>();
 
@@ -27,6 +28,8 @@ public class PieceFinder extends Finder {
     protected int width;
     protected int height;
     protected int depth;
+
+    private boolean debug;
 
     public PieceFinder(World world, ChunkPos chunkPos, Direction facing, Vec3i size) {
         super(world, chunkPos);
@@ -61,19 +64,22 @@ public class PieceFinder extends Finder {
     public List<BlockPos> findInChunk() {
         List<BlockPos> result = new ArrayList<>();
 
-        Chunk chunk = this.world.getChunk(this.chunkPos.getCenterBlockPos());
+        if(this.structure.isEmpty()) {
+            return result;
+        }
 
+        //FOR DEBUGGING PIECES.
+        if(this.debug) {
+            MinecraftClient.getInstance().execute(() -> {
+                int y = this.rotation.ordinal() * 10 + this.mirror.ordinal() * 20 + 100;
 
-        /*//FOR DEBUGGING PIECES.
-        MinecraftClient.getInstance().execute(() -> {
-            int y = this.rotation.ordinal() * 10 + this.mirror.ordinal() * 20 + 80;
-
-            if(this.chunkPos.x % 2 == 0 && this.chunkPos.z % 2 == 0) {
-                this.structure.forEach((pos, state) -> {
-                    this.world.setBlockState(this.chunkPos.getCenterBlockPos().add(pos).add(0, y, 0), state);
-                });
-            }
-        });*/
+                if (this.chunkPos.x % 2 == 0 && this.chunkPos.z % 2 == 0) {
+                    this.structure.forEach((pos, state) -> {
+                        this.world.setBlockState(this.chunkPos.getCenterBlockPos().add(pos).add(0, y, 0), state, 0);
+                    });
+                }
+            });
+        }
 
         for(BlockPos center: this.searchPositions) {
             boolean found = true;
@@ -221,4 +227,9 @@ public class PieceFinder extends Finder {
     public boolean isValidDimension(DimensionType dimension) {
         return true;
     }
+
+    public void setDebug() {
+        this.debug = true;
+    }
+
 }
