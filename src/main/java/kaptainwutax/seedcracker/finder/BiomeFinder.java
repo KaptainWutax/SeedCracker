@@ -37,7 +37,7 @@ public class BiomeFinder extends Finder {
         }
 
         result.forEach(pos -> {
-            this.renderers.add(new Cube(pos, new Vector4f(0.05f, 0.2f, 0.125f, 1.0f)));
+            this.renderers.add(new Cube(pos, new Vector4f(0.2f, 0.8f, 0.5f, 1.0f)));
         });
 
         return result;
