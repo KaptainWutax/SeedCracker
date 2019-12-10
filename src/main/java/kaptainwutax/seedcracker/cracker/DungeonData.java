@@ -29,7 +29,7 @@ public class DungeonData extends PopulationData {
 
     @Override
     public boolean testDecorator(long decoratorSeed) {
-        if(this.starts.isEmpty())return false;
+        if(this.starts.isEmpty())return true;
 
         //TODO: This currently only supports 1 dungeon per chunk.
         BlockPos start = this.starts.get(0);
