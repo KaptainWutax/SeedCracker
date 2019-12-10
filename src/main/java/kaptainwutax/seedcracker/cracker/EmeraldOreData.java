@@ -24,9 +24,9 @@ public class EmeraldOreData extends PopulationData {
     public EmeraldOreData(ChunkPos chunkPos, Biome biome, List<BlockPos> ores) {
         super(chunkPos, Decorator.EMERALD_ORE, biome);
 
-        this.starts = ores.stream().map(pos -> {
-            return new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15);
-        }).collect(Collectors.toList());
+        this.starts = ores.stream().map(pos ->
+            new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15)
+        ).collect(Collectors.toList());
     }
 
     @Override
@@ -39,12 +39,12 @@ public class EmeraldOreData extends PopulationData {
         Rand rand = new Rand(decoratorSeed, false);
         int b = rand.nextInt(6);
 
-        for(int i = 0; i < b; i++) {
+        for(int i = 0; i < b + 3; i++) {
             int x = rand.nextInt(16);
             int y = rand.nextInt(28) + 4;
             int z = rand.nextInt(16);
 
-            if(x == start.getX() && y == start.getY() && z == start.getZ()) {
+            if(y == start.getY() && x == start.getX() && z == start.getZ()) {
                 return true;
             }
         }
