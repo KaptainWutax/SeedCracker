@@ -95,7 +95,7 @@ public class SeedCracker implements ModInitializer {
 	    return INSTANCE;
     }
 
-	public synchronized void clear() {
+	public void clear() {
 		this.worldSeeds = null;
 		this.structureSeeds = null;
 		this.pillarSeeds = null;

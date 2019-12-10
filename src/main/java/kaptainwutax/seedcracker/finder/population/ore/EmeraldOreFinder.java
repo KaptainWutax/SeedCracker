@@ -20,8 +20,13 @@ import java.util.List;
 
 public class EmeraldOreFinder extends BlockFinder {
 
+    protected static List<BlockPos> SEARCH_POSITIONS = Finder.buildSearchPositions(Finder.CHUNK_POSITIONS, pos -> {
+        return false;
+    });
+
     public EmeraldOreFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos, Blocks.EMERALD_ORE);
+        this.searchPositions = SEARCH_POSITIONS;
     }
 
     @Override
@@ -34,7 +39,7 @@ public class EmeraldOreFinder extends BlockFinder {
 
         List<BlockPos> result = super.findInChunk();
 
-        if(SeedCracker.get().onPopulationData(new EmeraldOreData(this.chunkPos, biome, result))) {
+        if(!result.isEmpty() && SeedCracker.get().onPopulationData(new EmeraldOreData(this.chunkPos, biome, result))) {
             result.forEach(pos -> {
                 this.renderers.add(new Cube(pos, new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
             });
