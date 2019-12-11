@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.cracker;
+package kaptainwutax.seedcracker.cracker.population;
 
 import kaptainwutax.seedcracker.util.Rand;
 import net.minecraft.util.math.BlockPos;

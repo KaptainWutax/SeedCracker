@@ -2,7 +2,7 @@ package kaptainwutax.seedcracker.finder.population.ore;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DecoratorCache;
-import kaptainwutax.seedcracker.cracker.EmeraldOreData;
+import kaptainwutax.seedcracker.cracker.population.EmeraldOreData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cube;

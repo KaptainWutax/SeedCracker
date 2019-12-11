@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker;
 
 import com.google.common.collect.Lists;
 import kaptainwutax.seedcracker.cracker.*;
+import kaptainwutax.seedcracker.cracker.population.PopulationData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedcracker.util.Rand;

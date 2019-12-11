@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.cracker;
 
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.population.PopulationData;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.world.gen.ChunkRandom;
@@ -8,7 +9,7 @@ import net.minecraft.world.gen.ChunkRandom;
 import java.util.List;
 
 public class TimeMachine {
-
+    
     private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
 
     public TimeMachine() {

@@ -2,7 +2,7 @@ package kaptainwutax.seedcracker.finder.population;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DecoratorCache;
-import kaptainwutax.seedcracker.cracker.EndGatewayData;
+import kaptainwutax.seedcracker.cracker.population.EndGatewayData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cuboid;
