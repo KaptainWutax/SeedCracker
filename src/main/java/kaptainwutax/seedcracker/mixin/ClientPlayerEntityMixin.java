@@ -15,11 +15,13 @@ public abstract class ClientPlayerEntityMixin {
 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void onSendChatMessage(String message, CallbackInfo ci) {
-        System.out.println("MESSAGE: " + message);
-
         if(message.startsWith("/")) {
             StringReader reader = new StringReader(message);
             reader.skip();
+
+            //Removing this kill the mixin. Son of a bitch.
+            int cursor = reader.getCursor();
+            reader.setCursor(cursor);
 
             if(ClientCommands.isClientSideCommand(message.substring(1).split(Pattern.quote(" ")))) {
                 ClientCommands.executeCommand(reader);
