@@ -3,7 +3,7 @@ package kaptainwutax.seedcracker.cracker;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.BiomeLayerSampler;
+import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 
 public class BiomeData {
 
@@ -25,8 +25,8 @@ public class BiomeData {
         this(x, z, Registry.BIOME.get(biomeId));
     }
 
-    public boolean test(long worldSeed, BiomeLayerSampler sampler) {
-        return sampler.sample(this.x, this.z) == this.biome;
+    public boolean test(long worldSeed, FakeBiomeSource source) {
+        return VoronoiBiomeAccessType.INSTANCE.getBiome(worldSeed, this.x,0, this.z, source) == this.biome;
     }
 
     @Override

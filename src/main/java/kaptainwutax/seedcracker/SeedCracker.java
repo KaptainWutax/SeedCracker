@@ -1,37 +1,30 @@
 package kaptainwutax.seedcracker;
 
-import com.google.common.collect.Lists;
 import kaptainwutax.seedcracker.cracker.*;
 import kaptainwutax.seedcracker.cracker.population.PopulationData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedcracker.util.Rand;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableIntBoundingBox;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.layer.BiomeLayerSampler;
-import net.minecraft.world.biome.layer.BiomeLayers;
-import net.minecraft.world.biome.source.BiomeSourceType;
+import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 import net.minecraft.world.gen.ChunkRandom;
+import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StrongholdFeature;
-import net.minecraft.world.level.LevelGeneratorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class SeedCracker implements ModInitializer {
 
 	public static final Logger LOG = LogManager.getLogger("Seed Cracker");
     private static final SeedCracker INSTANCE = new SeedCracker();
+
+    public static final OverworldChunkGeneratorConfig CHUNK_GEN_CONFIG = new OverworldChunkGeneratorConfig();
 
     public List<Long> worldSeeds = null;
 	public List<Long> structureSeeds = null;
@@ -46,6 +39,10 @@ public class SeedCracker implements ModInitializer {
 	public void onInitialize() {
 		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
 		DecoratorCache.get().initialize();
+
+		FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(3698703115574076237L);
+		System.out.println(VoronoiBiomeAccessType.INSTANCE.getBiome(3698703115574076237L, -176,0, -266, fakeBiomeSource));
+
 		/*
 		System.out.println("FETCHING SEEDS============");
 		long structureSeed = 29131954246896L;
@@ -89,7 +86,7 @@ public class SeedCracker implements ModInitializer {
 	}
 
 	private void checkWorldSeed(long worldSeed, ChunkPos pos) {
-		StrongholdFeature.Start start = new StrongholdFeature.Start(Feature.STRONGHOLD, pos.x, pos.z, Biomes.PLAINS, MutableIntBoundingBox.empty(), 0, worldSeed);
+		StrongholdFeature.Start start = new StrongholdFeature.Start(Feature.STRONGHOLD, pos.x, pos.z, BlockBox.empty(), 0, worldSeed);
 	}
 
 	public static SeedCracker get() {
@@ -142,7 +139,7 @@ public class SeedCracker implements ModInitializer {
 			});
 
 			if(this.structureSeeds.size() > 0) {
-				LOG.warn("Finished search with " + this.structureSeeds.size() + (this.structureSeeds.size() == 1 ? " seed." : " seeds."));
+				LOG.warn("Finished search with " + this.structureSeeds + (this.structureSeeds.size() == 1 ? " seed." : " seeds."));
 			} else {
 				LOG.error("Finished search with no seeds.");
 			}
@@ -151,6 +148,8 @@ public class SeedCracker implements ModInitializer {
 			this.onPopulationData(null);
 			this.onBiomeData(null);
 		} else if(this.structureSeeds != null && structureData != null) {
+			System.out.println(this.structureSeeds);
+			System.out.println(this.biomeCache);
 			this.structureSeeds.removeIf(structureSeed -> {
 				ChunkRandom chunkRandom = new ChunkRandom();
 				chunkRandom.setStructureSeed(structureSeed, structureData.getRegionX(), structureData.getRegionZ(), structureData.getSalt());
@@ -195,11 +194,11 @@ public class SeedCracker implements ModInitializer {
 				for (long j = 0; j < (1L << 16); j++) {
 					long worldSeed = (j << 48) | structureSeed;
 					boolean goodSeed = true;
-					BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
-							BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings())[1];
+
+					FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(worldSeed);
 
 					for(BiomeData data : this.biomeCache) {
-						if (!data.test(worldSeed, sampler)) {
+						if (!data.test(worldSeed, fakeBiomeSource)) {
 							goodSeed = false;
 							break;
 						}
@@ -218,16 +217,14 @@ public class SeedCracker implements ModInitializer {
 			}
 		} else if(this.worldSeeds != null && biomeData != null) {
 			this.worldSeeds.removeIf(worldSeed -> {
-				BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
-						BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings())[1];
-				return !biomeData.test(worldSeed, sampler);
+				FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(worldSeed);
+				return !biomeData.test(worldSeed, fakeBiomeSource);
 			});
 		} else if(this.worldSeeds != null) {
 			this.worldSeeds.removeIf(worldSeed -> {
 				for(BiomeData data: this.biomeCache) {
-					BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
-							BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings())[1];
-					if(!biomeData.test(worldSeed, sampler))return true;
+					FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(worldSeed);
+					if(!data.test(worldSeed, fakeBiomeSource))return true;
 				}
 
 				return false;
@@ -285,6 +282,7 @@ public class SeedCracker implements ModInitializer {
 		writer.close();*/
 	}
 
+	/*
 	private static List<ChunkPos> initialize(long worldSeed) {
 		BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
 				BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings())[0];
@@ -321,8 +319,10 @@ public class SeedCracker implements ModInitializer {
 		}
 
 		return startPositions;
-	}
+	}./
 
+	//CHECK NEW 1.15 SAMPLER
+	/*
 	public static BlockPos locateBiome(BiomeLayerSampler sampler, int x, int z, int size, List<Biome> validBiomes, Random rand) {
 		int int_4 = x - size >> 2;
 		int int_5 = z - size >> 2;
@@ -347,6 +347,6 @@ public class SeedCracker implements ModInitializer {
 		}
 
 		return pos;
-	}
+	}*/
 
 }
