@@ -33,7 +33,7 @@ public class Line extends Renderer {
 
         Vec3d camPos = this.mc.gameRenderer.getCamera().getPos();
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         //This is how thick the line is.
         GlStateManager.lineWidth(2.0f);
@@ -48,18 +48,16 @@ public class Line extends Renderer {
     }
 
     protected void putVertex(BufferBuilder buffer, Vec3d camPos, Vec3d pos) {
-        for(int i = 0; i < 2; i++) {
-            buffer.vertex(
-                    pos.getX() - camPos.x,
-                    pos.getY() - camPos.y,
-                    pos.getZ() - camPos.z
-            ).color(
-                    this.color.getX(),
-                    this.color.getY(),
-                    this.color.getZ(),
-                    this.color.getW()
-            ).next();
-        }
+        buffer.vertex(
+                pos.getX() - camPos.x,
+                pos.getY() - camPos.y,
+                pos.getZ() - camPos.z
+        ).color(
+                this.color.getX(),
+                this.color.getY(),
+                this.color.getZ(),
+                this.color.getW()
+        ).next();
     }
 
 }

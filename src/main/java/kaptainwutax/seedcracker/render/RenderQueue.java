@@ -1,19 +1,22 @@
 package kaptainwutax.seedcracker.render;
 
+import net.minecraft.client.util.math.MatrixStack;
+
 import java.util.*;
+import java.util.function.Consumer;
 
 public class RenderQueue {
 
     private final static RenderQueue INSTANCE = new RenderQueue();
 
-    private Map<String, List<Runnable>> typeRunnableMap = new HashMap<>();
-    private boolean trackRender = false;
+    private Map<String, List<Consumer<MatrixStack>>> typeRunnableMap = new HashMap<>();
+    private MatrixStack matrixStack = null;
 
     public static RenderQueue get() {
         return INSTANCE;
     }
 
-    public void add(String type, Runnable runnable) {
+    public void add(String type, Consumer<MatrixStack> runnable) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(runnable);
 
@@ -21,11 +24,11 @@ public class RenderQueue {
             this.typeRunnableMap.put(type, new ArrayList<>());
         }
 
-        List<Runnable> runnableList = this.typeRunnableMap.get(type);
+        List<Consumer<MatrixStack>> runnableList = this.typeRunnableMap.get(type);
         runnableList.add(runnable);
     }
 
-    public void remove(String type, Runnable runnable) {
+    public void remove(String type, Consumer<MatrixStack> runnable) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(runnable);
 
@@ -33,17 +36,17 @@ public class RenderQueue {
             return;
         }
 
-        List<Runnable> runnableList = this.typeRunnableMap.get(type);
+        List<Consumer<MatrixStack>> runnableList = this.typeRunnableMap.get(type);
         runnableList.remove(runnable);
     }
 
-    public void setTrackRender(boolean flag) {
-        this.trackRender = flag;
+    public void setTrackRender(MatrixStack matrixStack) {
+        this.matrixStack = matrixStack;
     }
 
     public void onRender(String type) {
-        if(!this.trackRender || !this.typeRunnableMap.containsKey(type))return;
-        this.typeRunnableMap.get(type).forEach(Runnable::run);
+        if(this.matrixStack == null || !this.typeRunnableMap.containsKey(type))return;
+        this.typeRunnableMap.get(type).forEach(r -> r.accept(this.matrixStack));
     }
 
 }
