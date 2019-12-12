@@ -41,8 +41,8 @@ public class EmeraldOreData extends PopulationData {
 
         for(int i = 0; i < b + 3; i++) {
             int x = rand.nextInt(16);
-            int y = rand.nextInt(28) + 4;
             int z = rand.nextInt(16);
+            int y = rand.nextInt(28) + 4;
 
             if(y == start.getY() && x == start.getX() && z == start.getZ()) {
                 return true;

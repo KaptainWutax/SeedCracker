@@ -39,7 +39,7 @@ public class DecoratorCache {
     }
 
     private void initializeBiomeStep(Biome biome, GenerationStep.Feature genStep) {
-        List<ConfiguredFeature<?>> features = biome.getFeaturesForStep(genStep);
+        List<ConfiguredFeature<?, ?>> features = biome.getFeaturesForStep(genStep);
 
         for(int i = 0; i < features.size(); i++) {
             FeatureConfig config = features.get(i).config;

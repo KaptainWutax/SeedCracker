@@ -18,7 +18,7 @@ import java.util.Map;
 public class PieceFinder extends Finder {
 
     protected Map<BlockPos, BlockState> structure = new LinkedHashMap<>();
-    private MutableIntBoundingBox boundingBox;
+    private BlockBox boundingBox;
     protected List<BlockPos> searchPositions = new ArrayList<>();
 
     protected Direction facing;
@@ -40,12 +40,12 @@ public class PieceFinder extends Finder {
         this.depth = size.getZ();
 
         if(this.facing.getAxis() == Direction.Axis.Z) {
-            this.boundingBox = new MutableIntBoundingBox(
+            this.boundingBox = new BlockBox(
                     0, 0, 0,
                     size.getX() - 1, size.getY() - 1, size.getZ() - 1
             );
         } else {
-            this.boundingBox = new MutableIntBoundingBox(
+            this.boundingBox = new BlockBox(
                     0, 0, 0,
                     size.getZ() - 1, size.getY() - 1, size.getX() - 1
             );

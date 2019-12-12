@@ -80,10 +80,10 @@ public abstract class PopulationData {
                 return new ChunkRandom(CACHE.get(biome));
             }
 
-            List<ConfiguredFeature<?>> features = biome.getFeaturesForStep(this.genStep);
+            List<ConfiguredFeature<?, ?>> features = biome.getFeaturesForStep(this.genStep);
 
             for(int i = 0; i < features.size(); i++) {
-                ConfiguredFeature<?> feature = features.get(i);
+                ConfiguredFeature<?, ?> feature = features.get(i);
                 if(!(feature.config instanceof DecoratedFeatureConfig))continue;
                 ConfiguredDecorator<?> currentDecorator = ((DecoratedFeatureConfig)feature.config).decorator;
 

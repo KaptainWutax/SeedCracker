@@ -17,7 +17,7 @@ public abstract class BlockFinder extends Finder {
 
     public BlockFinder(World world, ChunkPos chunkPos, Block block) {
         super(world, chunkPos);
-        this.targetBlockStates.addAll(block.getStateFactory().getStates());
+        this.targetBlockStates.addAll(block.getStateManager().getStates());
     }
 
     public BlockFinder(World world, ChunkPos chunkPos, BlockState... blockStates) {
