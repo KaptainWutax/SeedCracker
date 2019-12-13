@@ -1,7 +1,7 @@
 package kaptainwutax.seedcracker.cracker;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.population.PopulationData;
+import kaptainwutax.seedcracker.cracker.population.DecoratorData;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.world.gen.ChunkRandom;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TimeMachine {
 
-    public int THREAD_COUNT = 8;
+    public int THREAD_COUNT = 4;
     public ExecutorService SERVICE = Executors.newFixedThreadPool(THREAD_COUNT);
 
     private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
@@ -25,7 +25,7 @@ public class TimeMachine {
 
     }
 
-    public List<Long> bruteforceRegion(int pillarSeed, int region, long size, List<StructureData> structureDataList, List<PopulationData> populationDataList) {
+    public List<Long> bruteforceRegion(int pillarSeed, int region, long size, List<StructureData> structureDataList, List<DecoratorData> decoratorDataList) {
         List<Long> result = new ArrayList<>();
         ChunkRandom chunkRandom = new ChunkRandom();
 
@@ -43,9 +43,9 @@ public class TimeMachine {
                 if(!structureData.test(chunkRandom))goodSeed = false;
             }
 
-            for(PopulationData populationData: populationDataList) {
+            for(DecoratorData decoratorData : decoratorDataList) {
                 if(!goodSeed)break;
-                if(!populationData.test(structureSeed))goodSeed = false;
+                if(!decoratorData.test(structureSeed))goodSeed = false;
             }
 
             if(goodSeed) {
@@ -56,13 +56,12 @@ public class TimeMachine {
         return result;
     }
 
-    public Set<Long> buildStructureSeeds(int pillarSeed, List<StructureData> structureDataList, List<PopulationData> populationDataList, Set<Long> structureSeeds) {
+    public Set<Long> buildStructureSeeds(int pillarSeed, List<StructureData> structureDataList, List<DecoratorData> decoratorDataList, Set<Long> structureSeeds) {
         if(this.isRunning) {
             throw new IllegalStateException("Time Machine is already running");
         }
 
         this.isRunning = true;
-
         long size = (long)Math.ceil((double)(1L << 32) / THREAD_COUNT);
         AtomicInteger progress = new AtomicInteger();
 
@@ -70,7 +69,7 @@ public class TimeMachine {
             int finalI = i;
 
             SERVICE.submit(() -> {
-                structureSeeds.addAll(this.bruteforceRegion(pillarSeed, finalI, size, structureDataList, populationDataList));
+                structureSeeds.addAll(this.bruteforceRegion(pillarSeed, finalI, size, structureDataList, decoratorDataList));
                 SeedCracker.LOG.warn("Completed thread " + finalI + "!");
                 progress.getAndIncrement();
             });
