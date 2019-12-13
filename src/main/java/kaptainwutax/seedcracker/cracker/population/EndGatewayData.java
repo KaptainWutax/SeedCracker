@@ -6,7 +6,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.decorator.Decorator;
 
-public class EndGatewayData extends PopulationData {
+public class EndGatewayData extends DecoratorData {
 
     private int xOffset;
     private int zOffset;

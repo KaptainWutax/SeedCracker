@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class PopulationData {
+public abstract class DecoratorData {
 
     private final ChunkPos chunkPos;
     private final Decorator<?> decorator;
     private final Biome biome;
 
-    public PopulationData(ChunkPos chunkPos, Decorator<?> decorator, Biome biome) {
+    public DecoratorData(ChunkPos chunkPos, Decorator<?> decorator, Biome biome) {
         this.chunkPos = chunkPos;
         this.decorator = decorator;
         this.biome = biome;
@@ -55,9 +55,9 @@ public abstract class PopulationData {
     public boolean equals(Object obj) {
         if(obj == this)return true;
 
-        if(obj instanceof PopulationData) {
-            PopulationData populationData = ((PopulationData)obj);
-            return populationData.chunkPos.equals(this.chunkPos) && populationData.decorator == this.decorator;
+        if(obj instanceof DecoratorData) {
+            DecoratorData decoratorData = ((DecoratorData)obj);
+            return decoratorData.chunkPos.equals(this.chunkPos) && decoratorData.decorator == this.decorator;
         }
 
         return false;

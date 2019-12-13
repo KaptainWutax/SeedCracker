@@ -10,7 +10,7 @@ import net.minecraft.world.gen.decorator.Decorator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EmeraldOreData extends PopulationData {
+public class EmeraldOreData extends DecoratorData {
 
     public static final LCG[] SKIP = {
             Rand.JAVA_LCG.combine(0),

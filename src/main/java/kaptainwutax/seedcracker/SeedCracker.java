@@ -2,13 +2,15 @@ package kaptainwutax.seedcracker;
 
 import io.netty.util.internal.ConcurrentSet;
 import kaptainwutax.seedcracker.cracker.*;
-import kaptainwutax.seedcracker.cracker.population.PopulationData;
+import kaptainwutax.seedcracker.cracker.population.DecoratorData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedcracker.util.Rand;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
@@ -17,6 +19,9 @@ import net.minecraft.world.gen.feature.StrongholdFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +39,7 @@ public class SeedCracker implements ModInitializer {
 
 	private TimeMachine timeMachine = new TimeMachine();
 	private List<StructureData> structureCache = new ArrayList<>();
-	private List<PopulationData> populationCache = new ArrayList<>();
+	private List<DecoratorData> populationCache = new ArrayList<>();
 	private List<BiomeData> biomeCache = new ArrayList<>();
 
 		@Override
@@ -42,8 +47,99 @@ public class SeedCracker implements ModInitializer {
 		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
 		DecoratorCache.get().initialize();
 
-		FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(3698703115574076237L);
-		System.out.println(VoronoiBiomeAccessType.INSTANCE.getBiome(3698703115574076237L, -176,0, -266, fakeBiomeSource));
+		long worldSeed = 123456789L;
+
+		BiomeData[] data = {
+				new BiomeData(-128, -143, 7),
+				new BiomeData(-128, -136, 4),
+				new BiomeData(-128, -114, 18),
+				new BiomeData(-128, 82, 6),
+				new BiomeData(-37, 111, 3),
+				new BiomeData(111, 117, 34),
+				new BiomeData(-174, 45, 5),
+				new BiomeData(-208, 63, 32),
+				new BiomeData(-288, -7, 161),
+				new BiomeData(-304, -29, 33),
+				new BiomeData(-416, 232, 19),
+				new BiomeData(-416, 268, 27),
+				new BiomeData(-815, 415, 131),
+				new BiomeData(-4064, 2836, 21),
+				new BiomeData(-4053, 2836, 22),
+				new BiomeData(-4013, 2819, 23),
+				new BiomeData(-4352, 5725, 49),
+				new BiomeData(-4384, 5684, 46),
+				new BiomeData(-4352, 5790, 16),
+				new BiomeData(-4448, 5817, 10),
+				new BiomeData(-4432, 5836, 50),
+				new BiomeData(-4480, 5714, 25),
+				new BiomeData(-4532, 6125, 24),
+				new BiomeData(-4555, 6138, 0),
+				new BiomeData(-4512, 6386, 2),
+				new BiomeData(-4512, 6396, 17),
+				new BiomeData(-4224, 7305, 35),
+				new BiomeData(-4112, 7138, 45),
+				new BiomeData(-3584, 7561, 36),
+				new BiomeData(-3445, 7475, 44)
+		};
+
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter("biomes.txt"));
+
+			writer.write("BIOMES:\n");
+
+			for(BiomeData datum: data) {
+				writer.write(datum.getX() + ", " + datum.getZ() + ", " + Registry.BIOME.getRawId(datum.getBiome()) + "\n");
+			}
+
+			writer.write("\n\n");
+
+			FakeBiomeSource fakeBiomeSource;
+
+			writer.write("//NO VORONOI + NO HASHING\n");
+			fakeBiomeSource = new FakeBiomeSource(worldSeed);
+
+			for(int i = 0; i < data.length; i++) {
+				BiomeData datum = data[i];
+				Biome biome = fakeBiomeSource.getBiomeForNoiseGen(datum.getX(), 0, datum.getZ());
+				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
+			}
+			writer.write("\n\n");
+
+			writer.write("//NO VORONOI + HASHING\n");
+			fakeBiomeSource = new FakeBiomeSource(worldSeed);
+
+			for(int i = 0; i < data.length; i++) {
+				BiomeData datum = data[i];
+				Biome biome = fakeBiomeSource.getBiomeForNoiseGen(datum.getX(), 0, datum.getZ());
+				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
+			}
+			writer.write("\n\n");
+
+			writer.write("//VORONOI + NO HASHING\n");
+			fakeBiomeSource = new FakeBiomeSource(worldSeed);
+
+			for(int i = 0; i < data.length; i++) {
+				BiomeData datum = data[i];
+				Biome biome = VoronoiBiomeAccessType.INSTANCE.getBiome(fakeBiomeSource.getHashedSeed(), datum.getX(),0, datum.getZ(), fakeBiomeSource);
+				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
+			}
+			writer.write("\n\n");
+
+			writer.write("//VORONOI + HASHING\n");
+			fakeBiomeSource = new FakeBiomeSource(worldSeed);
+
+			for(int i = 0; i < data.length; i++) {
+				BiomeData datum = data[i];
+				Biome biome = VoronoiBiomeAccessType.INSTANCE.getBiome(fakeBiomeSource.getHashedSeed(), datum.getX(),0, datum.getZ(), fakeBiomeSource);
+				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
+			}
+			writer.write("\n\n");
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 
 		/*
 		System.out.println("FETCHING SEEDS============");
@@ -150,8 +246,6 @@ public class SeedCracker implements ModInitializer {
 			this.onPopulationData(null);
 			this.onBiomeData(null);
 		} else if(this.structureSeeds != null && structureData != null) {
-			System.out.println(this.structureSeeds);
-			System.out.println(this.biomeCache);
 			this.structureSeeds.removeIf(structureSeed -> {
 				ChunkRandom chunkRandom = new ChunkRandom();
 				chunkRandom.setStructureSeed(structureSeed, structureData.getRegionX(), structureData.getRegionZ(), structureData.getSalt());
@@ -164,11 +258,11 @@ public class SeedCracker implements ModInitializer {
 		return added;
 	}
 
-	public synchronized boolean onPopulationData(PopulationData populationData) {
+	public synchronized boolean onPopulationData(DecoratorData decoratorData) {
 		boolean added = false;
 
-		if(populationData != null && !this.populationCache.contains(populationData)) {
-			this.populationCache.add(populationData);
+		if(decoratorData != null && !this.populationCache.contains(decoratorData)) {
+			this.populationCache.add(decoratorData);
 			added = true;
 		}
 
@@ -189,14 +283,14 @@ public class SeedCracker implements ModInitializer {
 			LOG.warn("Looking for world seeds with " + this.biomeCache.size() + " biomes.");
 
 			this.structureSeeds.forEach(structureSeed -> {
-				for (long j = 0; j < (1L << 16); j++) {
+				for(long j = 0; j < (1L << 16); j++) {
 					long worldSeed = (j << 48) | structureSeed;
 					boolean goodSeed = true;
 
 					FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(worldSeed);
 
 					for(BiomeData data : this.biomeCache) {
-						if (!data.test(worldSeed, fakeBiomeSource)) {
+						if (!data.test(fakeBiomeSource)) {
 							goodSeed = false;
 							break;
 						}
@@ -216,13 +310,13 @@ public class SeedCracker implements ModInitializer {
 		} else if(this.worldSeeds != null && biomeData != null) {
 			this.worldSeeds.removeIf(worldSeed -> {
 				FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(worldSeed);
-				return !biomeData.test(worldSeed, fakeBiomeSource);
+				return !biomeData.test(fakeBiomeSource);
 			});
 		} else if(this.worldSeeds != null) {
 			this.worldSeeds.removeIf(worldSeed -> {
 				for(BiomeData data: this.biomeCache) {
 					FakeBiomeSource fakeBiomeSource = new FakeBiomeSource(worldSeed);
-					if(!data.test(worldSeed, fakeBiomeSource))return true;
+					if(!data.test(fakeBiomeSource))return true;
 				}
 
 				return false;

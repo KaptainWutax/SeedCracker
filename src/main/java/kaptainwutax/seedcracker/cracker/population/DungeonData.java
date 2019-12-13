@@ -9,7 +9,7 @@ import net.minecraft.world.gen.decorator.Decorator;
 
 import java.util.List;
 
-public class DungeonData extends PopulationData {
+public class DungeonData extends DecoratorData {
 
     public static LCG REVERSE_SKIP = Rand.JAVA_LCG.combine(-1);
     public static LCG Y_START_SKIP = Rand.JAVA_LCG.combine(2);
