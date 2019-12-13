@@ -25,8 +25,20 @@ public class BiomeData {
         this(x, z, Registry.BIOME.get(biomeId));
     }
 
-    public boolean test(long worldSeed, FakeBiomeSource source) {
-        return VoronoiBiomeAccessType.INSTANCE.getBiome(worldSeed, this.x,0, this.z, source) == this.biome;
+    public boolean test(FakeBiomeSource source) {
+        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), this.x,0, this.z, source) == this.biome;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getZ() {
+        return this.z;
+    }
+
+    public Biome getBiome() {
+        return this.biome;
     }
 
     @Override
