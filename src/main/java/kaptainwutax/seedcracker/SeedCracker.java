@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker;
 
+import io.netty.util.internal.ConcurrentSet;
 import kaptainwutax.seedcracker.cracker.*;
 import kaptainwutax.seedcracker.cracker.population.PopulationData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SeedCracker implements ModInitializer {
 
@@ -27,7 +29,7 @@ public class SeedCracker implements ModInitializer {
     public static final OverworldChunkGeneratorConfig CHUNK_GEN_CONFIG = new OverworldChunkGeneratorConfig();
 
     public List<Long> worldSeeds = null;
-	public List<Long> structureSeeds = null;
+	public Set<Long> structureSeeds = null;
 	public List<Integer> pillarSeeds = null;
 
 	private TimeMachine timeMachine = new TimeMachine();
@@ -130,7 +132,7 @@ public class SeedCracker implements ModInitializer {
 		}
 
 		if(this.structureSeeds == null && this.pillarSeeds != null && this.structureCache.size() + this.populationCache.size() >= 5) {
-			this.structureSeeds = new ArrayList<>();
+			this.structureSeeds = new ConcurrentSet<>();
 			LOG.warn("Looking for structure seeds with " + this.structureCache.size() + " structure features.");
 			LOG.warn("Looking for structure seeds with " + this.populationCache.size() + " population features.");
 
@@ -186,11 +188,7 @@ public class SeedCracker implements ModInitializer {
 			this.worldSeeds = new ArrayList<>();
 			LOG.warn("Looking for world seeds with " + this.biomeCache.size() + " biomes.");
 
-			for(int i = 0; i < this.structureSeeds.size(); i++) {
-				SeedCracker.LOG.warn("Progress " + (i * 100.0f) / this.structureSeeds.size() + "%...");
-
-				long structureSeed = this.structureSeeds.get(i);
-
+			this.structureSeeds.forEach(structureSeed -> {
 				for (long j = 0; j < (1L << 16); j++) {
 					long worldSeed = (j << 48) | structureSeed;
 					boolean goodSeed = true;
@@ -208,7 +206,7 @@ public class SeedCracker implements ModInitializer {
 						this.worldSeeds.add(worldSeed);
 					}
 				}
-			}
+			});
 
 			if(this.worldSeeds.size() > 0) {
 				LOG.warn("Finished search with " + this.worldSeeds + (this.worldSeeds.size() == 1 ? " seed." : " seeds."));

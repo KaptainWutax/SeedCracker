@@ -6,24 +6,33 @@ import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.world.gen.ChunkRandom;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TimeMachine {
-    
+
+    public int THREAD_COUNT = 8;
+    public ExecutorService SERVICE = Executors.newFixedThreadPool(THREAD_COUNT);
+
     private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
+    private boolean isRunning = false;
 
     public TimeMachine() {
 
     }
 
-    public List<Long> buildStructureSeeds(int pillarSeed, List<StructureData> structureDataList, List<PopulationData> populationDataList, List<Long> structureSeeds) {
+    public List<Long> bruteforceRegion(int pillarSeed, int region, long size, List<StructureData> structureDataList, List<PopulationData> populationDataList) {
+        List<Long> result = new ArrayList<>();
         ChunkRandom chunkRandom = new ChunkRandom();
 
-        for(long i = 0; i < (1L << 32); i++) {
-            if((i & ((1L << 28) - 1)) == 0) {
-                SeedCracker.LOG.warn("Progress " + (i * 100.0f) / (1L << 32) + "%...");
-            }
+        long start = region * size;
+        long end = start + size;
 
+        for(long i = start; i < end; i++) {
             long structureSeed = this.timeMachine(i, pillarSeed);
             boolean goodSeed = true;
 
@@ -40,10 +49,39 @@ public class TimeMachine {
             }
 
             if(goodSeed) {
-                structureSeeds.add(structureSeed);
+                result.add(structureSeed);
             }
         }
 
+        return result;
+    }
+
+    public Set<Long> buildStructureSeeds(int pillarSeed, List<StructureData> structureDataList, List<PopulationData> populationDataList, Set<Long> structureSeeds) {
+        if(this.isRunning) {
+            throw new IllegalStateException("Time Machine is already running");
+        }
+
+        this.isRunning = true;
+
+        long size = (long)Math.ceil((double)(1L << 32) / THREAD_COUNT);
+        AtomicInteger progress = new AtomicInteger();
+
+        for(int i = 0; i < THREAD_COUNT; i++) {
+            int finalI = i;
+
+            SERVICE.submit(() -> {
+                structureSeeds.addAll(this.bruteforceRegion(pillarSeed, finalI, size, structureDataList, populationDataList));
+                SeedCracker.LOG.warn("Completed thread " + finalI + "!");
+                progress.getAndIncrement();
+            });
+        }
+
+        while(progress.get() < THREAD_COUNT) {
+            try {Thread.sleep(20);}
+            catch(InterruptedException e) {e.printStackTrace();}
+        }
+
+        this.isRunning = false;
         return structureSeeds;
     }
 
@@ -56,6 +94,10 @@ public class TimeMachine {
         currentSeed = this.inverseLCG.nextSeed(currentSeed);
         currentSeed ^= Rand.JAVA_LCG.multiplier;
         return currentSeed;
+    }
+
+    public void stop() {
+        this.isRunning = false;
     }
 
 }
