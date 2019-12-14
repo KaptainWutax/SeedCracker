@@ -31,7 +31,7 @@ public class BiomeFinder extends Finder {
                 Biome biome = this.world.getBiome(blockPos);
 
                 //TODO: Fix this multi-threading issue.
-                if(biome == Biomes.PLAINS) {
+                if(biome == Biomes.THE_VOID) {
                     continue;
                 }
 
