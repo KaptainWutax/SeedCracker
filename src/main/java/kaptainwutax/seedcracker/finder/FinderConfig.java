@@ -75,6 +75,7 @@ public class FinderConfig {
         MONUMENT(OceanMonumentFinder::create, Category.STRUCTURES),
         SWAMP_HUT(SwampHutFinder::create, Category.STRUCTURES),
         MANSION(MansionFinder::create, Category.STRUCTURES),
+        SHIPWRECK(ShipwreckFinder::create, Category.STRUCTURES),
 
         END_PILLARS(EndPillarsFinder::create, Category.OTHERS),
         END_GATEWAY(EndGatewayFinder::create, Category.OTHERS),

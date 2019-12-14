@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.render;
 
 import net.minecraft.client.util.math.Vector4f;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
@@ -22,6 +23,10 @@ public class Cuboid extends Renderer {
 
     public Cuboid(BlockPos start, BlockPos end, Vector4f color) {
         this(start, new Vec3i(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ()), color);
+    }
+
+    public Cuboid(BlockBox box, Vector4f color) {
+        this(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ), color);
     }
 
     public Cuboid(BlockPos start, Vec3i size, Vector4f color) {
