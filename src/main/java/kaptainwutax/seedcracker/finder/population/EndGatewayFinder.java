@@ -48,7 +48,7 @@ public class EndGatewayFinder extends BlockFinder {
             if(height >= 3 && height <= 9) {
                 newResult.add(pos);
 
-                if(SeedCracker.get().onPopulationData(new EndGatewayData(this.chunkPos, biome, pos, height))) {
+                if(SeedCracker.get().onDecoratorData(new EndGatewayData(this.chunkPos, biome, pos, height))) {
                     this.renderers.add(new Cuboid(pos.add(-1, -2, -1), pos.add(2, 3, 2), new Vector4f(0.4f, 0.4f, 0.82f, 1.0f)));
                 }
             }
