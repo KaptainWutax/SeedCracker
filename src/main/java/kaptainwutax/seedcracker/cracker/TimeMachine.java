@@ -1,7 +1,7 @@
 package kaptainwutax.seedcracker.cracker;
 
-import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.population.DecoratorData;
+import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.world.gen.ChunkRandom;
@@ -15,10 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TimeMachine {
 
+    private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
     public int THREAD_COUNT = 4;
     public ExecutorService SERVICE = Executors.newFixedThreadPool(THREAD_COUNT);
 
-    private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
     private boolean isRunning = false;
 
     public TimeMachine() {
@@ -70,7 +70,7 @@ public class TimeMachine {
 
             SERVICE.submit(() -> {
                 structureSeeds.addAll(this.bruteforceRegion(pillarSeed, finalI, size, structureDataList, decoratorDataList));
-                SeedCracker.LOG.warn("Completed thread " + finalI + "!");
+                Log.warn("Completed thread " + finalI + "!");
                 progress.getAndIncrement();
             });
         }
