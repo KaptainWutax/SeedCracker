@@ -5,33 +5,22 @@ import kaptainwutax.seedcracker.cracker.*;
 import kaptainwutax.seedcracker.cracker.population.DecoratorData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
+import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedcracker.util.Rand;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StrongholdFeature;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class SeedCracker implements ModInitializer {
 
-	public static final Logger LOG = LogManager.getLogger("Seed Cracker");
     private static final SeedCracker INSTANCE = new SeedCracker();
-
-    public static final OverworldChunkGeneratorConfig CHUNK_GEN_CONFIG = new OverworldChunkGeneratorConfig();
 
     public List<Long> worldSeeds = null;
 	public Set<Long> structureSeeds = null;
@@ -39,148 +28,13 @@ public class SeedCracker implements ModInitializer {
 
 	private TimeMachine timeMachine = new TimeMachine();
 	private List<StructureData> structureCache = new ArrayList<>();
-	private List<DecoratorData> populationCache = new ArrayList<>();
+	private List<DecoratorData> decoratorCache = new ArrayList<>();
 	private List<BiomeData> biomeCache = new ArrayList<>();
 
 		@Override
 	public void onInitialize() {
 		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
 		DecoratorCache.get().initialize();
-
-		long worldSeed = 123456789L;
-
-		BiomeData[] data = {
-				new BiomeData(-128, -143, 7),
-				new BiomeData(-128, -136, 4),
-				new BiomeData(-128, -114, 18),
-				new BiomeData(-128, 82, 6),
-				new BiomeData(-37, 111, 3),
-				new BiomeData(111, 117, 34),
-				new BiomeData(-174, 45, 5),
-				new BiomeData(-208, 63, 32),
-				new BiomeData(-288, -7, 161),
-				new BiomeData(-304, -29, 33),
-				new BiomeData(-416, 232, 19),
-				new BiomeData(-416, 268, 27),
-				new BiomeData(-815, 415, 131),
-				new BiomeData(-4064, 2836, 21),
-				new BiomeData(-4053, 2836, 22),
-				new BiomeData(-4013, 2819, 23),
-				new BiomeData(-4352, 5725, 49),
-				new BiomeData(-4384, 5684, 46),
-				new BiomeData(-4352, 5790, 16),
-				new BiomeData(-4448, 5817, 10),
-				new BiomeData(-4432, 5836, 50),
-				new BiomeData(-4480, 5714, 25),
-				new BiomeData(-4532, 6125, 24),
-				new BiomeData(-4555, 6138, 0),
-				new BiomeData(-4512, 6386, 2),
-				new BiomeData(-4512, 6396, 17),
-				new BiomeData(-4224, 7305, 35),
-				new BiomeData(-4112, 7138, 45),
-				new BiomeData(-3584, 7561, 36),
-				new BiomeData(-3445, 7475, 44)
-		};
-
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("biomes.txt"));
-
-			writer.write("BIOMES:\n");
-
-			for(BiomeData datum: data) {
-				writer.write(datum.getX() + ", " + datum.getZ() + ", " + Registry.BIOME.getRawId(datum.getBiome()) + "\n");
-			}
-
-			writer.write("\n\n");
-
-			FakeBiomeSource fakeBiomeSource;
-
-			writer.write("//NO VORONOI + NO HASHING\n");
-			fakeBiomeSource = new FakeBiomeSource(worldSeed);
-
-			for(int i = 0; i < data.length; i++) {
-				BiomeData datum = data[i];
-				Biome biome = fakeBiomeSource.getBiomeForNoiseGen(datum.getX(), 0, datum.getZ());
-				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
-			}
-			writer.write("\n\n");
-
-			writer.write("//NO VORONOI + HASHING\n");
-			fakeBiomeSource = new FakeBiomeSource(worldSeed);
-
-			for(int i = 0; i < data.length; i++) {
-				BiomeData datum = data[i];
-				Biome biome = fakeBiomeSource.getBiomeForNoiseGen(datum.getX(), 0, datum.getZ());
-				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
-			}
-			writer.write("\n\n");
-
-			writer.write("//VORONOI + NO HASHING\n");
-			fakeBiomeSource = new FakeBiomeSource(worldSeed);
-
-			for(int i = 0; i < data.length; i++) {
-				BiomeData datum = data[i];
-				Biome biome = VoronoiBiomeAccessType.INSTANCE.getBiome(fakeBiomeSource.getHashedSeed(), datum.getX(),0, datum.getZ(), fakeBiomeSource);
-				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
-			}
-			writer.write("\n\n");
-
-			writer.write("//VORONOI + HASHING\n");
-			fakeBiomeSource = new FakeBiomeSource(worldSeed);
-
-			for(int i = 0; i < data.length; i++) {
-				BiomeData datum = data[i];
-				Biome biome = VoronoiBiomeAccessType.INSTANCE.getBiome(fakeBiomeSource.getHashedSeed(), datum.getX(),0, datum.getZ(), fakeBiomeSource);
-				writer.write(Registry.BIOME.getRawId(biome) + ", matches: " + (biome == datum.getBiome()) + "\n");
-			}
-			writer.write("\n\n");
-			writer.flush();
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-
-		/*
-		System.out.println("FETCHING SEEDS============");
-		long structureSeed = 29131954246896L;
-		ChunkPos chunkPos = new ChunkPos(117, 23);
-
-		for(long j = 0; j < (1L << 16); j++) {
-			long worldSeed = (j << 48) | structureSeed;
-
-			if(initialize(worldSeed).contains(chunkPos)) {
-				System.out.println(worldSeed);
-				this.checkWorldSeed(worldSeed, chunkPos);
-			}
-		}
-		System.out.println("FETCHING SEEDS============");
-		*/
-
-		/*
-		System.out.println(9348141881871L ^ Rand.JAVA_LCG.multiplier);
-		DungeonData data = new DungeonData(new ChunkPos(18, 8), Biomes.JUNGLE, new ArrayList<>(), new ArrayList<>());
-		data.test(-2418316773073950375L);
-
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("kaktoos14.txt"));
-
-			for(int i = 0; i < (1 << 16); i++) {
-				long worldSeed = 9368770777595L | ((long)i << 48);
-
-				BiomeLayerSampler sampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT,
-						BiomeSourceType.VANILLA_LAYERED.getConfig().getGeneratorSettings())[1];
-
-				if(sampler.sample(8, 8) == Biomes.DESERT) {
-					writer.write(worldSeed + "\n");
-				}
-			}
-
-			writer.flush();
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 	}
 
 	private void checkWorldSeed(long worldSeed, ChunkPos pos) {
@@ -197,19 +51,19 @@ public class SeedCracker implements ModInitializer {
 		this.pillarSeeds = null;
 		this.structureCache.clear();
 		this.biomeCache.clear();
-		this.populationCache.clear();
+		this.decoratorCache.clear();
 	}
 
 	public synchronized boolean onPillarData(PillarData pillarData) {
 		if(pillarData != null && (this.pillarSeeds == null || this.pillarSeeds.isEmpty())) {
-			LOG.warn("Looking for pillar seeds...");
+			Log.warn("Looking for pillar seeds...");
 
 			this.pillarSeeds = pillarData.getPillarSeeds();
 
 			if(this.pillarSeeds.size() > 0) {
-				LOG.warn("Finished search with " + this.pillarSeeds + (this.pillarSeeds.size() == 1 ? " seed." : " seeds."));
+				Log.warn("Finished search with " + this.pillarSeeds + (this.pillarSeeds.size() == 1 ? " seed." : " seeds."));
 			} else {
-				LOG.error("Finished search with no seeds.");
+				Log.error("Finished search with no seeds.");
 			}
 
 			this.onStructureData(null);
@@ -227,23 +81,23 @@ public class SeedCracker implements ModInitializer {
 			added = true;
 		}
 
-		if(this.structureSeeds == null && this.pillarSeeds != null && this.structureCache.size() + this.populationCache.size() >= 5) {
+		if(this.structureSeeds == null && this.pillarSeeds != null && this.structureCache.size() + this.decoratorCache.size() >= 5) {
 			this.structureSeeds = new ConcurrentSet<>();
-			LOG.warn("Looking for structure seeds with " + this.structureCache.size() + " structure features.");
-			LOG.warn("Looking for structure seeds with " + this.populationCache.size() + " population features.");
+			Log.warn("Looking for structure seeds with " + this.structureCache.size() + " structure features.");
+			Log.warn("Looking for structure seeds with " + this.decoratorCache.size() + " decorator features.");
 
 			this.pillarSeeds.forEach(pillarSeed -> {
-				timeMachine.buildStructureSeeds(pillarSeed, this.structureCache, this.populationCache, this.structureSeeds);
+				timeMachine.buildStructureSeeds(pillarSeed, this.structureCache, this.decoratorCache, this.structureSeeds);
 			});
 
 			if(this.structureSeeds.size() > 0) {
-				LOG.warn("Finished search with " + this.structureSeeds + (this.structureSeeds.size() == 1 ? " seed." : " seeds."));
+				Log.warn("Finished search with " + this.structureSeeds + (this.structureSeeds.size() == 1 ? " seed." : " seeds."));
 			} else {
-				LOG.error("Finished search with no seeds.");
+				Log.error("Finished search with no seeds.");
 			}
 
 			this.structureCache.clear();
-			this.onPopulationData(null);
+			this.onDecoratorData(null);
 			this.onBiomeData(null);
 		} else if(this.structureSeeds != null && structureData != null) {
 			this.structureSeeds.removeIf(structureSeed -> {
@@ -258,11 +112,11 @@ public class SeedCracker implements ModInitializer {
 		return added;
 	}
 
-	public synchronized boolean onPopulationData(DecoratorData decoratorData) {
+	public synchronized boolean onDecoratorData(DecoratorData decoratorData) {
 		boolean added = false;
 
-		if(decoratorData != null && !this.populationCache.contains(decoratorData)) {
-			this.populationCache.add(decoratorData);
+		if(decoratorData != null && !this.decoratorCache.contains(decoratorData)) {
+			this.decoratorCache.add(decoratorData);
 			added = true;
 		}
 
@@ -278,9 +132,9 @@ public class SeedCracker implements ModInitializer {
 			added = true;
 		}
 
-		if(this.worldSeeds == null && this.structureSeeds != null && this.biomeCache.size() >= 6) {
+		if(this.worldSeeds == null && this.structureSeeds != null && this.biomeCache.size() >= 5) {
 			this.worldSeeds = new ArrayList<>();
-			LOG.warn("Looking for world seeds with " + this.biomeCache.size() + " biomes.");
+			Log.warn("Looking for world seeds with " + this.biomeCache.size() + " biomes.");
 
 			this.structureSeeds.forEach(structureSeed -> {
 				for(long j = 0; j < (1L << 16); j++) {
@@ -303,9 +157,9 @@ public class SeedCracker implements ModInitializer {
 			});
 
 			if(this.worldSeeds.size() > 0) {
-				LOG.warn("Finished search with " + this.worldSeeds + (this.worldSeeds.size() == 1 ? " seed." : " seeds."));
+				Log.warn("Finished search with " + this.worldSeeds + (this.worldSeeds.size() == 1 ? " seed." : " seeds."));
 			} else {
-				LOG.error("Finished search with no seeds.");
+				Log.error("Finished search with no seeds.");
 			}
 		} else if(this.worldSeeds != null && biomeData != null) {
 			this.worldSeeds.removeIf(worldSeed -> {

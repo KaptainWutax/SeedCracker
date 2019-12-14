@@ -1,6 +1,6 @@
 package kaptainwutax.seedcracker.cracker;
 
-import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.util.Log;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
@@ -57,7 +57,7 @@ public class DecoratorCache {
 
         if(salt == null) {
             if(debug) {
-                SeedCracker.LOG.warn(biome.getClass().getSimpleName() + " does not have decorator " + feature + ".");
+                Log.error(biome.getClass().getSimpleName() + " does not have decorator " + feature + ".");
             }
 
             salt = INVALID;
