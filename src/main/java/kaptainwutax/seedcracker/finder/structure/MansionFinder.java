@@ -13,7 +13,9 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.feature.Feature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +25,6 @@ import java.util.Map;
 public class MansionFinder extends Finder {
 
     protected static List<BlockPos> SEARCH_POSITIONS = buildSearchPositions(CHUNK_POSITIONS, pos -> {
-        if(pos.getY() != 64)return true;
         if((pos.getX() & 15) != 0)return true;
         if((pos.getZ() & 15) != 0)return true;
         return false;
@@ -35,27 +36,28 @@ public class MansionFinder extends Finder {
     public MansionFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos);
 
-        Direction.Type.HORIZONTAL.forEach(direction -> {
-            PieceFinder finder = new PieceFinder(world, chunkPos, direction, size);
+        for(Direction direction: Direction.values()) {
+            PieceFinder finder = new PieceFinder(world, chunkPos, direction, this.size);
 
             finder.searchPositions = SEARCH_POSITIONS;
 
             buildStructure(finder);
             this.finders.add(finder);
-        });
+        }
     }
 
     @Override
     public List<BlockPos> findInChunk() {
+        Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
+
+        if(!biome.hasStructureFeature(Feature.WOODLAND_MANSION)) {
+            return new ArrayList<>();
+        }
+
         Map<PieceFinder, List<BlockPos>> result = this.findInChunkPieces();
         List<BlockPos> combinedResult = new ArrayList<>();
 
         result.forEach((pieceFinder, positions) -> {
-            positions.removeIf(pos -> {
-                //Figure this out, it's not a trivial task.
-                return false;
-            });
-
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
@@ -80,12 +82,26 @@ public class MansionFinder extends Finder {
     }
 
     public void buildStructure(PieceFinder finder) {
+        BlockState air = Blocks.AIR.getDefaultState();
         BlockState cobblestone = Blocks.COBBLESTONE.getDefaultState();
         BlockState birchPlanks = Blocks.BIRCH_PLANKS.getDefaultState();
         BlockState redCarpet = Blocks.RED_CARPET.getDefaultState();
         BlockState whiteCarpet = Blocks.WHITE_CARPET.getDefaultState();
 
-        //TODO: Finish this.
+        finder.fillWithOutline(0, 0, 0, 15, 0, 15, birchPlanks, birchPlanks, false);
+        finder.fillWithOutline(0, 0, 8, 6, 0, 12, null, null, false);
+        finder.fillWithOutline(0, 0, 12, 9, 0, 15, null, null, false);
+        finder.fillWithOutline(15, 0, 0, 15, 0, 15, cobblestone, cobblestone, false);
+        finder.addBlock(Blocks.DARK_OAK_LOG.getDefaultState(), 15, 0, 15);
+        finder.addBlock(Blocks.DARK_OAK_LOG.getDefaultState(), 15, 0, 7);
+        finder.addBlock(Blocks.DARK_OAK_LOG.getDefaultState(), 14, 0, 7);
+
+        finder.fillWithOutline(9, 1, 0, 9, 1, 8, whiteCarpet, whiteCarpet, false);
+        finder.addBlock(whiteCarpet, 8,1, 8);
+        finder.fillWithOutline(13, 1, 0, 13, 1, 8, whiteCarpet, whiteCarpet, false);
+        finder.addBlock(whiteCarpet, 14,1, 8);
+
+        finder.fillWithOutline(10, 1, 0, 12, 1, 15, redCarpet, redCarpet, false);
     }
 
     @Override

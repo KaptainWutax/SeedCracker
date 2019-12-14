@@ -71,7 +71,7 @@ public class PieceFinder extends Finder {
         //FOR DEBUGGING PIECES.
         if(this.debug) {
             MinecraftClient.getInstance().execute(() -> {
-                int y = this.rotation.ordinal() * 10 + this.mirror.ordinal() * 20 + 100;
+                int y = this.rotation.ordinal() * 10 + this.mirror.ordinal() * 20 + 120;
 
                 if (this.chunkPos.x % 2 == 0 && this.chunkPos.z % 2 == 0) {
                     this.structure.forEach((pos, state) -> {
@@ -89,7 +89,7 @@ public class PieceFinder extends Finder {
                 BlockState state = this.world.getBlockState(pos);
 
                 //Blockstate may change when it gets placed in the world, that's why it's using the block here.
-                if(!state.getBlock().equals(entry.getValue().getBlock())) {
+                if(entry.getValue() != null && !state.getBlock().equals(entry.getValue().getBlock())) {
                     found = false;
                     break;
                 }
@@ -200,10 +200,6 @@ public class PieceFinder extends Finder {
     }
 
     protected void addBlock(BlockState state, int x, int y, int z) {
-        if(state == null) {
-            return;
-        }
-
         BlockPos pos = new BlockPos(
                 this.applyXTransform(x, z),
                 this.applyYTransform(y),
@@ -211,6 +207,11 @@ public class PieceFinder extends Finder {
         );
 
         if(this.boundingBox.contains(pos)) {
+            if(state == null) {
+                this.structure.remove(pos);
+                return;
+            }
+
             if (this.mirror != BlockMirror.NONE) {
                 state = state.mirror(this.mirror);
             }
@@ -218,6 +219,7 @@ public class PieceFinder extends Finder {
             if (this.rotation != BlockRotation.NONE) {
                 state = state.rotate(this.rotation);
             }
+
 
             this.structure.put(pos, state);
         }
