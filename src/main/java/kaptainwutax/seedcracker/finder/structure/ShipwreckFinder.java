@@ -9,6 +9,7 @@ import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +46,7 @@ public class ShipwreckFinder extends BlockFinder {
 
         result.removeIf(pos -> {
             BlockState state = this.world.getBlockState(pos);
-            if(!state.get(ChestBlock.WATERLOGGED))return true;
+            if(state.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE)return true;
 
             BlockEntity blockEntity = this.world.getBlockEntity(pos);
             if(!(blockEntity instanceof ChestBlockEntity))return true;
