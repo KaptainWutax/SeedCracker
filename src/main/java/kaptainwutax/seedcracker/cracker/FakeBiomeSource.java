@@ -8,6 +8,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.OverworldChunkGeneratorConfig;
 import net.minecraft.world.level.LevelGeneratorType;
+import net.minecraft.world.level.LevelProperties;
 
 import java.util.Set;
 
@@ -18,14 +19,27 @@ public class FakeBiomeSource extends BiomeSource {
     private static final Set<Biome> BIOMES;
     private final BiomeLayerSampler biomeSampler;
 
+    private long seed;
+    private long hashedSeed;
+
     public FakeBiomeSource(long worldSeed) {
         super(BIOMES);
-        this.biomeSampler = BiomeLayers.build(worldSeed, LevelGeneratorType.DEFAULT, CHUNK_GEN_CONFIG);
+        this.seed = worldSeed;
+        this.hashedSeed = LevelProperties.sha256Hash(worldSeed);
+        this.biomeSampler = BiomeLayers.build(this.seed, LevelGeneratorType.DEFAULT, CHUNK_GEN_CONFIG);
     }
 
     @Override
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.biomeSampler.sample(biomeX, biomeZ);
+    }
+
+    public long getSeed() {
+        return this.seed;
+    }
+
+    public long getHashedSeed() {
+        return this.hashedSeed;
     }
 
     static {
