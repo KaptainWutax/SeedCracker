@@ -30,13 +30,12 @@ public class EmeraldOreData extends DecoratorData {
     }
 
     @Override
-    public boolean testDecorator(long decoratorSeed) {
+    public boolean testDecorator(Rand rand) {
         if(this.starts.isEmpty())return true;
 
         //TODO: This currently only supports 1 emerald per chunk.
         BlockPos start = this.starts.get(0);
 
-        Rand rand = new Rand(decoratorSeed, false);
         int b = rand.nextInt(6);
 
         for(int i = 0; i < b + 3; i++) {

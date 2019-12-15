@@ -28,9 +28,8 @@ public class DungeonData extends DecoratorData {
     }
 
     @Override
-    public boolean testDecorator(long decoratorSeed) {
+    public boolean testDecorator(Rand rand) {
         if(this.starts.isEmpty())return true;
-        Rand rand = new Rand(decoratorSeed, false);
 
         //TODO: This currently only supports 1 dungeon per chunk.
         BlockPos start = this.starts.get(0);

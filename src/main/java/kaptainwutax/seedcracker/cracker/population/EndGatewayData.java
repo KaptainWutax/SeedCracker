@@ -20,9 +20,7 @@ public class EndGatewayData extends DecoratorData {
     }
 
     @Override
-    public boolean testDecorator(long decoratorSeed) {
-        Rand rand = new Rand(decoratorSeed, false);
-
+    public boolean testDecorator(Rand rand) {
         if(rand.nextInt(700) != 0)return false;
         if(rand.nextInt(16) != this.xOffset)return false;
         if(rand.nextInt(16) != this.zOffset)return false;
