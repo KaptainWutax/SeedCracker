@@ -43,11 +43,10 @@ public class FinderQueue {
     }
 
     public void renderFinders(MatrixStack matrixStack) {
+        if(this.renderType == RenderType.OFF)return;
+
         RenderSystem.pushMatrix();
         RenderSystem.multMatrix(matrixStack.peek().getModel());
-
-        //System.out.println("rendering");
-        if(this.renderType == RenderType.OFF)return;
 
         GlStateManager.disableTexture();
 
