@@ -10,7 +10,7 @@ Then download the lastest [release](https://github.com/KaptainWutax/SeedCracker/
 
 Launch minercaft with the fabric loader profile.
 
-Explore the world you want to crack the seed and find at least 4 structures (like Monument, Temple, Mansion, Treasure...), in the background while you explore the world, SeedCracker will collect biomes coordinates.
+Explore the world you want to crack the seed and find at least 5 structures or decorators (like Monument, Temple, Mansion, Treasure, Dungeon...), in the background while you explore the world, SeedCracker will collect biomes coordinates.
 
 Then go on the main End island to load the pillars and the seed cracking process should start and take arround one minute.
 
