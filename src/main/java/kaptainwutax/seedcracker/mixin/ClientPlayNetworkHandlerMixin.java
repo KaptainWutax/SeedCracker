@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
+import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.command.ClientCommands;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import net.minecraft.client.MinecraftClient;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.ChunkDataS2CPacket;
 import net.minecraft.client.network.packet.CommandTreeS2CPacket;
+import net.minecraft.client.network.packet.PlayerRespawnS2CPacket;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.command.CommandSource;
@@ -42,6 +44,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onCommandTree", at = @At("TAIL"))
     public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
         ClientCommands.registerCommands((CommandDispatcher<ServerCommandSource>)(Object)this.commandDispatcher);
+    }
+
+    @Inject(method = "onPlayerRespawn", at = @At("HEAD"))
+    public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
+        SeedCracker.get().hashedWorldSeed = packet.method_22425();
     }
 
 }
