@@ -26,7 +26,7 @@ public class BuriedTreasureFinder extends BlockFinder {
         int localX = pos.getX() & 15;
         int localZ = pos.getZ() & 15;
         if(localX != 9 || localZ != 9)return true;
-
+        if(pos.getY() > 90)return true;
         return false;
     });
 
@@ -55,23 +55,18 @@ public class BuriedTreasureFinder extends BlockFinder {
 
     @Override
     public List<BlockPos> findInChunk() {
-        //Gets all the positions with a chest in the chunk.
+        Biome biome = world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
+        if(!biome.hasStructureFeature(Feature.BURIED_TREASURE))return new ArrayList<>();
+
         List<BlockPos> result = super.findInChunk();
 
         result.removeIf(pos -> {
-            //Chest can't be waterlogged!
             BlockState chest = world.getBlockState(pos);
             if(chest.get(ChestBlock.WATERLOGGED))return true;
 
-            //Only so many blocks can hold a treasure chest.
             BlockState chestHolder = world.getBlockState(pos.down());
             if(!CHEST_HOLDERS.contains(chestHolder))return true;
 
-            //Check if the biome contains the buried treasure feature.
-            Biome biome = world.getBiome(pos);
-            if(!biome.hasStructureFeature(Feature.BURIED_TREASURE))return true;
-
-            //Damn that chest be lucky!
             return false;
         });
 
