@@ -6,8 +6,8 @@ import kaptainwutax.seedcracker.cracker.population.DecoratorData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedcracker.util.Log;
+import kaptainwutax.seedcracker.util.Rand;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.level.LevelProperties;
 
 import java.util.ArrayList;
@@ -96,9 +96,8 @@ public class SeedCracker implements ModInitializer {
 			this.onBiomeData(null);
 		} else if(this.structureSeeds != null && structureData != null) {
 			this.structureSeeds.removeIf(structureSeed -> {
-				ChunkRandom chunkRandom = new ChunkRandom();
-				chunkRandom.setStructureSeed(structureSeed, structureData.getRegionX(), structureData.getRegionZ(), structureData.getSalt());
-				return !structureData.test(chunkRandom);
+				Rand rand = new Rand(0L);
+				return !structureData.test(structureSeed, rand);
 			});
 
 			this.onBiomeData(null);

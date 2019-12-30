@@ -4,7 +4,6 @@ import kaptainwutax.seedcracker.cracker.population.DecoratorData;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
-import net.minecraft.world.gen.ChunkRandom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class TimeMachine {
 
     public List<Long> bruteforceRegion(int pillarSeed, int region, long size, List<StructureData> structureDataList, List<DecoratorData> decoratorDataList) {
         List<Long> result = new ArrayList<>();
-        ChunkRandom chunkRandom = new ChunkRandom();
+        Rand rand = new Rand(0L);
 
         long start = region * size;
         long end = start + size;
@@ -38,9 +37,7 @@ public class TimeMachine {
 
             for(StructureData structureData: structureDataList) {
                 if(!goodSeed)break;
-                chunkRandom.setStructureSeed(structureSeed, structureData.getRegionX(),
-                        structureData.getRegionZ(), structureData.getSalt());
-                if(!structureData.test(chunkRandom))goodSeed = false;
+                if(!structureData.test(structureSeed, rand))goodSeed = false;
             }
 
             for(DecoratorData decoratorData : decoratorDataList) {
