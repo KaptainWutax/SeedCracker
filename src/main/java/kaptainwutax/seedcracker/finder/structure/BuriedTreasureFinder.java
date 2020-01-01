@@ -1,7 +1,8 @@
 package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.StructureData;
+import kaptainwutax.seedcracker.cracker.structure.StructureData;
+import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cube;
@@ -71,7 +72,7 @@ public class BuriedTreasureFinder extends BlockFinder {
         });
 
         result.forEach(pos -> {
-            if(SeedCracker.get().onStructureData(new StructureData(this.chunkPos, StructureData.BURIED_TREASURE))) {
+            if(SeedCracker.get().onStructureData(new StructureData(this.chunkPos, StructureFeatures.BURIED_TREASURE))) {
                 this.renderers.add(new Cube(pos, new Vector4f(1.0f, 1.0f, 0.0f, 1.0f)));
             }
         });

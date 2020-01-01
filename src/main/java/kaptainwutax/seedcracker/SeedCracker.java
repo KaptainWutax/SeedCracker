@@ -3,6 +3,7 @@ package kaptainwutax.seedcracker;
 import io.netty.util.internal.ConcurrentSet;
 import kaptainwutax.seedcracker.cracker.*;
 import kaptainwutax.seedcracker.cracker.population.DecoratorData;
+import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedcracker.util.Log;

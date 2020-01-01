@@ -54,16 +54,17 @@ public abstract class Finder {
         DimensionType playerDim = mc.player.world.dimension.getType();
 
         if(finderDim != playerDim)return false;
-        Vec3d playerPos = mc.player.getPos();
-
-        double distance = playerPos.squaredDistanceTo(
-                this.chunkPos.x * 16,
-                playerPos.y,
-                this.chunkPos.z * 16
-        );
 
         int renderDistance = mc.options.viewDistance * 16 + 16;
-        return distance <= renderDistance * renderDistance + 32;
+        Vec3d playerPos = mc.player.getPos();
+
+        for(Renderer renderer: this.renderers) {
+            BlockPos pos = renderer.getPos();
+            double distance = playerPos.squaredDistanceTo(pos.getX(), playerPos.y, pos.getZ());
+            if(distance <= renderDistance * renderDistance + 32)return true;
+        }
+
+        return false;
     }
 
     public void render() {

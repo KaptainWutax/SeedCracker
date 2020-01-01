@@ -2,6 +2,8 @@ package kaptainwutax.seedcracker.util;
 
 import kaptainwutax.seedcracker.util.math.LCG;
 
+import java.util.Random;
+
 public class Rand implements Cloneable {
 
     public static final LCG JAVA_LCG = new LCG(0x5DEECE66DL, 0xBL, 1L << 48);
@@ -67,6 +69,10 @@ public class Rand implements Cloneable {
 
     public double nextDouble() {
         return (((long)this.next(27) << 27) + this.next(27)) / (double)(1L << 54);
+    }
+
+    public Random toRandom() {
+        return new Random(this.seed ^ JAVA_LCG.multiplier);
     }
 
     @Override

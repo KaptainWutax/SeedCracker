@@ -5,6 +5,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.Vector4f;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class Line extends Renderer {
@@ -58,6 +59,14 @@ public class Line extends Renderer {
                 this.color.getZ(),
                 this.color.getW()
         ).next();
+    }
+
+    @Override
+    public BlockPos getPos() {
+        double x = (this.end.getX() - this.start.getX()) / 2 + this.start.getX();
+        double y = (this.end.getY() - this.start.getY()) / 2 + this.start.getY();
+        double z = (this.end.getZ() - this.start.getZ()) / 2 + this.start.getZ();
+        return new BlockPos(x, y, z);
     }
 
 }

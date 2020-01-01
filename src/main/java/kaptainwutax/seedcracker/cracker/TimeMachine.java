@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.cracker;
 
 import kaptainwutax.seedcracker.cracker.population.DecoratorData;
+import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;

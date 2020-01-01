@@ -57,4 +57,9 @@ public class Cuboid extends Renderer {
         }
     }
 
+    @Override
+    public BlockPos getPos() {
+        return this.start.add(this.size.getX() / 2, this.size.getY() / 2, this.size.getZ() / 2);
+    }
+
 }
