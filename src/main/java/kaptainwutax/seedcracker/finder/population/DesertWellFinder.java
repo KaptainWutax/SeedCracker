@@ -29,8 +29,10 @@ public class DesertWellFinder extends PieceFinder {
 		return false;
 	});
 
+	protected static Vec3i SIZE = new Vec3i(5, 6, 5);
+
 	public DesertWellFinder(World world, ChunkPos chunkPos) {
-		super(world, chunkPos, Direction.NORTH, new Vec3i(5, 6, 5));
+		super(world, chunkPos, Direction.NORTH, SIZE);
 		this.searchPositions = SEARCH_POSITIONS;
 		this.buildStructure();
 	}
@@ -46,7 +48,7 @@ public class DesertWellFinder extends PieceFinder {
 		List<BlockPos> result = super.findInChunk();
 
 		result.forEach(pos -> {
-			this.renderers.add(new Cuboid(pos, new Vec3i(5, 6, 5), new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
+			this.renderers.add(new Cuboid(pos, SIZE, new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
 			this.renderers.add(new Cube(pos.add(2, 1, 2), new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
 			SeedCracker.get().onDecoratorData(new DesertWellData(this.chunkPos, biome, pos.add(2, 1, 2)));
 		});
