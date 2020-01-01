@@ -85,6 +85,7 @@ public class FinderConfig {
         INFESTED_STONE_ORE(InfestedStoneOreFinder::create, Category.ORES),
         EMERALD_ORE(EmeraldOreFinder::create, Category.ORES),
         DESERT_WELL(DesertWellFinder::create, Category.OTHERS),
+        PORTAL_ROOM(PortalRoomFinder::create, Category.OTHERS),
 
         BIOME(BiomeFinder::create, Category.BIOMES);
 
