@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker.finder;
 
+import kaptainwutax.seedcracker.finder.population.DesertWellFinder;
 import kaptainwutax.seedcracker.finder.population.DungeonFinder;
 import kaptainwutax.seedcracker.finder.population.EndGatewayFinder;
 import kaptainwutax.seedcracker.finder.population.EndPillarsFinder;
@@ -83,6 +84,7 @@ public class FinderConfig {
         DIAMOND_ORE(DiamondOreFinder::create, Category.ORES),
         INFESTED_STONE_ORE(InfestedStoneOreFinder::create, Category.ORES),
         EMERALD_ORE(EmeraldOreFinder::create, Category.ORES),
+        DESERT_WELL(DesertWellFinder::create, Category.OTHERS),
 
         BIOME(BiomeFinder::create, Category.BIOMES);
 
