@@ -1,8 +1,10 @@
 package kaptainwutax.seedcracker.finder.population;
 
-import kaptainwutax.seedcracker.cracker.DecoratorCache;
+import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.population.DesertWellData;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.finder.structure.PieceFinder;
+import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,8 +15,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.DesertBiome;
+import net.minecraft.world.biome.DesertHillsBiome;
+import net.minecraft.world.biome.DesertLakesBiome;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.decorator.Decorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +39,16 @@ public class DesertWellFinder extends PieceFinder {
 	public List<BlockPos> findInChunk() {
 		Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 0, 8));
 
-		if(DecoratorCache.get().getSalt(biome, Decorator.CHANCE_HEIGHTMAP, false) == DecoratorCache.INVALID) {
+		if(!(biome instanceof DesertBiome) && !(biome instanceof DesertHillsBiome) && !(biome instanceof DesertLakesBiome)) {
 			return new ArrayList<>();
 		}
 
 		List<BlockPos> result = super.findInChunk();
 
 		result.forEach(pos -> {
-			this.renderers.add(new Cuboid(pos, new Vec3i(5, 6, 5), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f)));
+			this.renderers.add(new Cuboid(pos, new Vec3i(5, 6, 5), new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
+			this.renderers.add(new Cube(pos.add(2, 1, 2), new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
+			SeedCracker.get().onDecoratorData(new DesertWellData(this.chunkPos, biome, pos.add(2, 1, 2)));
 		});
 
 		return result;
@@ -54,7 +60,6 @@ public class DesertWellFinder extends PieceFinder {
 	}
 
 	protected void buildStructure() {
-		this.setDebug();
 		BlockState sandstone = Blocks.SANDSTONE.getDefaultState();
 		BlockState sandstoneSlab = Blocks.SANDSTONE_SLAB.getDefaultState();
 		BlockState water = Blocks.WATER.getDefaultState();
