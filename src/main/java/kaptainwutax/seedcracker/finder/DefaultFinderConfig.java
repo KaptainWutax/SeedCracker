@@ -7,6 +7,7 @@ public class DefaultFinderConfig extends FinderConfig {
         this.typeStates.put(Type.INFESTED_STONE_ORE, false);
         this.typeStates.put(Type.IGLOO, false);
         this.typeStates.put(Type.MANSION, false);
+        this.typeStates.put(Type.PORTAL_ROOM, false);
     }
 
 }
