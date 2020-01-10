@@ -1,11 +1,12 @@
 package kaptainwutax.seedcracker.cracker.structure;
 
+import kaptainwutax.seedcracker.cracker.ISeedData;
 import kaptainwutax.seedcracker.cracker.structure.type.FeatureType;
 import kaptainwutax.seedcracker.util.Seeds;
 import kaptainwutax.seedcracker.util.Rand;
 import net.minecraft.util.math.ChunkPos;
 
-public class StructureData {
+public class StructureData implements ISeedData {
 
     public int chunkX;
     public int chunkZ;
@@ -22,6 +23,7 @@ public class StructureData {
         this.featureType.build(this, chunkPos);
     }
 
+    @Override
     public boolean test(long structureSeed, Rand rand) {
         Seeds.setRegionSeed(rand, structureSeed, this.regionX, this.regionZ, this.salt);
         return this.featureType.test(rand, this, structureSeed);

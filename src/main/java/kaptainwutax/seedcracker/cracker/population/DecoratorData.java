@@ -1,12 +1,13 @@
 package kaptainwutax.seedcracker.cracker.population;
 
 import kaptainwutax.seedcracker.cracker.DecoratorCache;
+import kaptainwutax.seedcracker.cracker.ISeedData;
 import kaptainwutax.seedcracker.util.Rand;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.decorator.Decorator;
 
-public abstract class DecoratorData {
+public abstract class DecoratorData implements ISeedData {
 
     private final ChunkPos chunkPos;
     private final Decorator<?> decorator;
@@ -18,8 +19,9 @@ public abstract class DecoratorData {
         this.biome = biome;
     }
 
-    public final boolean test(long structureSeed) {
-        long decoratorSeed = this.getPopulationSeed(structureSeed, this.chunkPos.x << 4, this.chunkPos.z << 4);
+    @Override
+    public final boolean test(long seed, Rand rand) {
+        long decoratorSeed = this.getPopulationSeed(seed, this.chunkPos.x << 4, this.chunkPos.z << 4);
         int salt = DecoratorCache.get().getSalt(this.biome, this.decorator, true);
 
         if(salt == DecoratorCache.INVALID) {
@@ -29,7 +31,8 @@ public abstract class DecoratorData {
         decoratorSeed += salt;
         decoratorSeed ^= Rand.JAVA_LCG.multiplier;
         decoratorSeed &= Rand.JAVA_LCG.modulo - 1;
-        return this.testDecorator(new Rand(decoratorSeed, false));
+        rand.setSeed(decoratorSeed, false);
+        return this.testDecorator(rand);
     }
 
     public long getPopulationSeed(long structureSeed, int x, int z) {

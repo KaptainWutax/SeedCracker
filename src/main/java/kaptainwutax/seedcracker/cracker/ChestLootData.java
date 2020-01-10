@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker.cracker;
 
+import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.loot.LootBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.*;
 import java.util.function.BiPredicate;
 
-public class ChestLootData {
+public class ChestLootData implements ISeedData {
 
 	private LootTable lootTable;
 	private Map<Item, List<Stack>> stacksMap = new HashMap<>();
@@ -31,9 +32,13 @@ public class ChestLootData {
 		}
 	}
 
-	public boolean test(long seed) {
-		Random random = new Random(seed);
-		LootContext lootContext = new LootBuilder().setRandom(random).put(LootContextParameters.POSITION, new BlockPos(0, 0, 0)).build(LootContextTypes.CHEST);
+	@Override
+	public boolean test(long seed, Rand rand) {
+		rand.setSeed(seed, true);
+
+		LootContext lootContext = new LootBuilder().setRandom(rand.toRandom())
+				.put(LootContextParameters.POSITION, new BlockPos(0, 0, 0)).build(LootContextTypes.CHEST);
+
 		List<ItemStack> itemStacks = this.lootTable.getDrops(lootContext);
 
 		Set<Item> foundItems = new HashSet<>();

@@ -43,7 +43,7 @@ public class TimeMachine {
 
             for(DecoratorData decoratorData : decoratorDataList) {
                 if(!goodSeed)break;
-                if(!decoratorData.test(structureSeed))goodSeed = false;
+                if(!decoratorData.test(structureSeed, rand))goodSeed = false;
             }
 
             if(goodSeed) {
