@@ -26,4 +26,10 @@ public class Seeds {
 		return seed;
 	}
 
+	public static long setSlimeChunkSeed(Rand rand, long worldSeed, int chunkX, int chunkZ, long salt) {
+		long seed = worldSeed + (long)(chunkX * chunkX * 4987142) + (long)(chunkX * 5947611) + (long)(chunkZ * chunkZ) * 4392871L + (long)(chunkZ * 389711) ^ salt;
+		rand.setSeed(seed, true);
+		return seed;
+	}
+
 }
