@@ -14,7 +14,7 @@ Explore the world you want to crack the seed and find at least 5 structures or d
 
 Then go on the main End island to load the pillars and the seed cracking process should start and take arround one minute.
 
-## Usefull command
+## Useful command
 
 renderer option: `/seed render outlines (ON/OFF/XRAY)`
 
@@ -23,6 +23,18 @@ seed finder option: `/seed finder category (BIOMES/ORES/OTHERS/STRUCTURES) (ON/O
 ## Video Tutorial
 
 https://youtu.be/1ChmLi9og8Q
+
+## Setting up the Workspace
+
+-Clone the repository.
+
+-Run `gradlew genSources <idea|eclipse>`.
+
+## Building the Mod
+
+-Update the version in `build.gradle` and `fabric.mod.json`.
+
+-Run `gradlew build`.
 
 ## Contributors
 
