@@ -1,40 +1,38 @@
 package kaptainwutax.seedcracker.cracker;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 
+import java.util.function.Predicate;
+
 public class BiomeData {
 
-    private int x;
-    private int z;
-    private Biome biome;
+    private BlockPos pos;
 
-    public BiomeData(int x, int z, Biome biome) {
-        this.x = x;
-        this.z = z;
+    private Biome biome;
+    private Predicate<Biome> biomePredicate;
+
+    public BiomeData(BlockPos pos, Biome biome) {
+        this.pos = pos;
         this.biome = biome;
     }
 
-    public BiomeData(int x, int z, String biomeId) {
-        this(x, z, Registry.BIOME.get(new Identifier(biomeId)));
-    }
-
-    public BiomeData(int x, int z, int biomeId) {
-        this(x, z, Registry.BIOME.get(biomeId));
+    public BiomeData(BlockPos pos, Predicate<Biome> biomePredicate) {
+        this.pos = pos;
+        this.biomePredicate = biomePredicate;
     }
 
     public boolean test(FakeBiomeSource source) {
-        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), this.x,0, this.z, source) == this.biome;
+        if(this.biome == null) {
+            return this.biomePredicate.test(VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), this.pos.getX(),this.pos.getY(), this.pos.getZ(), source));
+        }
+
+        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), this.pos.getX(),this.pos.getY(), this.pos.getZ(), source) == this.biome;
     }
 
-    public int getX() {
-        return this.x;
-    }
-
-    public int getZ() {
-        return this.z;
+    public BlockPos getPos() {
+        return this.pos;
     }
 
     public Biome getBiome() {

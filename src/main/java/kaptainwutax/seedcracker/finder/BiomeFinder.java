@@ -35,7 +35,7 @@ public class BiomeFinder extends Finder {
                     continue;
                 }
 
-                if(SeedCracker.get().onBiomeData(new BiomeData(blockPos.getX(), blockPos.getZ(), biome))) {
+                if(SeedCracker.get().onBiomeData(new BiomeData(blockPos, biome))) {
                     blockPos = this.world.getTopPosition(Heightmap.Type.WORLD_SURFACE, blockPos).down();
                     result.add(blockPos);
                 }
