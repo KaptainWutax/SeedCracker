@@ -64,6 +64,17 @@ https://youtu.be/1ChmLi9og8Q
 
 -Run `gradlew build`.
 
+## Upcoming Features
+
+A List of features I have on my mind... they won't necessarily be implemented in this order if at all.
+
+    - SHA2 brute-forcing, auxiliary to biomes search.
+    - Dungeon floor cracker, fast lattice reversal.
+    - Stronghold portal room cracker. (alternative to dungeon floor?)
+    - Faster brute-forcing by reorganizing located features list.
+    - End and nether biome finders. (nether would mostly be in preparation for 1.16)
+    - Chest loot finders. (fun meme, hell to implement)
+ 
 ## Contributors
 
 [KaptainWutax](https://github.com/KaptainWutax) - Author
