@@ -54,7 +54,7 @@ https://youtu.be/1ChmLi9og8Q
 
 ## Upcoming Features
 
-A List of features I have on my mind... they won't necessarily be implemented in this order if at all.
+A list of features I have on my mind... they won't necessarily be implemented in this order if at all.
 
     - SHA2 brute-forcing, auxiliary to biomes search.
     - Dungeon floor cracker, fast lattice reversal.
