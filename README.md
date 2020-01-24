@@ -36,11 +36,15 @@
 
   The command prefix for this mod is /seed.
   
-  ### Render Command `/seed render outlines <ON/OFF/XRAY>`
+  ### Render Command  
+  -`/seed render outlines <ON/OFF/XRAY>`
     
   This command only affects the renderer feedback. The default value is 'XRAY' and highlights data through blocks. You can set    the render mod to 'ON' for more standard rendering. 
   
-  ### Finder Command `/seed render finder type <FEATURE_TYPE> (ON/OFF)` and `/seed finder category (BIOMES/ORES/OTHERS/STRUCTURES) (ON/OFF)`
+  ### Finder Command
+  -`/seed render finder type <FEATURE_TYPE> (ON/OFF)`
+  
+  -`/seed finder category (BIOMES/ORES/OTHERS/STRUCTURES) (ON/OFF)`
   
   This command is used to disable finders in case you are aware the data is wrong. For example, a map generated in 1.14 has different decorators and would require you to disable them while going through those chunks.
 
