@@ -25,10 +25,10 @@ public class BiomeData {
 
     public boolean test(FakeBiomeSource source) {
         if(this.biome == null) {
-            return this.biomePredicate.test(VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), this.pos.getX(),this.pos.getY(), this.pos.getZ(), source));
+            return this.biomePredicate.test(sampleBiome(source, this.pos.getX(), this.pos.getY(), this.pos.getZ()));
         }
 
-        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), this.pos.getX(),this.pos.getY(), this.pos.getZ(), source) == this.biome;
+        return sampleBiome(source, this.pos.getX(), this.pos.getY(), this.pos.getZ()) == this.biome;
     }
 
     public BlockPos getPos() {
@@ -37,6 +37,10 @@ public class BiomeData {
 
     public Biome getBiome() {
         return this.biome;
+    }
+
+    public static Biome sampleBiome(FakeBiomeSource source, int x, int y, int z) {
+        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), z, y, x, source);
     }
 
     @Override
