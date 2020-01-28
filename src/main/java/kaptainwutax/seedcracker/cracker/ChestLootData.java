@@ -40,18 +40,23 @@ public class ChestLootData implements ISeedData {
 				.put(LootContextParameters.POSITION, new BlockPos(0, 0, 0)).build(LootContextTypes.CHEST);
 
 		List<ItemStack> itemStacks = this.lootTable.getDrops(lootContext);
+		Map<Item, Integer> lootItems = new HashMap<>();
+
+		itemStacks.forEach(itemStack -> {
+			lootItems.put(itemStack.getItem(), lootItems.getOrDefault(itemStack.getItem(), 0) + itemStack.getCount());
+		});
 
 		Set<Item> foundItems = new HashSet<>();
 
-		for(ItemStack itemStack: itemStacks) {
-			Item item = itemStack.getItem();
+		for(Map.Entry<Item, Integer> lootItem: lootItems.entrySet()) {
+			Item item = lootItem.getKey();
 			List<Stack> stacks = this.stacksMap.get(item);
 			if(stacks == null)continue;
 
 			boolean matches = true;
 
 			for(Stack stack: stacks) {
-				if(!stack.test(itemStack.getCount())) {
+				if(!stack.test(lootItem.getValue())) {
 					matches = false;
 					break;
 				}
