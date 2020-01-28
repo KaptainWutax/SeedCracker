@@ -8,6 +8,15 @@ public class Seeds {
 		return seed;
 	}
 
+	public static long setPopulationSeed(Rand rand, long worldSeed, int posX, int posZ) {
+		rand.setSeed(worldSeed, true);
+		long a = rand.nextLong() | 1L;
+		long b = rand.nextLong() | 1L;
+		long seed = (long)posX * a + (long)posZ * b ^ worldSeed;
+		rand.setSeed(seed, true);
+		return seed;
+	}
+
 	public static long setStructureStartSeed(Rand rand, long worldSeed, int chunkX, int chunkZ) {
 		rand.setSeed(worldSeed, true);
 		long a = rand.nextLong();
