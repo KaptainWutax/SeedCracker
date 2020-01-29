@@ -42,9 +42,8 @@ public class EmeraldOreFinder extends BlockFinder {
         List<BlockPos> result = super.findInChunk();
 
         if(!result.isEmpty() && SeedCracker.get().onDecoratorData(new EmeraldOreData(this.chunkPos, biome, result))) {
-            result.forEach(pos -> {
-                this.renderers.add(new Cube(pos, new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
-            });
+            //TODO: support more ores.
+            this.renderers.add(new Cube(result.get(0), new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
         }
 
         return result;
