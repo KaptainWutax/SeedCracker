@@ -5,6 +5,7 @@ import kaptainwutax.seedcracker.cracker.population.DungeonData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Cube;
+import kaptainwutax.seedcracker.render.Cuboid;
 import kaptainwutax.seedcracker.util.PosIterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -44,6 +45,8 @@ public class DungeonFinder extends BlockFinder {
         //Gets all the positions with a mob spawner in the chunk.
         List<BlockPos> result = super.findInChunk();
 
+        if(result.size() != 1)return new ArrayList<>();
+
         result.removeIf(pos -> {
             BlockEntity blockEntity = this.world.getBlockEntity(pos);
             if(!(blockEntity instanceof MobSpawnerBlockEntity))return true;
@@ -71,6 +74,8 @@ public class DungeonFinder extends BlockFinder {
         result.forEach(pos -> {
             if(SeedCracker.get().onDecoratorData(new DungeonData(this.chunkPos, biome, starts, floorCallsList))) {
                 this.renderers.add(new Cube(pos, new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
+                Vec3i size = this.getDungeonSize(pos);
+                this.renderers.add(new Cuboid(pos.subtract(size), pos.add(size).add(1, -1, 1), new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
             }
         });
 
@@ -81,9 +86,7 @@ public class DungeonFinder extends BlockFinder {
         for(int xo = 4; xo >= 3; xo--) {
             for(int zo = 4; zo >= 3; zo--) {
                 Block block = this.world.getBlockState(spawnerPos.add(xo, -1, zo)).getBlock();
-                if(block != Blocks.MOSSY_COBBLESTONE)continue;
-                if(block != Blocks.COBBLESTONE)continue;
-                return new Vec3i(xo, 0, zo);
+                if(block == Blocks.MOSSY_COBBLESTONE || block == Blocks.COBBLESTONE)return new Vec3i(xo, 0, zo);
             }
         }
 

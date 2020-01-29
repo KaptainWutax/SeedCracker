@@ -15,7 +15,7 @@ public class MagicMath {
 		// so if v is 1101000 (base 2), then c will be 3
 		v = (v ^ (v - 1)) >> 1;  // Set v's trailing 0s to 1s and zero rest
 
-		for(c = 0; v !=0; c++)  {
+		for(c = 0; v != 0; c++)  {
 			v >>>= 1;
 		}
 
