@@ -170,15 +170,12 @@ public class ShipwreckFinder extends BlockFinder {
 
             BlockBox box = new BlockBox(
                     Math.min(pos2.getX(), pos3.getX()), pos2.getY(), Math.min(pos2.getZ(), pos3.getZ()),
-                    Math.max(pos2.getX(), pos3.getX()), pos3.getY(), Math.max(pos2.getZ(), pos3.getZ()));
+                    Math.max(pos2.getX(), pos3.getX()) + 1, pos3.getY() + 1, Math.max(pos2.getZ(), pos3.getZ()) + 1);
 
             mutablePos.setOffset(-4, -chestY, -15);
 
             if((mutablePos.getX() & 0xf) == 0 && (mutablePos.getZ() & 0xf) == 0) {
                 if(SeedCracker.get().onStructureData(new StructureData(new ChunkPos(mutablePos), StructureFeatures.SHIPWRECK))) {
-                    box.maxX += 1;
-                    box.maxY += 1;
-                    box.maxZ += 1;
                     this.renderers.add(new Cuboid(box, new Vector4f(1.0f, 0.0f, 1.0f, 1.0f)));
                     this.renderers.add(new Cube(new ChunkPos(mutablePos).getCenterBlockPos().offset(Direction.UP, mutablePos.getY()), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f)));
                     return true;
