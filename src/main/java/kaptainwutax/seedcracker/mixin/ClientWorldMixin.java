@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin {
 
-    @Inject(method = "disconnect", at = @At("TAIL"))
+    @Inject(method = "disconnect", at = @At("HEAD"))
     private void disconnect(CallbackInfo ci) {
         SeedCracker.get().clear();
         FinderQueue.get().clear();
