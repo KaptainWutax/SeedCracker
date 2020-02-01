@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import java.util.*;
 import java.util.function.BiPredicate;
 
-public class ChestLootData implements ISeedData {
+public class ChestLootData {
 
 	private LootTable lootTable;
 	private Map<Item, List<Stack>> stacksMap = new HashMap<>();
@@ -32,9 +32,8 @@ public class ChestLootData implements ISeedData {
 		}
 	}
 
-	@Override
-	public boolean test(long seed, Rand rand) {
-		rand.setSeed(seed, true);
+	public boolean test(long lootSeed, Rand rand) {
+		rand.setSeed(lootSeed, true);
 
 		LootContext lootContext = new LootBuilder().setRandom(rand.toRandom())
 				.put(LootContextParameters.POSITION, new BlockPos(0, 0, 0)).build(LootContextTypes.CHEST);

@@ -26,7 +26,7 @@ public class EndPillarsFinder extends Finder {
     public EndPillarsFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos);
 
-        this.alreadyFound = SeedCracker.get().onPillarData(null);
+        this.alreadyFound = !SeedCracker.get().getDataStorage().addPillarData(null);
         if(this.alreadyFound)return;
 
         for(int i = 0; i < this.bedrockMarkers.length; i++) {
@@ -48,7 +48,7 @@ public class EndPillarsFinder extends Finder {
         if(result.size() == this.bedrockMarkers.length) {
             PillarData pillarData = new PillarData(result.stream().map(Vec3i::getY).collect(Collectors.toList()));
 
-            if(SeedCracker.get().onPillarData(pillarData)){
+            if(SeedCracker.get().getDataStorage().addPillarData(pillarData)) {
                 result.forEach(pos -> this.renderers.add(new Cube(pos, new Vector4f(0.5f, 0.0f, 0.5f, 1.0f))));
             }
 

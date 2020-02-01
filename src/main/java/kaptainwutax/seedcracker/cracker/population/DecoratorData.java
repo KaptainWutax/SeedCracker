@@ -1,45 +1,32 @@
 package kaptainwutax.seedcracker.cracker.population;
 
-import kaptainwutax.seedcracker.cracker.DecoratorCache;
-import kaptainwutax.seedcracker.cracker.ISeedData;
+import kaptainwutax.seedcracker.cracker.storage.SeedData;
 import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedcracker.util.Seeds;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.decorator.Decorator;
 
-public abstract class DecoratorData implements ISeedData {
+public abstract class DecoratorData extends SeedData {
 
     private final ChunkPos chunkPos;
-    private final Decorator<?> decorator;
+    private final int salt;
     private final Biome biome;
 
-    public DecoratorData(ChunkPos chunkPos, Decorator<?> decorator, Biome biome) {
+    public DecoratorData(ChunkPos chunkPos, int salt, Biome biome) {
         this.chunkPos = chunkPos;
-        this.decorator = decorator;
+        this.salt = salt;
         this.biome = biome;
     }
 
     @Override
     public final boolean test(long seed, Rand rand) {
-        long decoratorSeed = this.getPopulationSeed(seed, this.chunkPos.x << 4, this.chunkPos.z << 4);
-        int salt = DecoratorCache.get().getSalt(this.biome, this.decorator, true);
-
-        if(salt == DecoratorCache.INVALID) {
-            return false;
-        }
+        long decoratorSeed = Seeds.setPopulationSeed(null, seed, this.chunkPos.x << 4, this.chunkPos.z << 4);
 
         decoratorSeed += salt;
         decoratorSeed ^= Rand.JAVA_LCG.multiplier;
         decoratorSeed &= Rand.JAVA_LCG.modulo - 1;
         rand.setSeed(decoratorSeed, false);
         return this.testDecorator(rand);
-    }
-
-    public long getPopulationSeed(long structureSeed, int x, int z) {
-        Rand rand = new Rand(structureSeed, true);
-        long a = rand.nextLong() | 1L;
-        long b = rand.nextLong() | 1L;
-        return (long)x * a + (long)z * b ^ structureSeed;
     }
 
     public abstract boolean testDecorator(Rand rand);
@@ -50,10 +37,15 @@ public abstract class DecoratorData implements ISeedData {
 
         if(obj instanceof DecoratorData) {
             DecoratorData decoratorData = ((DecoratorData)obj);
-            return decoratorData.chunkPos.equals(this.chunkPos) && decoratorData.decorator == this.decorator;
+            return decoratorData.chunkPos.equals(this.chunkPos) && decoratorData.salt == this.salt;
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.chunkPos.hashCode() * 31 + this.salt;
     }
 
 }

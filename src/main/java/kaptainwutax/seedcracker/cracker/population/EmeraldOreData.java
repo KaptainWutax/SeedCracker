@@ -1,18 +1,22 @@
 package kaptainwutax.seedcracker.cracker.population;
 
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.decorator.Decorator;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EmeraldOreData extends DecoratorData {
 
-    public static final LCG[] SKIP = {
+    private static final double BITS = Math.log(28 * 16 * 16 * 0.5D) / Math.log(2);
+    public static final int SALT = 40014;
+
+    private static final LCG[] SKIP = {
             Rand.JAVA_LCG.combine(0),
             Rand.JAVA_LCG.combine(1),
             Rand.JAVA_LCG.combine(2),
@@ -22,7 +26,7 @@ public class EmeraldOreData extends DecoratorData {
     private List<BlockPos> starts;
 
     public EmeraldOreData(ChunkPos chunkPos, Biome biome, List<BlockPos> ores) {
-        super(chunkPos, Decorator.EMERALD_ORE, biome);
+        super(chunkPos, SALT, biome);
 
         this.starts = ores.stream().map(pos ->
             new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15)
@@ -49,6 +53,16 @@ public class EmeraldOreData extends DecoratorData {
         }
 
         return false;
+    }
+
+    @Override
+    public double getBits() {
+        return BITS;
+    }
+
+    @Override
+    public void onDataAdded(DataStorage dataStorage) {
+        dataStorage.getTimeMachine().poke(TimeMachine.Phase.STRUCTURES);
     }
 
 }

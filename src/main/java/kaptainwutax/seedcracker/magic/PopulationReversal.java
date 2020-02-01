@@ -14,7 +14,7 @@ public class PopulationReversal {
 	private static final LCG SKIP_4 = Rand.JAVA_LCG.combine(4);
 
 	public static ArrayList<Long> getWorldSeeds(long populationSeed, int x, int z) {
-		populationSeed = populationSeed ^ Rand.JAVA_LCG.multiplier;
+		populationSeed ^= Rand.JAVA_LCG.multiplier;
 		ArrayList<Long> worldSeeds = new ArrayList<>();
 
 		if (x == 0 && z == 0) {
@@ -105,7 +105,7 @@ public class PopulationReversal {
 			seed = r.nextLong() & ((1L << 48)-1);
 			x = r.nextInt(16) - 8;
 			z = r.nextInt(16) - 8;
-			seeds = getWorldSeeds(Seeds.setPopulationSeed(null, seed,x,z), x, z);
+			seeds = getWorldSeeds(Seeds.setPopulationSeed(null, seed, x, z) ^ Rand.JAVA_LCG.multiplier, x, z);
 
 			if (!seeds.contains(seed)) {
 				System.out.println(seed);

@@ -1,7 +1,6 @@
 package kaptainwutax.seedcracker.finder.population.ore;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.DecoratorCache;
 import kaptainwutax.seedcracker.cracker.population.EmeraldOreData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
@@ -13,7 +12,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.decorator.Decorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +33,9 @@ public class EmeraldOreFinder extends BlockFinder {
     public List<BlockPos> findInChunk() {
         Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 0, 8));
 
-        if(DecoratorCache.get().getSalt(biome, Decorator.EMERALD_ORE, false) == DecoratorCache.INVALID) {
-            return new ArrayList<>();
-        }
-
         List<BlockPos> result = super.findInChunk();
 
-        if(!result.isEmpty() && SeedCracker.get().onDecoratorData(new EmeraldOreData(this.chunkPos, biome, result))) {
+        if(!result.isEmpty() && SeedCracker.get().getDataStorage().addBaseData(new EmeraldOreData(this.chunkPos, biome, result))) {
             //TODO: support more ores.
             this.renderers.add(new Cube(result.get(0), new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
         }

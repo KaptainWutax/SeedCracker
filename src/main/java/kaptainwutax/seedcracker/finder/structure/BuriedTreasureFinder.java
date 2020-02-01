@@ -72,7 +72,7 @@ public class BuriedTreasureFinder extends BlockFinder {
         });
 
         result.forEach(pos -> {
-            if(SeedCracker.get().onStructureData(new StructureData(this.chunkPos, StructureFeatures.BURIED_TREASURE))) {
+            if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.BURIED_TREASURE))) {
                 this.renderers.add(new Cube(pos, new Vector4f(1.0f, 1.0f, 0.0f, 1.0f)));
             }
         });

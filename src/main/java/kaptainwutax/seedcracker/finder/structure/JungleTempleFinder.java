@@ -36,7 +36,7 @@ public class JungleTempleFinder extends AbstractTempleFinder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                if(SeedCracker.get().onStructureData(new StructureData(this.chunkPos, StructureFeatures.JUNGLE_TEMPLE))) {
+                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.JUNGLE_TEMPLE))) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f)));
                 }
             });

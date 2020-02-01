@@ -20,5 +20,4 @@ public class RandomSeed {
 		return new Rand(seed, false).nextLong() == worldSeed;
 	}
 
-
 }

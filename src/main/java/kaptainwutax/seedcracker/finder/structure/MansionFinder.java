@@ -62,7 +62,7 @@ public class MansionFinder extends Finder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                if(SeedCracker.get().onStructureData(new StructureData(this.chunkPos, StructureFeatures.WOODLAND_MANSION))) {
+                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.WOODLAND_MANSION))) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(0.4f, 0.26f, 0.13f, 1.0f)));
                     this.renderers.add(new Cube(this.chunkPos.getCenterBlockPos().add(0, pos.getY(), 0), new Vector4f(0.4f, 0.26f, 0.13f, 1.0f)));
                 }

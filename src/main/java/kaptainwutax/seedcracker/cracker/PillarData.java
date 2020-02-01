@@ -1,11 +1,16 @@
 package kaptainwutax.seedcracker.cracker;
 
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.storage.SeedData;
+import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
+import kaptainwutax.seedcracker.util.Rand;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class PillarData {
+public class PillarData extends SeedData {
 
 	private List<Integer> heights;
 
@@ -13,25 +18,20 @@ public class PillarData {
 		this.heights = heights;
 	}
 
-	public List<Integer> getPillarSeeds() {
-		List<Integer> result = new ArrayList<>();
-
-		for(int pillarSeed = 0; pillarSeed < (1 << 16); pillarSeed++) {
-			List<Integer> h = this.getPillarHeights(pillarSeed);
-			if(h.equals(this.heights)) result.add(pillarSeed);
-		}
-
-		return result;
+	@Override
+	public boolean test(long seed, Rand rand) {
+		List<Integer> h = this.getPillarHeights((int)seed);
+		return h.equals(this.heights);
 	}
 
-	public List<Integer> getPillarHeights(int spikeSeed) {
+	public List<Integer> getPillarHeights(int pillarSeed) {
 		List<Integer> indices = new ArrayList<>();
 
 		for(int i = 0; i < 10; i++) {
 			indices.add(i);
 		}
 
-		Collections.shuffle(indices, new Random(spikeSeed));
+		Collections.shuffle(indices, new Random(pillarSeed));
 
 		List<Integer> heights = new ArrayList<>();
 
@@ -40,6 +40,16 @@ public class PillarData {
 		}
 
 		return heights;
+	}
+
+	@Override
+	public double getBits() {
+		return 16;
+	}
+
+	@Override
+	public void onDataAdded(DataStorage dataStorage) {
+		dataStorage.getTimeMachine().poke(TimeMachine.Phase.PILLARS);
 	}
 
 }

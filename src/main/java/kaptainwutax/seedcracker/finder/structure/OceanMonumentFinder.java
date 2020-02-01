@@ -58,7 +58,7 @@ public class OceanMonumentFinder extends Finder {
             positions.forEach(pos -> {
                 ChunkPos monumentStart = new ChunkPos(this.chunkPos.x + 1, this.chunkPos.z + 1);
 
-                if(SeedCracker.get().onStructureData(new StructureData(monumentStart, StructureFeatures.OCEAN_MONUMENT))) {
+                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(monumentStart, StructureFeatures.OCEAN_MONUMENT))) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
                     this.renderers.add(new Cube(monumentStart.getCenterBlockPos().add(0, pos.getY(), 0), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
                 }

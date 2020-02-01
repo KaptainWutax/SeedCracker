@@ -41,6 +41,8 @@ public class StructureFeatures {
 	public static final FeatureType<StructureData> BURIED_TREASURE = new RarityType(10387320, 1, 0.01F);
 
 	public static final FeatureType<StructureData> NETHER_FORTRESS = new FeatureType<StructureData>(-1, 1) {
+		protected final double bits = Math.log(3 * 8 * 8) / Math.log(2);
+
 		@Override
 		public boolean test(Rand rand, StructureData data, long structureSeed) {
 			Seeds.setWeakSeed(rand, structureSeed, data.chunkX, data.chunkZ);
@@ -49,13 +51,25 @@ public class StructureFeatures {
 				&& data.chunkX == ((data.chunkX >> 4) << 4) + 4 + rand.nextInt(8)
 				&& data.chunkZ == ((data.chunkZ >> 4) << 4) + 4 + rand.nextInt(8);
 		}
+
+		@Override
+		public double getBits() {
+			return this.bits;
+		}
 	};
 
 	public static final FeatureType<StructureData> MINESHAFT = new FeatureType<StructureData>(-1, 1) {
+		protected final double bits = Math.log(1.0D / 0.004D) / Math.log(2);
+
 		@Override
 		public boolean test(Rand rand, StructureData data, long structureSeed) {
 			Seeds.setStructureStartSeed(rand, structureSeed, data.chunkX, data.chunkZ);
 			return rand.nextDouble() < 0.004D;
+		}
+
+		@Override
+		public double getBits() {
+			return this.bits;
 		}
 	};
 

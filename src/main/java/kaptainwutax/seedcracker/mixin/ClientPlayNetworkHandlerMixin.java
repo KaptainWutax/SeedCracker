@@ -4,8 +4,8 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.command.ClientCommands;
+import kaptainwutax.seedcracker.cracker.storage.HashedSeedData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
-import kaptainwutax.seedcracker.util.Log;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -50,8 +50,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onPlayerRespawn", at = @At("HEAD"))
     public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-        SeedCracker.get().hashedWorldSeed = packet.method_22425();
-        Log.warn("Fetched hashed world seed [" + SeedCracker.get().hashedWorldSeed + "].");
+        SeedCracker.get().getDataStorage().addHashedSeedData(new HashedSeedData(packet.method_22425()));
     }
 
 }

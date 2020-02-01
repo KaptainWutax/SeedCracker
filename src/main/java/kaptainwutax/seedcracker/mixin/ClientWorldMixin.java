@@ -16,7 +16,7 @@ public abstract class ClientWorldMixin {
 
     @Inject(method = "disconnect", at = @At("HEAD"))
     private void disconnect(CallbackInfo ci) {
-        SeedCracker.get().clear();
+        SeedCracker.get().getDataStorage().clear();
         FinderQueue.get().clear();
     }
 

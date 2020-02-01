@@ -48,9 +48,10 @@ public class DesertWellFinder extends PieceFinder {
 		List<BlockPos> result = super.findInChunk();
 
 		result.forEach(pos -> {
-			this.renderers.add(new Cuboid(pos, SIZE, new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
-			this.renderers.add(new Cube(pos.add(2, 1, 2), new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
-			SeedCracker.get().onDecoratorData(new DesertWellData(this.chunkPos, biome, pos.add(2, 1, 2)));
+			if(SeedCracker.get().getDataStorage().addBaseData(new DesertWellData(this.chunkPos, biome, pos.add(2, 1, 2)))) {
+				this.renderers.add(new Cuboid(pos, SIZE, new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
+				this.renderers.add(new Cube(pos.add(2, 1, 2), new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
+			}
 		});
 
 		return result;

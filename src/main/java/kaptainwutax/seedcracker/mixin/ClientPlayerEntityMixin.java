@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.mixin;
 
 import com.mojang.brigadier.StringReader;
+import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.command.ClientCommands;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +13,11 @@ import java.util.regex.Pattern;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin {
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void tick(CallbackInfo ci) {
+        SeedCracker.get().getDataStorage().tick();
+    }
 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void onSendChatMessage(String message, CallbackInfo ci) {

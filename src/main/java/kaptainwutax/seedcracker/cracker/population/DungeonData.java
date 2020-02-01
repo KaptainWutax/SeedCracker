@@ -1,18 +1,22 @@
 package kaptainwutax.seedcracker.cracker.population;
 
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.decorator.Decorator;
 
 import java.util.List;
 
 public class DungeonData extends DecoratorData {
 
-    public static LCG REVERSE_SKIP = Rand.JAVA_LCG.combine(-1);
-    public static LCG Y_START_SKIP = Rand.JAVA_LCG.combine(2);
+    private static final double BITS = Math.log(256 * 16 * 16 * 0.125D) / Math.log(2);
+    public static final int SALT = 20003;
+
+    private static LCG REVERSE_SKIP = Rand.JAVA_LCG.combine(-1);
+    private static LCG Y_START_SKIP = Rand.JAVA_LCG.combine(2);
     public static LCG Y_SKIP = Rand.JAVA_LCG.combine(5);
 
     public static final Integer COBBLESTONE_CALL = 0;
@@ -22,7 +26,7 @@ public class DungeonData extends DecoratorData {
     private final List<List<Integer>> floorCallsList;
 
     public DungeonData(ChunkPos chunkPos, Biome biome, List<BlockPos> starts, List<List<Integer>> floorCallsList) {
-        super(chunkPos, Decorator.DUNGEONS, biome);
+        super(chunkPos, SALT, biome);
         this.starts = starts;
         this.floorCallsList = floorCallsList;
     }
@@ -48,6 +52,16 @@ public class DungeonData extends DecoratorData {
         }
 
         return false;
+    }
+
+    @Override
+    public double getBits() {
+        return BITS;
+    }
+
+    @Override
+    public void onDataAdded(DataStorage dataStorage) {
+        dataStorage.getTimeMachine().poke(TimeMachine.Phase.STRUCTURES);
     }
 
 }

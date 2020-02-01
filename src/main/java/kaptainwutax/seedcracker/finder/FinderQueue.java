@@ -27,17 +27,20 @@ public class FinderQueue {
     }
 
     public void onChunkData(World world, ChunkPos chunkPos) {
-        this.finderConfig.getActiveFinderTypes().forEach(type -> {
+            this.finderConfig.getActiveFinderTypes().forEach(type -> {
            SERVICE.submit(() -> {
-                List<Finder> finders = type.finderBuilder.build(world, chunkPos);
+               try {
+                   List<Finder> finders = type.finderBuilder.build(world, chunkPos);
 
-                finders.forEach(finder -> {
-                    if(finder.isValidDimension(world.dimension.getType())) {
-                        this.finderConfig.addFinder(type, finder);
-                        finder.findInChunk();
-                        this.finderConfig.addFinder(type, finder);
-                    }
-                });
+                   finders.forEach(finder -> {
+                       if(finder.isValidDimension(world.dimension.getType())) {
+                           finder.findInChunk();
+                           this.finderConfig.addFinder(type, finder);
+                       }
+                   });
+               } catch(Exception e) {
+                   e.printStackTrace();
+               }
             });
         });
     }

@@ -40,4 +40,6 @@ public abstract class FeatureType<T extends StructureData> {
 
 	public abstract boolean test(Rand rand, T data, long structureSeed);
 
+	public abstract double getBits();
+
 }

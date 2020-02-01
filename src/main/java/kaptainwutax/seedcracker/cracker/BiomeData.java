@@ -1,12 +1,16 @@
 package kaptainwutax.seedcracker.cracker;
 
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.storage.ISeedStorage;
+import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 
 import java.util.function.Predicate;
 
-public class BiomeData {
+public class BiomeData implements ISeedStorage {
 
     private BlockPos pos;
 
@@ -17,6 +21,12 @@ public class BiomeData {
         this.pos = pos;
         this.biome = biome;
     }
+
+    public BiomeData(BlockPos pos, int biomeId) {
+        this.pos = pos;
+        this.biome = Registry.BIOME.get(biomeId);
+    }
+
 
     public BiomeData(BlockPos pos, Predicate<Biome> biomePredicate) {
         this.pos = pos;
@@ -40,7 +50,12 @@ public class BiomeData {
     }
 
     public static Biome sampleBiome(FakeBiomeSource source, int x, int y, int z) {
-        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), z, y, x, source);
+        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), x, y, z, source);
+    }
+
+    @Override
+    public void onDataAdded(DataStorage dataStorage) {
+        dataStorage.getTimeMachine().poke(TimeMachine.Phase.BIOMES);
     }
 
     @Override
@@ -54,4 +69,12 @@ public class BiomeData {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        if(this.biomePredicate == null) {
+            return this.biome.getName().asFormattedString().hashCode();
+        }
+
+        return super.hashCode();
+    }
 }
