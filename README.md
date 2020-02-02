@@ -61,7 +61,6 @@ A list of features I have on my mind... they won't necessarily be implemented in
     - Stronghold portal room cracker. (alternative to dungeon floor?)
     - Faster brute-forcing by reorganizing located features list.
     - End and nether biome finders. (nether would mostly be in preparation for 1.16)
-    - Chest loot finders. (fun meme, hell to implement)
 
 ## Setting up the Workspace
 
