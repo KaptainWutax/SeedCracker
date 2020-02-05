@@ -50,12 +50,7 @@ public class FinderConfig {
     }
 
     public boolean setTypeState(Finder.Type type, boolean flag) {
-        if(!this.finderProfile.getLocked()) {
-            this.finderProfile.typeStates.put(type, flag);
-            return true;
-        }
-
-        return false;
+        return this.finderProfile.setTypeState(type, flag);
     }
 
 }

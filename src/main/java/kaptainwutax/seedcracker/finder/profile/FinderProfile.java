@@ -25,4 +25,10 @@ public abstract class FinderProfile {
 		return this.locked;
 	}
 
+	public boolean setTypeState(Finder.Type type, boolean state) {
+		if(this.getLocked())return false;
+		this.typeStates.put(type, state);
+		return true;
+	}
+
 }
