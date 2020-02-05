@@ -10,16 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TimeMachine {
 
-	public static ExecutorService SERVICE = Executors.newFixedThreadPool(1);
+	public static ExecutorService SERVICE = Executors.newFixedThreadPool(5);
 
 	private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
 	protected DataStorage dataStorage;
 
 	public boolean isRunning = false;
-	public boolean terminate = false;
+	public boolean shouldTerminate = false;
 
 	protected List<Integer> pillarSeeds = null;
 	protected List<Long> structureSeeds = null;
@@ -30,11 +31,15 @@ public class TimeMachine {
 	}
 
 	public void poke(Phase phase) {
+		if(this.isRunning) {
+			return;
+		}
+
 		this.isRunning = true;
 		final Phase[] finalPhase = {phase};
 
 		SERVICE.submit(() -> {
-			while(finalPhase[0] != null && !this.terminate) {
+			while(finalPhase[0] != null && !this.shouldTerminate) {
 				if(finalPhase[0] == Phase.PILLARS) {
 					if(!this.pokePillars())break;
 				} else if(finalPhase[0] == Phase.STRUCTURES) {
@@ -45,9 +50,9 @@ public class TimeMachine {
 
 				finalPhase[0] = finalPhase[0].nextPhase();
 			}
-		});
 
-		this.isRunning = false;
+			this.isRunning = false;
+		});
 	}
 
 	protected boolean pokePillars() {
@@ -57,7 +62,7 @@ public class TimeMachine {
 		Log.debug("====================================");
 		Log.warn("Looking for pillar seeds...");
 
-		for(int pillarSeed = 0; pillarSeed < 1 << 16 && !this.terminate; pillarSeed++) {
+		for(int pillarSeed = 0; pillarSeed < 1 << 16 && !this.shouldTerminate; pillarSeed++) {
 			if(this.dataStorage.pillarData.test(pillarSeed, null)) {
 				Log.warn("Found pillar seed [" + pillarSeed + "].");
 				this.pillarSeeds.add(pillarSeed);
@@ -74,38 +79,69 @@ public class TimeMachine {
 	}
 
 	protected boolean pokeStructures() {
-		if(this.pillarSeeds == null || this.structureSeeds != null || this.dataStorage.getBaseBits() < 54.0D)return false;
+		if(this.pillarSeeds == null || this.dataStorage.getBaseBits() < 54.0D)return false;
 		this.structureSeeds = new ArrayList<>();
 
 		Rand rand = new Rand(0L, false);
-		Log.debug("====================================");
-		Log.warn("Looking for structure seeds...");
+
+		SeedData[] cache = new SeedData[this.dataStorage.baseSeedData.size()];
+		int id = 0;
+
+		for(SeedData baseSeedDatum: this.dataStorage.baseSeedData) {
+			cache[id++] = baseSeedDatum;
+		}
 
 		for(int pillarSeed: this.pillarSeeds) {
-			for(long partialWorldSeed = 0; partialWorldSeed <  1L << 32; partialWorldSeed++) {
-				if((partialWorldSeed & ((1 << 29) - 1)) == 0) {
-					Log.debug("Progress: " + ((100.0D * (double)partialWorldSeed) / (double)(1L << 32)) + "%");
-				}
+			Log.debug("====================================");
+			Log.warn("Looking for structure seeds with pillar seed [" + pillarSeed + "]...");
 
-				long seed = this.timeMachine(partialWorldSeed, pillarSeed);
-				boolean matches = true;
+			AtomicInteger completion = new AtomicInteger();
+			ProgressListener progressListener = new ProgressListener();
 
-				for(SeedData baseSeedDatum: this.dataStorage.baseSeedData) {
-					if(!baseSeedDatum.test(seed, rand)) {
-						matches = false;
-						break;
+			for(int threadId = 0; threadId < 4; threadId++) {
+				int fThreadId = threadId;
+
+				SERVICE.submit(() -> {
+					long lower = (long)fThreadId * (1L << 30);
+					long upper = (long)(fThreadId + 1) * (1L << 30);
+
+					for(long partialWorldSeed = lower; partialWorldSeed < upper && !this.shouldTerminate; partialWorldSeed++) {
+						if((partialWorldSeed & ((1 << 29) - 1)) == 0) {
+							progressListener.addPercent(12.5F, true);
+						}
+
+						long seed = this.timeMachine(partialWorldSeed, pillarSeed);
+
+						boolean matches = true;
+
+						for(SeedData baseSeedDatum: cache) {
+							boolean test = baseSeedDatum.test(seed, rand);
+							if(!test) {
+								matches = false;
+								break;
+							}
+						}
+
+						if(matches) {
+							this.structureSeeds.add(seed);
+							Log.warn("Found structure seed [" + seed + "].");
+						}
 					}
-				}
 
-				if(matches) {
-					this.structureSeeds.add(seed);
-					Log.warn("Found structure seed [" + seed + "].");
-				}
+					completion.getAndIncrement();
+				});
+			}
 
-				if(this.terminate) {
+			while(completion.get() != 4) {
+				try {Thread.sleep(50);}
+				catch(InterruptedException e) {e.printStackTrace();}
+
+				if(this.shouldTerminate) {
 					return false;
 				}
 			}
+
+			progressListener.addPercent(0.0F, true);
 		}
 
 		if(!this.structureSeeds.isEmpty()) {
@@ -134,10 +170,10 @@ public class TimeMachine {
 						continue;
 					} else {
 						this.worldSeeds.add(worldSeed);
-						Log.warn("Found world seed [" + worldSeed + "]");
+						Log.warn("Found world seed [" + worldSeed + "].");
 					}
 
-					if(this.terminate) {
+					if(this.shouldTerminate) {
 						return false;
 					}
 				}
@@ -172,7 +208,7 @@ public class TimeMachine {
 					Log.warn("Found world seed [" + worldSeed + "].");
 				}
 
-				if(this.terminate) {
+				if(this.shouldTerminate) {
 					return false;
 				}
 			}

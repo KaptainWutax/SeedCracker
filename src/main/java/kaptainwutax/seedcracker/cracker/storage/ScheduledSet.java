@@ -32,6 +32,10 @@ public class ScheduledSet<T> implements Iterable<T> {
 		return this.baseSet.contains(e) || this.scheduledSet.contains(e);
 	}
 
+	public Set<T> getBaseSet() {
+		return this.baseSet;
+	}
+
 	@Override
 	public synchronized Iterator<T> iterator() {
 		return this.baseSet.iterator();

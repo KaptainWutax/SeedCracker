@@ -111,12 +111,11 @@ public class DataStorage {
 	public void clear() {
 		System.out.println("Clearing data storage.");
 		this.scheduledData = new ConcurrentSet<>();
-
 		this.pillarData = null;
 		this.baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);
 		this.biomeSeedData = new ScheduledSet<>(null);
 		this.hashedSeedData = null;
-		this.timeMachine.terminate = true;
+		this.timeMachine.shouldTerminate = true;
 		this.timeMachine = new TimeMachine(this);
 	}
 
