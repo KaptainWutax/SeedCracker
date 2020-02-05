@@ -11,7 +11,7 @@ public class Log {
         PlayerEntity player = getPlayer();
 
         if(player != null) {
-            player.addChatMessage(new LiteralText(message), false);
+            schedule(() -> player.addChatMessage(new LiteralText(message), false));
         }
     }
 
@@ -19,7 +19,7 @@ public class Log {
         PlayerEntity player = getPlayer();
 
         if(player != null) {
-            player.addChatMessage(new LiteralText(TextFormat.YELLOW + message), false);
+            schedule(() -> player.addChatMessage(new LiteralText(TextFormat.YELLOW + message), false));
         }
     }
 
@@ -27,8 +27,12 @@ public class Log {
         PlayerEntity player = getPlayer();
 
         if(player != null) {
-            player.addChatMessage(new LiteralText(TextFormat.RED + message), false);
+            schedule(() -> player.addChatMessage(new LiteralText(TextFormat.RED + message), false));
         }
+    }
+
+    private static void schedule(Runnable runnable) {
+        MinecraftClient.getInstance().execute(runnable);
     }
 
     private static PlayerEntity getPlayer() {
