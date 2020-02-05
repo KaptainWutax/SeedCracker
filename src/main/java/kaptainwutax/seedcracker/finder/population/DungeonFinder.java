@@ -72,7 +72,7 @@ public class DungeonFinder extends BlockFinder {
                 .map(pos -> this.getFloorCalls(this.getDungeonSize(pos), pos)).collect(Collectors.toList());
 
         result.forEach(pos -> {
-            if(SeedCracker.get().getDataStorage().addBaseData(new DungeonData(this.chunkPos, biome, starts, floorCallsList))) {
+            if(SeedCracker.get().getDataStorage().addBaseData(new DungeonData(this.chunkPos, biome, starts.get(0), floorCallsList))) {
                 this.renderers.add(new Cube(pos, new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
                 Vec3i size = this.getDungeonSize(pos);
                 this.renderers.add(new Cuboid(pos.subtract(size), pos.add(size).add(1, -1, 1), new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));

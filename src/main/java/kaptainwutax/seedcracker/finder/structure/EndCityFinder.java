@@ -14,7 +14,9 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.feature.Feature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import java.util.Map;
 public class EndCityFinder extends Finder {
 
     protected static List<BlockPos> SEARCH_POSITIONS = buildSearchPositions(CHUNK_POSITIONS, pos -> {
+        if(pos.getY() > 90)return true;
         return false;
     });
 
@@ -74,6 +77,12 @@ public class EndCityFinder extends Finder {
 
     @Override
     public List<BlockPos> findInChunk() {
+        Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
+
+        if(!biome.hasStructureFeature(Feature.END_CITY)) {
+            return new ArrayList<>();
+        }
+
         Map<PieceFinder, List<BlockPos>> result = this.findInChunkPieces();
         List<BlockPos> combinedResult = new ArrayList<>();
 

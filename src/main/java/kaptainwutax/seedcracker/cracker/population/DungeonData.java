@@ -22,28 +22,23 @@ public class DungeonData extends DecoratorData {
     public static final Integer COBBLESTONE_CALL = 0;
     public static final Integer MOSSY_COBBLESTONE_CALL = 1;
 
-    private List<BlockPos> starts;
+    private BlockPos start;
     private final List<List<Integer>> floorCallsList;
 
-    public DungeonData(ChunkPos chunkPos, Biome biome, List<BlockPos> starts, List<List<Integer>> floorCallsList) {
+    public DungeonData(ChunkPos chunkPos, Biome biome, BlockPos start, List<List<Integer>> floorCallsList) {
         super(chunkPos, SALT, biome);
-        this.starts = starts;
+        this.start = start;
         this.floorCallsList = floorCallsList;
     }
 
     @Override
     public boolean testDecorator(Rand rand) {
-        if(this.starts.isEmpty())return true;
-
-        //TODO: This currently only supports 1 dungeon per chunk.
-        BlockPos start = this.starts.get(0);
-
         for(int i = 0; i < 8; i++) {
             int x = rand.nextInt(16);
             int z = rand.nextInt(16);
             int y = rand.nextInt(256);
 
-            if(y == start.getY() && x == start.getX() && z == start.getZ()) {
+            if(y == this.start.getY() && x == this.start.getX() && z == this.start.getZ()) {
                 return true;
             }
 
@@ -52,6 +47,10 @@ public class DungeonData extends DecoratorData {
         }
 
         return false;
+    }
+
+    public BlockPos getStart() {
+        return this.start;
     }
 
     @Override

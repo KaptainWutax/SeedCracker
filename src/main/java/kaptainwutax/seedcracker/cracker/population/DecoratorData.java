@@ -31,6 +31,10 @@ public abstract class DecoratorData extends SeedData {
 
     public abstract boolean testDecorator(Rand rand);
 
+    public ChunkPos getChunkPos() {
+        return this.chunkPos;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(obj == this)return true;

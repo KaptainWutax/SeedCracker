@@ -176,8 +176,8 @@ public class ShipwreckFinder extends BlockFinder {
 
             if((mutablePos.getX() & 0xf) == 0 && (mutablePos.getZ() & 0xf) == 0) {
                 if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(new ChunkPos(mutablePos), StructureFeatures.SHIPWRECK))) {
-                    this.renderers.add(new Cuboid(box, new Vector4f(1.0f, 0.0f, 1.0f, 1.0f)));
-                    this.renderers.add(new Cube(new ChunkPos(mutablePos).getCenterBlockPos().offset(Direction.UP, mutablePos.getY()), new Vector4f(1.0f, 0.0f, 1.0f, 1.0f)));
+                    this.renderers.add(new Cuboid(box, new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)));
+                    this.renderers.add(new Cube(new ChunkPos(mutablePos).getCenterBlockPos().offset(Direction.UP, mutablePos.getY()), new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)));
                     return true;
                 }
             }
