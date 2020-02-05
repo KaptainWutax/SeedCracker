@@ -82,8 +82,6 @@ public class TimeMachine {
 		if(this.pillarSeeds == null || this.dataStorage.getBaseBits() < 54.0D)return false;
 		this.structureSeeds = new ArrayList<>();
 
-		Rand rand = new Rand(0L, false);
-
 		SeedData[] cache = new SeedData[this.dataStorage.baseSeedData.size()];
 		int id = 0;
 
@@ -102,12 +100,14 @@ public class TimeMachine {
 				int fThreadId = threadId;
 
 				SERVICE.submit(() -> {
+					Rand rand = new Rand(0L, false);
+
 					long lower = (long)fThreadId * (1L << 30);
 					long upper = (long)(fThreadId + 1) * (1L << 30);
 
 					for(long partialWorldSeed = lower; partialWorldSeed < upper && !this.shouldTerminate; partialWorldSeed++) {
-						if((partialWorldSeed & ((1 << 29) - 1)) == 0) {
-							progressListener.addPercent(12.5F, true);
+						if((partialWorldSeed & ((1 << 27) - 1)) == 0) {
+							progressListener.addPercent(3.125F, true);
 						}
 
 						long seed = this.timeMachine(partialWorldSeed, pillarSeed);
