@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker.finder;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import kaptainwutax.seedcracker.finder.profile.VanillaProfile;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -16,7 +17,7 @@ public class FinderQueue {
     public static ExecutorService SERVICE = Executors.newFixedThreadPool(5);
 
     public RenderType renderType = RenderType.XRAY;
-    public FinderConfig finderConfig = new DefaultFinderConfig();
+    public FinderConfig finderProfile = new VanillaProfile();
 
     private FinderQueue() {
         this.clear();
@@ -27,15 +28,15 @@ public class FinderQueue {
     }
 
     public void onChunkData(World world, ChunkPos chunkPos) {
-            this.finderConfig.getActiveFinderTypes().forEach(type -> {
-           SERVICE.submit(() -> {
+        this.finderProfile.getActiveFinderTypes().forEach(type -> {
+            SERVICE.submit(() -> {
                try {
                    List<Finder> finders = type.finderBuilder.build(world, chunkPos);
 
                    finders.forEach(finder -> {
                        if(finder.isValidDimension(world.dimension.getType())) {
                            finder.findInChunk();
-                           this.finderConfig.addFinder(type, finder);
+                           this.finderProfile.addFinder(type, finder);
                        }
                    });
                } catch(Exception e) {
@@ -58,7 +59,7 @@ public class FinderQueue {
             GlStateManager.disableDepthTest();
         }
 
-        this.finderConfig.getActiveFinders().forEach(finder -> {
+        this.finderProfile.getActiveFinders().forEach(finder -> {
             if(finder.shouldRender()) {
                 finder.render();
             }
@@ -69,7 +70,7 @@ public class FinderQueue {
 
     public void clear() {
         this.renderType = RenderType.XRAY;
-        this.finderConfig = new DefaultFinderConfig();
+        this.finderProfile = new VanillaProfile();
     }
 
     public enum RenderType {

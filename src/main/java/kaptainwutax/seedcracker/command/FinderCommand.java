@@ -41,7 +41,7 @@ public class FinderCommand extends ClientCommand {
     }
 
     private int printFinderType(FinderConfig.Type finderType) {
-        this.sendFeedback("Finder " + finderType + " is set to [" + String.valueOf(FinderQueue.get().finderConfig.getTypeState(finderType)).toUpperCase() + "].", false);
+        this.sendFeedback("Finder " + finderType + " is set to [" + String.valueOf(FinderQueue.get().finderProfile.getTypeState(finderType)).toUpperCase() + "].", false);
         return 0;
     }
 
@@ -51,7 +51,7 @@ public class FinderCommand extends ClientCommand {
     }
 
     private int setFinderType(FinderConfig.Type finderType, boolean flag) {
-        FinderQueue.get().finderConfig.setTypeState(finderType, flag);
+        FinderQueue.get().finderProfile.setTypeState(finderType, flag);
         this.sendFeedback("Finder " + finderType + " has been set to [" + String.valueOf(flag).toUpperCase() + "].", false);
         return 0;
     }
