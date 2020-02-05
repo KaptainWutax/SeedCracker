@@ -1,6 +1,13 @@
 package kaptainwutax.seedcracker.finder;
 
+import kaptainwutax.seedcracker.finder.population.DesertWellFinder;
+import kaptainwutax.seedcracker.finder.population.DungeonFinder;
+import kaptainwutax.seedcracker.finder.population.EndGatewayFinder;
+import kaptainwutax.seedcracker.finder.population.EndPillarsFinder;
+import kaptainwutax.seedcracker.finder.population.ore.EmeraldOreFinder;
+import kaptainwutax.seedcracker.finder.structure.*;
 import kaptainwutax.seedcracker.render.Renderer;
+import kaptainwutax.seedcracker.util.FinderBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -9,8 +16,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class Finder {
 
@@ -87,6 +96,44 @@ public abstract class Finder {
         }
         
         return newList;
+    }
+
+    public enum Category {
+        STRUCTURES,
+        BIOMES,
+        ORES,
+        OTHERS
+    }
+
+    public enum Type {
+        BURIED_TREASURE(BuriedTreasureFinder::create, Category.STRUCTURES),
+        DESERT_TEMPLE(DesertTempleFinder::create, Category.STRUCTURES),
+        END_CITY(EndCityFinder::create, Category.STRUCTURES),
+        //IGLOO(IglooFinder::create, Category.STRUCTURES),
+        JUNGLE_TEMPLE(JungleTempleFinder::create, Category.STRUCTURES),
+        MONUMENT(OceanMonumentFinder::create, Category.STRUCTURES),
+        SWAMP_HUT(SwampHutFinder::create, Category.STRUCTURES),
+        //MANSION(MansionFinder::create, Category.STRUCTURES),
+        SHIPWRECK(ShipwreckFinder::create, Category.STRUCTURES),
+
+        END_PILLARS(EndPillarsFinder::create, Category.OTHERS),
+        END_GATEWAY(EndGatewayFinder::create, Category.OTHERS),
+        DUNGEON(DungeonFinder::create, Category.OTHERS),
+        EMERALD_ORE(EmeraldOreFinder::create, Category.ORES),
+        DESERT_WELL(DesertWellFinder::create, Category.OTHERS),
+        BIOME(BiomeFinder::create, Category.BIOMES);
+
+        public final FinderBuilder finderBuilder;
+        private final Category category;
+
+        Type(FinderBuilder finderBuilder, Category category) {
+            this.finderBuilder = finderBuilder;
+            this.category = category;
+        }
+
+        public static List<Type> getForCategory(Category category) {
+            return Arrays.stream(values()).filter(type -> type.category == category).collect(Collectors.toList());
+        }
     }
 
 }

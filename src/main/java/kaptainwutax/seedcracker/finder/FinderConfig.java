@@ -1,31 +1,26 @@
 package kaptainwutax.seedcracker.finder;
 
-import kaptainwutax.seedcracker.finder.population.DesertWellFinder;
-import kaptainwutax.seedcracker.finder.population.DungeonFinder;
-import kaptainwutax.seedcracker.finder.population.EndGatewayFinder;
-import kaptainwutax.seedcracker.finder.population.EndPillarsFinder;
-import kaptainwutax.seedcracker.finder.population.ore.EmeraldOreFinder;
-import kaptainwutax.seedcracker.finder.structure.*;
-import kaptainwutax.seedcracker.util.FinderBuilder;
+import kaptainwutax.seedcracker.finder.profile.FinderProfile;
+import kaptainwutax.seedcracker.finder.profile.NopeProfile;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 public class FinderConfig {
 
-    protected Map<Type, Boolean> typeStates = new HashMap<>();
-    protected Map<Type, ConcurrentLinkedQueue<Finder>> activeFinders = new ConcurrentHashMap<>();
+    protected FinderProfile finderProfile = new NopeProfile();
+    protected Map<Finder.Type, ConcurrentLinkedQueue<Finder>> activeFinders = new ConcurrentHashMap<>();
 
-    public FinderConfig(boolean defaultState) {
-        for(Type type: Type.values()) {
-            this.typeStates.put(type, defaultState);
-        }
+    public FinderConfig() {
+
     }
 
-    public List<Type> getActiveFinderTypes() {
-        return this.typeStates.entrySet().stream()
+    public List<Finder.Type> getActiveFinderTypes() {
+        return this.finderProfile.typeStates.entrySet().stream()
                 .filter(Map.Entry::getValue)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
@@ -40,7 +35,7 @@ public class FinderConfig {
                 .flatMap(Queue::stream).collect(Collectors.toList());
     }
 
-    public void addFinder(Type type, Finder finder) {
+    public void addFinder(Finder.Type type, Finder finder) {
         if(finder.isUseless())return;
 
         if(!this.activeFinders.containsKey(type)) {
@@ -50,50 +45,17 @@ public class FinderConfig {
         this.activeFinders.get(type).add(finder);
     }
 
-    public boolean getTypeState(Type type) {
-        return this.typeStates.get(type);
+    public boolean getTypeState(Finder.Type type) {
+        return this.finderProfile.typeStates.get(type);
     }
 
-    public void setTypeState(Type type, boolean flag) {
-        this.typeStates.put(type, flag);
-    }
-
-    public enum Category {
-        STRUCTURES,
-        BIOMES,
-        ORES,
-        OTHERS
-    }
-
-    public enum Type {
-        BURIED_TREASURE(BuriedTreasureFinder::create, Category.STRUCTURES),
-        DESERT_TEMPLE(DesertTempleFinder::create, Category.STRUCTURES),
-        END_CITY(EndCityFinder::create, Category.STRUCTURES),
-        //IGLOO(IglooFinder::create, Category.STRUCTURES),
-        JUNGLE_TEMPLE(JungleTempleFinder::create, Category.STRUCTURES),
-        MONUMENT(OceanMonumentFinder::create, Category.STRUCTURES),
-        SWAMP_HUT(SwampHutFinder::create, Category.STRUCTURES),
-        //MANSION(MansionFinder::create, Category.STRUCTURES),
-        SHIPWRECK(ShipwreckFinder::create, Category.STRUCTURES),
-
-        END_PILLARS(EndPillarsFinder::create, Category.OTHERS),
-        END_GATEWAY(EndGatewayFinder::create, Category.OTHERS),
-        DUNGEON(DungeonFinder::create, Category.OTHERS),
-        EMERALD_ORE(EmeraldOreFinder::create, Category.ORES),
-        DESERT_WELL(DesertWellFinder::create, Category.OTHERS),
-        BIOME(BiomeFinder::create, Category.BIOMES);
-
-        public final FinderBuilder finderBuilder;
-        private final Category category;
-
-        Type(FinderBuilder finderBuilder, Category category) {
-            this.finderBuilder = finderBuilder;
-            this.category = category;
+    public boolean setTypeState(Finder.Type type, boolean flag) {
+        if(!this.finderProfile.getLocked()) {
+            this.finderProfile.typeStates.put(type, flag);
+            return true;
         }
 
-        public static List<Type> getForCategory(Category category) {
-            return Arrays.stream(values()).filter(type -> type.category == category).collect(Collectors.toList());
-        }
+        return false;
     }
 
 }

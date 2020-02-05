@@ -17,7 +17,7 @@ public class FinderQueue {
     public static ExecutorService SERVICE = Executors.newFixedThreadPool(5);
 
     public RenderType renderType = RenderType.XRAY;
-    public FinderConfig finderProfile = new VanillaProfile();
+    public FinderConfig finderProfile = new FinderConfig();
 
     private FinderQueue() {
         this.clear();
@@ -70,7 +70,7 @@ public class FinderQueue {
 
     public void clear() {
         this.renderType = RenderType.XRAY;
-        this.finderProfile = new VanillaProfile();
+        this.finderProfile = new FinderConfig();
     }
 
     public enum RenderType {

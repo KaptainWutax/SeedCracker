@@ -1,17 +1,28 @@
 package kaptainwutax.seedcracker.finder.profile;
 
-import kaptainwutax.seedcracker.finder.FinderConfig;
+import kaptainwutax.seedcracker.finder.Finder;
 
-public abstract class FinderProfile extends FinderConfig {
+import java.util.HashMap;
+
+public abstract class FinderProfile {
+
+	public final HashMap<Finder.Type, Boolean> typeStates = new HashMap<>();
+
+	protected String author;
+	protected boolean locked;
 
 	public FinderProfile(boolean defaultState) {
-		super(defaultState);
+		for(Finder.Type type: Finder.Type.values()) {
+			this.typeStates.put(type, defaultState);
+		}
 	}
 
-	public abstract String getAuthor();
-	public abstract boolean getLocked();
+	public String getAuthor() {
+		return this.author;
+	}
 
-	public abstract void setAuthor(String author);
-	public abstract void setLocked(boolean locked);
+	public boolean getLocked() {
+		return this.locked;
+	}
 
 }

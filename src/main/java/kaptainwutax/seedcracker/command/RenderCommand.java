@@ -3,6 +3,7 @@ package kaptainwutax.seedcracker.command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -27,13 +28,13 @@ public class RenderCommand extends ClientCommand {
     }
 
     private int printRenderMode() {
-        this.sendFeedback("Current render mode is set to [" + FinderQueue.get().renderType + "].", false);
+        this.sendFeedback("Current render mode is set to [" + FinderQueue.get().renderType + "].", Formatting.AQUA, false);
         return 0;
     }
 
     private int setRenderMode(FinderQueue.RenderType renderType) {
         FinderQueue.get().renderType = renderType;
-        this.sendFeedback("Set render mode to [" + FinderQueue.get().renderType + "].", false);
+        this.sendFeedback("Set render mode to [" + FinderQueue.get().renderType + "].", Formatting.AQUA, false);
         return 0;
     }
 

@@ -1,9 +1,9 @@
 package kaptainwutax.seedcracker.finder.profile;
 
-public class VanillaProfile extends FinderProfile {
+public class NopeProfile extends FinderProfile {
 
-	public VanillaProfile() {
-		super(true);
+	public NopeProfile() {
+		super(false);
 		this.author = "KaptainWutax";
 		this.locked = true;
 	}
