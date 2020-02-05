@@ -4,9 +4,7 @@ import kaptainwutax.seedcracker.finder.population.DesertWellFinder;
 import kaptainwutax.seedcracker.finder.population.DungeonFinder;
 import kaptainwutax.seedcracker.finder.population.EndGatewayFinder;
 import kaptainwutax.seedcracker.finder.population.EndPillarsFinder;
-import kaptainwutax.seedcracker.finder.population.ore.DiamondOreFinder;
 import kaptainwutax.seedcracker.finder.population.ore.EmeraldOreFinder;
-import kaptainwutax.seedcracker.finder.population.ore.InfestedStoneOreFinder;
 import kaptainwutax.seedcracker.finder.structure.*;
 import kaptainwutax.seedcracker.util.FinderBuilder;
 
@@ -81,12 +79,8 @@ public class FinderConfig {
         END_PILLARS(EndPillarsFinder::create, Category.OTHERS),
         END_GATEWAY(EndGatewayFinder::create, Category.OTHERS),
         DUNGEON(DungeonFinder::create, Category.OTHERS),
-        DIAMOND_ORE(DiamondOreFinder::create, Category.ORES),
-        INFESTED_STONE_ORE(InfestedStoneOreFinder::create, Category.ORES),
         EMERALD_ORE(EmeraldOreFinder::create, Category.ORES),
         DESERT_WELL(DesertWellFinder::create, Category.OTHERS),
-        PORTAL_ROOM(PortalRoomFinder::create, Category.OTHERS),
-
         BIOME(BiomeFinder::create, Category.BIOMES);
 
         public final FinderBuilder finderBuilder;
