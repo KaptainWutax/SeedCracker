@@ -17,7 +17,7 @@
 
   Run minecraft with the mod installed and run around in the world. Once the mod has collected enough data, it will start the cracking process automatically and output the seed in chat. For the process to start, you are required to locate atleast 5 combined struture and decorator features, 5 biomes and the end pillars.
   
-  ### Supported Structures
+  ### Supported Structures(from best to worst)
     - Ocean Monument
     - End City
     - Buried Treasure
@@ -26,10 +26,10 @@
     - Swamp Hut
     - Shipwreck
   
-  ### Supported Decorators
-    - Desert Well
-    - End Gateway
+  ### Supported Decorators(from best to worst)
     - Dungeon
+    - End Gateway
+    - Desert Well
     - Emerald Ore
 
 ## Commands
