@@ -18,9 +18,9 @@ public class FinderConfig {
     protected Map<Type, Boolean> typeStates = new HashMap<>();
     protected Map<Type, ConcurrentLinkedQueue<Finder>> activeFinders = new ConcurrentHashMap<>();
 
-    public FinderConfig() {
+    public FinderConfig(boolean defaultState) {
         for(Type type: Type.values()) {
-            this.typeStates.put(type, true);
+            this.typeStates.put(type, defaultState);
         }
     }
 
@@ -69,11 +69,11 @@ public class FinderConfig {
         BURIED_TREASURE(BuriedTreasureFinder::create, Category.STRUCTURES),
         DESERT_TEMPLE(DesertTempleFinder::create, Category.STRUCTURES),
         END_CITY(EndCityFinder::create, Category.STRUCTURES),
-        IGLOO(IglooFinder::create, Category.STRUCTURES),
+        //IGLOO(IglooFinder::create, Category.STRUCTURES),
         JUNGLE_TEMPLE(JungleTempleFinder::create, Category.STRUCTURES),
         MONUMENT(OceanMonumentFinder::create, Category.STRUCTURES),
         SWAMP_HUT(SwampHutFinder::create, Category.STRUCTURES),
-        MANSION(MansionFinder::create, Category.STRUCTURES),
+        //MANSION(MansionFinder::create, Category.STRUCTURES),
         SHIPWRECK(ShipwreckFinder::create, Category.STRUCTURES),
 
         END_PILLARS(EndPillarsFinder::create, Category.OTHERS),
