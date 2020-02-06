@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import kaptainwutax.seedcracker.init.ClientCommands;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;

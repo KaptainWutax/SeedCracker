@@ -1,8 +1,11 @@
-package kaptainwutax.seedcracker.command;
+package kaptainwutax.seedcracker.init;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import kaptainwutax.seedcracker.command.ClientCommand;
+import kaptainwutax.seedcracker.command.FinderCommand;
+import kaptainwutax.seedcracker.command.RenderCommand;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
