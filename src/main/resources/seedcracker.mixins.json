@@ -9,7 +9,9 @@
     "GameRendererMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
-    "ClientPlayerEntityMixin"
+    "ClientPlayerEntityMixin",
+    "GameOptionsMixin",
+    "KeyBindingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

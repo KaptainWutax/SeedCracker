@@ -2,7 +2,10 @@ package kaptainwutax.seedcracker.mixin;
 
 import com.mojang.brigadier.StringReader;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.command.ClientCommands;
+import kaptainwutax.seedcracker.gui.GuiScreen;
+import kaptainwutax.seedcracker.init.ClientCommands;
+import kaptainwutax.seedcracker.init.KeyBindings;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +20,10 @@ public abstract class ClientPlayerEntityMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(CallbackInfo ci) {
         SeedCracker.get().getDataStorage().tick();
+
+        if(MinecraftClient.getInstance().currentScreen == null && KeyBindings.OPEN_MENU.isPressed()) {
+            MinecraftClient.getInstance().openScreen(new GuiScreen("Test"));
+        }
     }
 
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)

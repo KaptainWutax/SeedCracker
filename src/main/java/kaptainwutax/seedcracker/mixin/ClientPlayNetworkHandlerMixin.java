@@ -3,7 +3,7 @@ package kaptainwutax.seedcracker.mixin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.command.ClientCommands;
+import kaptainwutax.seedcracker.init.ClientCommands;
 import kaptainwutax.seedcracker.cracker.storage.HashedSeedData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import net.minecraft.client.MinecraftClient;
