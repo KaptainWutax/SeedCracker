@@ -16,7 +16,7 @@
   "license": "CC0-1.0",
   "icon": "assets/seecracker/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
       "kaptainwutax.seedcracker.SeedCracker"

@@ -7,7 +7,6 @@ import kaptainwutax.seedcracker.finder.population.EndPillarsFinder;
 import kaptainwutax.seedcracker.finder.population.ore.EmeraldOreFinder;
 import kaptainwutax.seedcracker.finder.structure.*;
 import kaptainwutax.seedcracker.render.Renderer;
-import kaptainwutax.seedcracker.util.FinderBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;

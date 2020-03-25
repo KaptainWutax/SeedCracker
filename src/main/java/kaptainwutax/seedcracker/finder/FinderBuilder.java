@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.util;
+package kaptainwutax.seedcracker.finder;
 
 import kaptainwutax.seedcracker.finder.Finder;
 import net.minecraft.util.math.ChunkPos;

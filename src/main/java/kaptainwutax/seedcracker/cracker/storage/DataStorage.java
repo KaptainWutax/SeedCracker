@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 
 public class DataStorage {
 
-	public static Comparator<SeedData> SEED_DATA_COMPARATOR = (s1, s2) -> {
+	public static final Comparator<SeedData> SEED_DATA_COMPARATOR = (s1, s2) -> {
 		boolean isStructure1 = s1 instanceof StructureData;
 		boolean isStructure2 = s2 instanceof StructureData;
 
@@ -106,6 +106,10 @@ public class DataStorage {
 		}
 
 		return bits;
+	}
+
+	public double getWantedBits() {
+		return 48.0D;
 	}
 
 	public void clear() {

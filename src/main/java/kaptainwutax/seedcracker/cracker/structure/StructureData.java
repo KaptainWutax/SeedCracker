@@ -16,18 +16,18 @@ public class StructureData extends SeedData {
     public int regionZ;
     public int offsetX;
     public int offsetZ;
-    private final int salt;
+    private long baseRegionSeed;
     private FeatureType<StructureData> featureType;
 
     public StructureData(ChunkPos chunkPos, FeatureType<StructureData> featureType) {
         this.featureType = featureType;
-        this.salt = this.featureType.salt;
         this.featureType.build(this, chunkPos);
+        this.baseRegionSeed = Seeds.setRegionSeed(null, 0, this.regionX, this.regionZ, this.featureType.salt);
     }
 
     @Override
     public boolean test(long structureSeed, Rand rand) {
-        Seeds.setRegionSeed(rand, structureSeed, this.regionX, this.regionZ, this.salt);
+        rand.setSeed(this.baseRegionSeed + structureSeed, true);
         return this.featureType.test(rand, this, structureSeed);
     }
 

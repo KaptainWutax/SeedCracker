@@ -3,6 +3,7 @@ package kaptainwutax.seedcracker.init;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import kaptainwutax.seedcracker.command.BitsCommand;
 import kaptainwutax.seedcracker.command.ClientCommand;
 import kaptainwutax.seedcracker.command.FinderCommand;
 import kaptainwutax.seedcracker.command.RenderCommand;
@@ -23,10 +24,12 @@ public class ClientCommands {
 
     public static RenderCommand RENDER;
     public static FinderCommand FINDER;
+    public static BitsCommand BITS;
 
     static {
         COMMANDS.add(RENDER = new RenderCommand());
         COMMANDS.add(FINDER = new FinderCommand());
+        COMMANDS.add(BITS = new BitsCommand());
     }
 
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {

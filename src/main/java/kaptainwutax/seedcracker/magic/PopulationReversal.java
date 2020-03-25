@@ -7,6 +7,7 @@ import kaptainwutax.seedcracker.util.math.LCG;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class PopulationReversal {
 
@@ -14,7 +15,7 @@ public class PopulationReversal {
 	private static final LCG SKIP_4 = Rand.JAVA_LCG.combine(4);
 
 	public static ArrayList<Long> getWorldSeeds(long populationSeed, int x, int z) {
-		populationSeed ^= Rand.JAVA_LCG.multiplier;
+		populationSeed &= MagicMath.MASK_48;
 		ArrayList<Long> worldSeeds = new ArrayList<>();
 
 		if (x == 0 && z == 0) {
@@ -45,6 +46,7 @@ public class PopulationReversal {
 
 			//We need to handle the four different cases of the effect the two | 1s have on the seed
 			long magic = x * ((SKIP_2.multiplier * ((c ^ Rand.JAVA_LCG.multiplier) & MagicMath.MASK_16) + SKIP_2.addend) >>> 16) + z * ((SKIP_4.multiplier * ((c ^ Rand.JAVA_LCG.multiplier) & MagicMath.MASK_16) + SKIP_4.addend) >>> 16);
+
 			addWorldSeed(worldSeeds, target - (magic & MagicMath.MASK_16), multTrailingZeroes, firstMultInv, c, e, x, z, populationSeed); //case both nextLongs were odd
 			addWorldSeed(worldSeeds, target - ((magic + x) & MagicMath.MASK_16), multTrailingZeroes, firstMultInv, c, e, x, z, populationSeed); //case where x nextLong even
 			addWorldSeed(worldSeeds, target - ((magic + z) & MagicMath.MASK_16), multTrailingZeroes, firstMultInv, c, e, x, z, populationSeed); //case where z nextLong even
@@ -59,7 +61,7 @@ public class PopulationReversal {
 				z*((((SKIP_4.multiplier * ((k ^ Rand.JAVA_LCG.multiplier) & MagicMath.MASK_32) + SKIP_4.addend) & MagicMath.MASK_48) >>> 16) | 1L)) >>> 16) & MagicMath.MASK_16;
 	}
 
-	public static void addWorldSeed(List<Long> worldSeeds, long firstAddend, int multTrailingZeroes, long firstMultInv, long c, long e, int x, int z, long populationSeed){
+	public static void addWorldSeed(List<Long> worldSeeds, long firstAddend, int multTrailingZeroes, long firstMultInv, long c, long e, int x, int z, long populationSeed) {
 		if(MagicMath.countTrailingZeroes(firstAddend) >= multTrailingZeroes) { //Does there exist a set of 16 bits which work for bits 17-32
 			long b = ((((firstMultInv * firstAddend)>>> multTrailingZeroes) ^ (Rand.JAVA_LCG.multiplier >> 16)) & ((1L << (16 - multTrailingZeroes)) - 1));
 
@@ -72,7 +74,7 @@ public class PopulationReversal {
 					long a = ((((firstMultInv * (target2 - secondAddend)) >>> multTrailingZeroes) ^ (Rand.JAVA_LCG.multiplier >> 32)) & ((1L << (16-multTrailingZeroes)) - 1));
 
 					for(; a < (1L << 16); a += (1L << (16 - multTrailingZeroes))) { //if the previous multiplier had a power of 2 divisor, we get multiple solutions for a
-						if(Seeds.setPopulationSeed(null, (a << 32) + k, x, z) == populationSeed) { //lazy check if the test has succeeded
+						if((Seeds.setPopulationSeed(null, (a << 32) + k, x, z) & MagicMath.MASK_48) == populationSeed) { //lazy check if the test has succeeded
 							worldSeeds.add((a << 32) + k);
 						}
 					}
@@ -85,6 +87,16 @@ public class PopulationReversal {
 	* Left as reference if I need to test this mess again. :P
 	* */
 	public static void main(String[] args) {
+		LCG lcg = Rand.JAVA_LCG.combine(760);
+		long popSeed = Seeds.setPopulationSeed(null,170588374350891L, -121 << 4, 42 << 4);
+		Rand rand = new Rand(popSeed + 20001L, true);
+		rand.setSeed(lcg.nextSeed(rand.getSeed()), false);
+		System.out.println(rand.getSeed());
+
+		IntStream.range(0, 12).forEach(i -> System.out.println(rand.nextFloat()));
+
+		System.out.println("==========================");
+		System.out.println(PopulationReversal.getWorldSeeds(119099647043467L, -119 << 4, -46 << 4));
 		long seed;
 		int x , z;
 		ArrayList<Long> seeds;
@@ -101,11 +113,11 @@ public class PopulationReversal {
 		int failcount = 0;
 		System.out.println("start");
 		long start = System.currentTimeMillis();
-		for(int i = 0; i < 100000; i++){
+		for(int i = 0; i < 100000; i++) {
 			seed = r.nextLong() & ((1L << 48)-1);
-			x = r.nextInt(16) - 8;
-			z = r.nextInt(16) - 8;
-			seeds = getWorldSeeds(Seeds.setPopulationSeed(null, seed, x, z) ^ Rand.JAVA_LCG.multiplier, x, z);
+			x = r.nextInt(1000) - 8;
+			z = r.nextInt(1000) - 8;
+			seeds = getWorldSeeds(Seeds.setPopulationSeed(null, seed, x << 4, z << 4), x << 4, z << 4);
 
 			if (!seeds.contains(seed)) {
 				System.out.println(seed);

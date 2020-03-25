@@ -32,6 +32,14 @@ public class Rand implements Cloneable {
         return (int)(this.seed >>> (48 - bits));
     }
 
+    public void advance(int calls) {
+        this.advance(JAVA_LCG.combine(calls));
+    }
+
+    public void advance(LCG skip) {
+        this.seed = skip.nextSeed(this.seed);
+    }
+
     public boolean nextBoolean() {
         return this.next(1) == 1;
     }

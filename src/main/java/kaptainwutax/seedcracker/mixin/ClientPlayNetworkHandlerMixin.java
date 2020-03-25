@@ -29,7 +29,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Shadow private ClientWorld world;
     @Shadow private CommandDispatcher<CommandSource> commandDispatcher;
 
-    @Inject(method = "onChunkData", at = @At("RETURN"))
+    @Inject(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
     private void onChunkData(ChunkDataS2CPacket packet, CallbackInfo ci) {
         int chunkX = packet.getX();
         int chunkZ = packet.getZ();
@@ -48,7 +48,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         ClientCommands.registerCommands((CommandDispatcher<ServerCommandSource>)(Object)this.commandDispatcher);
     }
 
-    @Inject(method = "onPlayerRespawn", at = @At("HEAD"))
+    @Inject(method = "onPlayerRespawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
     public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
         SeedCracker.get().getDataStorage().addHashedSeedData(new HashedSeedData(packet.method_22425()));
     }

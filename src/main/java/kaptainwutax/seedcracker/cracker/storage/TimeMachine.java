@@ -79,7 +79,9 @@ public class TimeMachine {
 	}
 
 	protected boolean pokeStructures() {
-		if(this.pillarSeeds == null || this.dataStorage.getBaseBits() < 54.0D)return false;
+		if(this.pillarSeeds == null || this.structureSeeds != null ||
+				this.dataStorage.getBaseBits() < this.dataStorage.getWantedBits())return false;
+
 		this.structureSeeds = new ArrayList<>();
 
 		SeedData[] cache = new SeedData[this.dataStorage.baseSeedData.size()];
@@ -115,8 +117,7 @@ public class TimeMachine {
 						boolean matches = true;
 
 						for(SeedData baseSeedDatum: cache) {
-							boolean test = baseSeedDatum.test(seed, rand);
-							if(!test) {
+							if(!baseSeedDatum.test(seed, rand)) {
 								matches = false;
 								break;
 							}
