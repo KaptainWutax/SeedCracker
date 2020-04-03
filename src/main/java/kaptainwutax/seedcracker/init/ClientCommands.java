@@ -3,10 +3,7 @@ package kaptainwutax.seedcracker.init;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import kaptainwutax.seedcracker.command.BitsCommand;
-import kaptainwutax.seedcracker.command.ClientCommand;
-import kaptainwutax.seedcracker.command.FinderCommand;
-import kaptainwutax.seedcracker.command.RenderCommand;
+import kaptainwutax.seedcracker.command.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
@@ -24,12 +21,12 @@ public class ClientCommands {
 
     public static RenderCommand RENDER;
     public static FinderCommand FINDER;
-    public static BitsCommand BITS;
+    public static DataCommand DATA;
 
     static {
         COMMANDS.add(RENDER = new RenderCommand());
         COMMANDS.add(FINDER = new FinderCommand());
-        COMMANDS.add(BITS = new BitsCommand());
+        COMMANDS.add(DATA = new DataCommand());
     }
 
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {

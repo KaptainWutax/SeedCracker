@@ -3,15 +3,19 @@ package kaptainwutax.seedcracker.mixin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.biome.GeneratorTypeData;
 import kaptainwutax.seedcracker.init.ClientCommands;
-import kaptainwutax.seedcracker.cracker.storage.HashedSeedData;
+import kaptainwutax.seedcracker.cracker.biome.HashedSeedData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
+import kaptainwutax.seedcracker.util.Log;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.ChunkDataS2CPacket;
 import net.minecraft.client.network.packet.CommandTreeS2CPacket;
+import net.minecraft.client.network.packet.GameJoinS2CPacket;
 import net.minecraft.client.network.packet.PlayerRespawnS2CPacket;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.command.CommandSource;
@@ -29,7 +33,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Shadow private ClientWorld world;
     @Shadow private CommandDispatcher<CommandSource> commandDispatcher;
 
-    @Inject(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+    @Inject(method = "onChunkData", at = @At(value = "TAIL"))
     private void onChunkData(ChunkDataS2CPacket packet, CallbackInfo ci) {
         int chunkX = packet.getX();
         int chunkZ = packet.getZ();
@@ -48,9 +52,26 @@ public abstract class ClientPlayNetworkHandlerMixin {
         ClientCommands.registerCommands((CommandDispatcher<ServerCommandSource>)(Object)this.commandDispatcher);
     }
 
-    @Inject(method = "onPlayerRespawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+    @Inject(method = "onGameJoin", at = @At(value = "TAIL"))
+    public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
+        GeneratorTypeData generatorTypeData = new GeneratorTypeData(packet.getGeneratorType());
+
+        Log.warn("Fetched the generator type [" +
+                I18n.translate(generatorTypeData.getGeneratorType().getTranslationKey()).toUpperCase() + "].");
+
+        if(!SeedCracker.get().getDataStorage().addGeneratorTypeData(generatorTypeData)) {
+            Log.error("THIS GENERATOR IS NOT SUPPORTED!");
+            Log.error("Overworld biome search WILL NOT run.");
+        }
+    }
+
+    @Inject(method = "onPlayerRespawn", at = @At(value = "TAIL"))
     public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-        SeedCracker.get().getDataStorage().addHashedSeedData(new HashedSeedData(packet.method_22425()));
+        HashedSeedData hashedSeedData = new HashedSeedData(packet.method_22425());
+
+        if(SeedCracker.get().getDataStorage().addHashedSeedData(hashedSeedData)) {
+            Log.warn("Fetched hashed world seed [" + hashedSeedData.getHashedSeed() + "].");
+        }
     }
 
 }

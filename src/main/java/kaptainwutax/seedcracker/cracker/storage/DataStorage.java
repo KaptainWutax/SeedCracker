@@ -1,10 +1,12 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
 import io.netty.util.internal.ConcurrentSet;
-import kaptainwutax.seedcracker.cracker.BiomeData;
+import kaptainwutax.seedcracker.cracker.biome.BiomeData;
 import kaptainwutax.seedcracker.cracker.PillarData;
+import kaptainwutax.seedcracker.cracker.biome.GeneratorTypeData;
+import kaptainwutax.seedcracker.cracker.biome.HashedSeedData;
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.util.Log;
+import net.minecraft.world.level.LevelGeneratorType;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -16,6 +18,7 @@ public class DataStorage {
 		boolean isStructure1 = s1 instanceof StructureData;
 		boolean isStructure2 = s2 instanceof StructureData;
 
+		//Structures always come before decorators.
 		if(isStructure1 != isStructure2) {
 			return isStructure2 ? 1: -1;
 		}
@@ -25,7 +28,7 @@ public class DataStorage {
 		}
 
 		double diff = s2.getBits() - s1.getBits();
-		return diff == 0.0D ? 1 : (int)Math.signum(diff);
+		return diff == 0 ? 1 : (int)Math.signum(diff);
 	};
 
 	protected TimeMachine timeMachine = new TimeMachine(this);
@@ -34,6 +37,7 @@ public class DataStorage {
 	protected PillarData pillarData = null;
 	protected ScheduledSet<SeedData> baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);
 	protected ScheduledSet<BiomeData> biomeSeedData = new ScheduledSet<>(null);
+	protected GeneratorTypeData generatorTypeData = null;
 	protected HashedSeedData hashedSeedData = null;
 
 	public void tick() {
@@ -79,9 +83,13 @@ public class DataStorage {
 		return true;
 	}
 
+	public synchronized boolean addGeneratorTypeData(GeneratorTypeData generatorTypeData) {
+		this.generatorTypeData = generatorTypeData;
+		return generatorTypeData.isSupported();
+	}
+
 	public synchronized boolean addHashedSeedData(HashedSeedData hashedSeedData) {
 		if(this.hashedSeedData == null || this.hashedSeedData.getHashedSeed() != hashedSeedData.getHashedSeed()) {
-			Log.warn("Fetched hashed world seed [" + hashedSeedData.getHashedSeed() + "].");
 			this.hashedSeedData = hashedSeedData;
 			this.schedule(hashedSeedData::onDataAdded);
 			return true;
@@ -109,11 +117,10 @@ public class DataStorage {
 	}
 
 	public double getWantedBits() {
-		return 48.0D;
+		return 32.0D;
 	}
 
 	public void clear() {
-		System.out.println("Clearing data storage.");
 		this.scheduledData = new ConcurrentSet<>();
 		this.pillarData = null;
 		this.baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);

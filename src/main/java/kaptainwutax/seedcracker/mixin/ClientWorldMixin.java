@@ -16,8 +16,7 @@ public abstract class ClientWorldMixin {
 
     @Inject(method = "disconnect", at = @At("HEAD"))
     private void disconnect(CallbackInfo ci) {
-        SeedCracker.get().getDataStorage().clear();
-        FinderQueue.get().clear();
+        SeedCracker.get().reset();
     }
 
     @Inject(method = "getGeneratorStoredBiome", at = @At("HEAD"), cancellable = true)

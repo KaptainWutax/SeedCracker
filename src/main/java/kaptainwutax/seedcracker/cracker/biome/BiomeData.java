@@ -1,12 +1,12 @@
-package kaptainwutax.seedcracker.cracker;
+package kaptainwutax.seedcracker.cracker.biome;
 
+import kaptainwutax.seedcracker.cracker.biome.source.IFakeBiomeSource;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.ISeedStorage;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 
 import java.util.function.Predicate;
 
@@ -33,12 +33,12 @@ public class BiomeData implements ISeedStorage {
         this.biomePredicate = biomePredicate;
     }
 
-    public boolean test(FakeBiomeSource source) {
+    public boolean test(IFakeBiomeSource source) {
         if(this.biome == null) {
-            return this.biomePredicate.test(sampleBiome(source, this.pos.getX(), this.pos.getY(), this.pos.getZ()));
+            return this.biomePredicate.test(source.sample(this.pos));
         }
 
-        return sampleBiome(source, this.pos.getX(), this.pos.getY(), this.pos.getZ()) == this.biome;
+        return source.sample(this.pos) == this.biome;
     }
 
     public BlockPos getPos() {
@@ -47,10 +47,6 @@ public class BiomeData implements ISeedStorage {
 
     public Biome getBiome() {
         return this.biome;
-    }
-
-    public static Biome sampleBiome(FakeBiomeSource source, int x, int y, int z) {
-        return VoronoiBiomeAccessType.INSTANCE.getBiome(source.getHashedSeed(), x, y, z, source);
     }
 
     @Override

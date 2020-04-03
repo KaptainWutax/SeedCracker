@@ -1,7 +1,7 @@
 package kaptainwutax.seedcracker.finder;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.BiomeData;
+import kaptainwutax.seedcracker.cracker.biome.BiomeData;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;

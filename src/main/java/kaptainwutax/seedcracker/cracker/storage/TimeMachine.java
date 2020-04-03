@@ -1,10 +1,11 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
-import kaptainwutax.seedcracker.cracker.BiomeData;
-import kaptainwutax.seedcracker.cracker.FakeBiomeSource;
+import kaptainwutax.seedcracker.cracker.biome.BiomeData;
+import kaptainwutax.seedcracker.cracker.biome.source.OverworldBiomeSource;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
+import net.minecraft.world.level.LevelGeneratorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,13 +157,15 @@ public class TimeMachine {
 
 	protected boolean pokeBiomes() {
 		if(this.structureSeeds == null || this.worldSeeds != null)return false;
-		if(this.dataStorage.hashedSeedData == null && this.dataStorage.biomeSeedData.size() < 5)return false;
+		if(this.dataStorage.hashedSeedData == null &&
+				(this.dataStorage.biomeSeedData.size() < 5 || !this.dataStorage.generatorTypeData.isSupported()))return false;
 
 		this.worldSeeds = new ArrayList<>();
 		Log.debug("====================================");
-		Log.warn("Looking for world seeds...");
 
 		if(this.dataStorage.hashedSeedData != null) {
+			Log.warn("Looking for world seeds...");
+
 			for(long structureSeed: this.structureSeeds) {
 				for(long upperBits = 0; upperBits < 1 << 16; upperBits++) {
 					long worldSeed = (upperBits << 48) | structureSeed;
@@ -188,37 +191,42 @@ public class TimeMachine {
 			}
 		}
 
-		Log.warn("Looking for world seeds...");
+		if(this.dataStorage.generatorTypeData.isSupported()) {
+			Log.warn("Looking for world seeds...");
 
-		for(long structureSeed: this.structureSeeds) {
-			for(long upperBits = 0; upperBits < 1 << 16; upperBits++) {
-				long worldSeed = (upperBits << 48) | structureSeed;
+			for(long structureSeed : this.structureSeeds) {
+				for(long upperBits = 0; upperBits < 1 << 16; upperBits++) {
+					long worldSeed = (upperBits << 48) | structureSeed;
 
-				FakeBiomeSource source = new FakeBiomeSource(worldSeed);
-				boolean matches = true;
+					OverworldBiomeSource source = new OverworldBiomeSource(
+							worldSeed, this.dataStorage.generatorTypeData.getGeneratorType()
+					);
 
-				for(BiomeData biomeSeedDatum: this.dataStorage.biomeSeedData) {
-					if(!biomeSeedDatum.test(source)) {
-						matches = false;
-						break;
+					boolean matches = true;
+
+					for(BiomeData biomeSeedDatum : this.dataStorage.biomeSeedData) {
+						if(!biomeSeedDatum.test(source)) {
+							matches = false;
+							break;
+						}
+					}
+
+					if(matches) {
+						this.worldSeeds.add(worldSeed);
+						Log.warn("Found world seed [" + worldSeed + "].");
+					}
+
+					if(this.shouldTerminate) {
+						return false;
 					}
 				}
-
-				if(matches) {
-					this.worldSeeds.add(worldSeed);
-					Log.warn("Found world seed [" + worldSeed + "].");
-				}
-
-				if(this.shouldTerminate) {
-					return false;
-				}
 			}
-		}
 
-		if(!this.worldSeeds.isEmpty()) {
-			Log.warn("Finished searching for world seeds.");
-		} else {
-			Log.error("Finished search with no results.");
+			if(!this.worldSeeds.isEmpty()) {
+				Log.warn("Finished searching for world seeds.");
+			} else {
+				Log.error("Finished search with no results.");
+			}
 		}
 
 		return true;

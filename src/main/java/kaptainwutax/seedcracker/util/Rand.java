@@ -9,6 +9,8 @@ public class Rand implements Cloneable {
     public static final LCG JAVA_LCG = new LCG(0x5DEECE66DL, 0xBL, 1L << 48);
 
     private long seed;
+    private boolean haveNextNextGaussian = false;
+    private double nextNextGaussian;
 
     public Rand(long seed) {
         this.setSeed(seed, true);
@@ -25,6 +27,7 @@ public class Rand implements Cloneable {
     public void setSeed(long seed, boolean scramble) {
         this.seed = seed ^ (scramble ? JAVA_LCG.multiplier : 0L);
         this.seed &= JAVA_LCG.modulo - 1;
+        this.haveNextNextGaussian = false;
     }
 
     public int next(int bits) {
@@ -76,7 +79,25 @@ public class Rand implements Cloneable {
     }
 
     public double nextDouble() {
-        return (((long)this.next(27) << 27) + this.next(27)) / (double)(1L << 54);
+        return (((long)this.next(26) << 27) + this.next(27)) / (double)(1L << 53);
+    }
+
+    public double nextGaussian() {
+        if(this.haveNextNextGaussian) {
+            this.haveNextNextGaussian = false;
+            return this.nextNextGaussian;
+        }
+
+        double v1, v2, s;
+        do {
+            v1 = 2 * nextDouble() - 1;
+            v2 = 2 * nextDouble() - 1;
+            s = v1 * v1 + v2 * v2;
+        } while (s >= 1 || s == 0);
+        double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s)/s);
+        this.nextNextGaussian = v2 * multiplier;
+        haveNextNextGaussian = true;
+        return v1 * multiplier;
     }
 
     public Random toRandom() {
