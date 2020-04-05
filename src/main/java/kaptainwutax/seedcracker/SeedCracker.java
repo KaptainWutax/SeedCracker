@@ -20,7 +20,7 @@ public class SeedCracker implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
-		SeedCracker.main(null);
+		//SeedCracker.main(null);
 	}
 
 	public static SeedCracker get() {
