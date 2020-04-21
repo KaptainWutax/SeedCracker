@@ -40,6 +40,8 @@ public abstract class FeatureType<T extends StructureData> {
 
 	public abstract boolean test(Rand rand, T data, long structureSeed);
 
+	public abstract ChunkPos getInRegion(Rand rand, long structureSeed, int regionX, int regionZ);
+
 	public abstract double getBits();
 
 }

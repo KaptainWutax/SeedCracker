@@ -6,6 +6,7 @@ import kaptainwutax.seedcracker.cracker.structure.type.RarityType;
 import kaptainwutax.seedcracker.cracker.structure.type.TriangularType;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.Seeds;
+import net.minecraft.util.math.ChunkPos;
 
 public class StructureFeatures {
 
@@ -53,6 +54,13 @@ public class StructureFeatures {
 		}
 
 		@Override
+		public ChunkPos getInRegion(Rand rand, long structureSeed, int regionX, int regionZ) {
+			Seeds.setWeakSeed(rand, structureSeed, regionX, regionZ);
+			if(rand.nextInt(3) != 0)return null;
+			return new ChunkPos(((regionX >> 4) << 4) + 4 + rand.nextInt(8), ((regionX >> 4) << 4) + 4 + rand.nextInt(8));
+		}
+
+		@Override
 		public double getBits() {
 			return this.bits;
 		}
@@ -65,6 +73,13 @@ public class StructureFeatures {
 		public boolean test(Rand rand, StructureData data, long structureSeed) {
 			Seeds.setStructureStartSeed(rand, structureSeed, data.chunkX, data.chunkZ);
 			return rand.nextDouble() < 0.004D;
+		}
+
+		@Override
+		public ChunkPos getInRegion(Rand rand, long structureSeed, int regionX, int regionZ) {
+			Seeds.setStructureStartSeed(rand, structureSeed, regionX, regionZ);
+			if(rand.nextDouble() >= 0.004D)return null;
+			return new ChunkPos(regionX, regionZ);
 		}
 
 		@Override

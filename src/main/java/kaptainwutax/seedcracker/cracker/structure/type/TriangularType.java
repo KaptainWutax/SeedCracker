@@ -3,6 +3,8 @@ package kaptainwutax.seedcracker.cracker.structure.type;
 
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedcracker.util.Seeds;
+import net.minecraft.util.math.ChunkPos;
 
 public class TriangularType extends FeatureType<StructureData> {
 
@@ -19,6 +21,13 @@ public class TriangularType extends FeatureType<StructureData> {
 	public boolean test(Rand rand, StructureData data, long structureSeed) {
 		return (rand.nextInt(this.peak) + rand.nextInt(this.peak)) / 2 == data.offsetX
 				&& (rand.nextInt(this.peak) + rand.nextInt(this.peak)) / 2 == data.offsetZ;
+	}
+
+	@Override
+	public ChunkPos getInRegion(Rand rand, long structureSeed, int regionX, int regionZ) {
+		Seeds.setRegionSeed(rand, structureSeed, regionX, regionZ, this.salt);
+		return new ChunkPos((rand.nextInt(this.peak) + rand.nextInt(this.peak)) / 2,
+								(rand.nextInt(this.peak) + rand.nextInt(this.peak)));
 	}
 
 	/*

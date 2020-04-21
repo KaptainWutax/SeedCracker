@@ -2,6 +2,8 @@ package kaptainwutax.seedcracker.cracker.structure.type;
 
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedcracker.util.Seeds;
+import net.minecraft.util.math.ChunkPos;
 
 public class RarityType extends FeatureType<StructureData> {
 
@@ -17,6 +19,13 @@ public class RarityType extends FeatureType<StructureData> {
 	@Override
 	public boolean test(Rand rand, StructureData data, long structureSeed) {
 		return rand.nextFloat() < this.rarity;
+	}
+
+	@Override
+	public ChunkPos getInRegion(Rand rand, long structureSeed, int regionX, int regionZ) {
+		Seeds.setRegionSeed(rand, structureSeed, regionX, regionZ, this.salt);
+		if(rand.nextFloat() >= this.rarity)return null;
+		return new ChunkPos(regionX, regionZ);
 	}
 
 	@Override
