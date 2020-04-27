@@ -46,11 +46,11 @@ public class FinderConfig {
         this.activeFinders.get(type).add(finder);
     }
 
-    public boolean getTypeState(Finder.Type type) {
+    public boolean getActive(Finder.Type type) {
         return this.finderProfile.typeStates.get(type);
     }
 
-    public boolean setTypeState(Finder.Type type, boolean flag) {
+    public boolean setActive(Finder.Type type, boolean flag) {
         return this.finderProfile.setTypeState(type, flag);
     }
 

@@ -5,6 +5,7 @@ import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -73,7 +74,7 @@ public class BuriedTreasureFinder extends BlockFinder {
 
         result.forEach(pos -> {
             if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.BURIED_TREASURE))) {
-                this.renderers.add(new Cube(pos, new Vector4f(1.0f, 1.0f, 0.0f, 1.0f)));
+                this.renderers.add(new Cube(pos, new Color(255, 255, 0)));
             }
         });
 

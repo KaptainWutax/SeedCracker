@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.block.enums.WireConnection;
@@ -36,7 +37,7 @@ public class JungleTempleFinder extends AbstractTempleFinder {
 
             positions.forEach(pos -> {
                 if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.JUNGLE_TEMPLE))) {
-                    this.addRenderers(pieceFinder, pos, new Vector4f(1.0f, 0.0f, 1.0f, 1.0f));
+                    this.addRenderers(pieceFinder, pos, new Color(255, 0, 255));
                 }
             });
         });

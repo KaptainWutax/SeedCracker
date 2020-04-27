@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
@@ -46,8 +47,8 @@ public class IglooFinder extends AbstractTempleFinder {
 
             positions.forEach(pos -> {
                 if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.IGLOO))) {
-                    this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)));
-                    this.renderers.add(new Cube(pos, new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)));
+                    this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(0, 255, 255)));
+                    this.renderers.add(new Cube(pos, new Color(0, 255, 255)));
                 }
             });
         });

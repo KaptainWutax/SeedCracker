@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
@@ -59,8 +60,8 @@ public class OceanMonumentFinder extends Finder {
                 ChunkPos monumentStart = new ChunkPos(this.chunkPos.x + 1, this.chunkPos.z + 1);
 
                 if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(monumentStart, StructureFeatures.OCEAN_MONUMENT))) {
-                    this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
-                    this.renderers.add(new Cube(monumentStart.getCenterBlockPos().add(0, pos.getY(), 0), new Vector4f(0.0f, 0.0f, 1.0f, 1.0f)));
+                    this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(0, 0, 255)));
+                    this.renderers.add(new Cube(monumentStart.getCenterBlockPos().add(0, pos.getY(), 0), new Color(0, 0, 255)));
                 }
             });
         });

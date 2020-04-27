@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.population.DesertWellData;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.finder.structure.PieceFinder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
@@ -50,8 +51,8 @@ public class DesertWellFinder extends PieceFinder {
 		result.forEach(pos -> {
 			pos = pos.add(2, 1, 2);
 			if(SeedCracker.get().getDataStorage().addBaseData(new DesertWellData(new ChunkPos(pos), biome, pos))) {
-				this.renderers.add(new Cuboid(pos.add(-2, -1, -2), SIZE, new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
-				this.renderers.add(new Cube(pos, new Vector4f(0.5f, 0.5f, 1.0f, 1.0f)));
+				this.renderers.add(new Cuboid(pos.add(-2, -1, -2), SIZE, new Color(128, 128, 255)));
+				this.renderers.add(new Cube(pos, new Color(128, 128, 255)));
 			}
 		});
 

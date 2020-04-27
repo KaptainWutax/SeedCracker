@@ -5,7 +5,6 @@ import kaptainwutax.seedcracker.cracker.biome.source.OverworldBiomeSource;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
-import net.minecraft.world.level.LevelGeneratorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,37 +22,30 @@ public class TimeMachine {
 	public boolean isRunning = false;
 	public boolean shouldTerminate = false;
 
-	protected List<Integer> pillarSeeds = null;
-	protected List<Long> structureSeeds = null;
-	protected List<Long> worldSeeds = null;
+	public List<Integer> pillarSeeds = null;
+	public List<Long> structureSeeds = null;
+	public List<Long> worldSeeds = null;
 
 	public TimeMachine(DataStorage dataStorage) {
 		this.dataStorage = dataStorage;
 	}
 
 	public void poke(Phase phase) {
-		if(this.isRunning) {
-			return;
-		}
-
 		this.isRunning = true;
+
 		final Phase[] finalPhase = {phase};
 
-		SERVICE.submit(() -> {
-			while(finalPhase[0] != null && !this.shouldTerminate) {
-				if(finalPhase[0] == Phase.PILLARS) {
-					if(!this.pokePillars())break;
-				} else if(finalPhase[0] == Phase.STRUCTURES) {
-					if(!this.pokeStructures())break;
-				} else if(finalPhase[0] == Phase.BIOMES) {
-					if(!this.pokeBiomes())break;
-				}
-
-				finalPhase[0] = finalPhase[0].nextPhase();
+		while(finalPhase[0] != null && !this.shouldTerminate) {
+			if(finalPhase[0] == Phase.PILLARS) {
+				if(!this.pokePillars())break;
+			} else if(finalPhase[0] == Phase.STRUCTURES) {
+				if(!this.pokeStructures())break;
+			} else if(finalPhase[0] == Phase.BIOMES) {
+				if(!this.pokeBiomes())break;
 			}
 
-			this.isRunning = false;
-		});
+			finalPhase[0] = finalPhase[0].nextPhase();
+		}
 	}
 
 	protected boolean pokePillars() {

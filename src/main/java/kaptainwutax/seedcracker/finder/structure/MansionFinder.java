@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
 import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
@@ -63,8 +64,8 @@ public class MansionFinder extends Finder {
 
             positions.forEach(pos -> {
                 if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.WOODLAND_MANSION))) {
-                    this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Vector4f(0.4f, 0.26f, 0.13f, 1.0f)));
-                    this.renderers.add(new Cube(this.chunkPos.getCenterBlockPos().add(0, pos.getY(), 0), new Vector4f(0.4f, 0.26f, 0.13f, 1.0f)));
+                    this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(102, 66, 33)));
+                    this.renderers.add(new Cube(this.chunkPos.getCenterBlockPos().add(0, pos.getY(), 0), new Color(102, 66, 33)));
                 }
             });
         });

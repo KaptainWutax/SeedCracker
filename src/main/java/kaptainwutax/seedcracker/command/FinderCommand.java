@@ -42,7 +42,7 @@ public class FinderCommand extends ClientCommand {
     }
 
     private int printFinderType(Finder.Type finderType) {
-        this.sendFeedback("Finder " + finderType + " is set to [" + String.valueOf(FinderQueue.get().finderProfile.getTypeState(finderType)).toUpperCase() + "].", Formatting.AQUA,false);
+        this.sendFeedback("Finder " + finderType + " is set to [" + String.valueOf(FinderQueue.get().finderProfile.getActive(finderType)).toUpperCase() + "].", Formatting.AQUA,false);
         return 0;
     }
 
@@ -52,7 +52,7 @@ public class FinderCommand extends ClientCommand {
     }
 
     private int setFinderType(Finder.Type finderType, boolean flag) {
-        if(FinderQueue.get().finderProfile.setTypeState(finderType, flag)) {
+        if(FinderQueue.get().finderProfile.setActive(finderType, flag)) {
             this.sendFeedback("Finder " + finderType + " has been set to [" + String.valueOf(flag).toUpperCase() + "].", Formatting.AQUA, false);
         } else {
             this.sendFeedback("Your current finder profile is locked and cannot be modified. Please make a copy first.", Formatting.RED, false);

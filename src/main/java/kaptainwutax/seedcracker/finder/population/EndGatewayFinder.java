@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.population.EndGatewayData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -43,7 +44,7 @@ public class EndGatewayFinder extends BlockFinder {
                 newResult.add(pos);
 
                 if(SeedCracker.get().getDataStorage().addBaseData(new EndGatewayData(this.chunkPos, biome, pos, height))) {
-                    this.renderers.add(new Cuboid(pos.add(-1, -2, -1), pos.add(2, 3, 2), new Vector4f(0.4f, 0.4f, 0.82f, 1.0f)));
+                    this.renderers.add(new Cuboid(pos.add(-1, -2, -1), pos.add(2, 3, 2), new Color(102, 102, 210)));
                 }
             }
         });

@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.population.EmeraldOreData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.math.Vector4f;
@@ -37,7 +38,7 @@ public class EmeraldOreFinder extends BlockFinder {
 
         if(!result.isEmpty() && SeedCracker.get().getDataStorage().addBaseData(new EmeraldOreData(this.chunkPos, biome, result))) {
             //TODO: support more ores.
-            this.renderers.add(new Cube(result.get(0), new Vector4f(0.0f, 1.0f, 0.0f, 1.0f)));
+            this.renderers.add(new Cube(result.get(0), new Color(0, 255, 0)));
         }
 
         return result;

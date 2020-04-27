@@ -45,9 +45,19 @@ public class DataStorage {
 			this.baseSeedData.dump();
 			this.biomeSeedData.dump();
 
-			this.scheduledData.removeIf(c -> {
-				c.accept(this);
-				return true;
+			this.timeMachine.isRunning = true;
+
+			TimeMachine.SERVICE.submit(() -> {
+				try {
+					this.scheduledData.removeIf(c -> {
+						c.accept(this);
+						return true;
+					});
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+
+				this.timeMachine.isRunning = false;
 			});
 		}
 	}

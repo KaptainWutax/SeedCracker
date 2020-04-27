@@ -7,14 +7,14 @@ import net.minecraft.util.math.Vec3i;
 public class Cube extends Cuboid {
 
     public Cube() {
-        this(BlockPos.ORIGIN, new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
+        this(BlockPos.ORIGIN, Color.WHITE);
     }
 
     public Cube(BlockPos pos) {
-        this(pos, new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
+        this(pos, Color.WHITE);
     }
 
-    public Cube(BlockPos pos, Vector4f color) {
+    public Cube(BlockPos pos, Color color) {
         super(pos, new Vec3i(1, 1, 1), color);
     }
 

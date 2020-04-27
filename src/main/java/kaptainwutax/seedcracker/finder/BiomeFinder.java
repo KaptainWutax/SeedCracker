@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker.finder;
 
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.biome.BiomeData;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +44,7 @@ public class BiomeFinder extends Finder {
         }
 
         result.forEach(pos -> {
-            this.renderers.add(new Cube(pos, new Vector4f(0.2f, 0.8f, 0.5f, 1.0f)));
+            this.renderers.add(new Cube(pos, new Color(51, 204, 128)));
         });
 
         return result;

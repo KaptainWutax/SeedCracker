@@ -12,17 +12,17 @@ public class Line extends Renderer {
 
     public Vec3d start;
     public Vec3d end;
-    public Vector4f color;
+    public Color color;
 
     public Line() {
-        this(Vec3d.ZERO, Vec3d.ZERO, new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
+        this(Vec3d.ZERO, Vec3d.ZERO, Color.WHITE);
     }
 
     public Line(Vec3d start, Vec3d end) {
-        this(start, end, new Vector4f(1.0f, 1.0f, 1.0f, 1.0f));
+        this(start, end, Color.WHITE);
     }
 
-    public Line(Vec3d start, Vec3d end, Vector4f color) {
+    public Line(Vec3d start, Vec3d end, Color color) {
         this.start = start;
         this.end = end;
         this.color = color;
@@ -54,10 +54,10 @@ public class Line extends Renderer {
                 pos.getY() - camPos.y,
                 pos.getZ() - camPos.z
         ).color(
-                this.color.getX(),
-                this.color.getY(),
-                this.color.getZ(),
-                this.color.getW()
+                this.color.getFRed(),
+                this.color.getFGreen(),
+                this.color.getFBlue(),
+                1.0F
         ).next();
     }
 

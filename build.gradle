@@ -13,6 +13,13 @@ group = project.maven_group
 minecraft {
 }
 
+repositories {
+	maven {
+		name = 'JitPack'
+		url = 'https://jitpack.io/'
+	}
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -24,6 +31,10 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
+
+	implementation('com.github.mjtb49:JavaRandomReverser:bee25dc') {
+		transitive = true
+	}
 }
 
 processResources {

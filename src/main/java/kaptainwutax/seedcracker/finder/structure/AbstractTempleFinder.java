@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.client.util.math.Vector4f;
@@ -57,7 +58,7 @@ public abstract class AbstractTempleFinder extends Finder {
 
     protected abstract StructureFeature<?> getStructureFeature();
 
-    public void addRenderers(PieceFinder pieceFinder, BlockPos origin, Vector4f color) {
+    public void addRenderers(PieceFinder pieceFinder, BlockPos origin, Color color) {
         this.renderers.add(new Cuboid(origin, pieceFinder.getLayout(), color));
         BlockPos chunkStart = new BlockPos(origin.getX() & -16, origin.getY(), origin.getZ() & -16);
         this.renderers.add(new Cube(chunkStart, color));

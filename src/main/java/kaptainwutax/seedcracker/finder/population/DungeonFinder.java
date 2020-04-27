@@ -4,6 +4,7 @@ import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.population.DungeonData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
+import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import kaptainwutax.seedcracker.util.PosIterator;
@@ -20,6 +21,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,7 +32,7 @@ public class DungeonFinder extends BlockFinder {
         return false;
     });
 
-    protected static Set<BlockPos> FLOOR_POSITION = PosIterator.create(
+    protected static Set<BlockPos> REQUIRED_FLOOR_POSITIONS = PosIterator.create(
             new BlockPos(-3, -1, -3),
             new BlockPos(3, -1, 3)
     );
@@ -51,7 +53,7 @@ public class DungeonFinder extends BlockFinder {
             BlockEntity blockEntity = this.world.getBlockEntity(pos);
             if(!(blockEntity instanceof MobSpawnerBlockEntity))return true;
 
-            for(BlockPos blockPos: FLOOR_POSITION) {
+            for(BlockPos blockPos: REQUIRED_FLOOR_POSITIONS) {
                 BlockPos currentPos = pos.add(blockPos);
                 Block currentBlock = this.world.getBlockState(currentPos).getBlock();
 
@@ -63,21 +65,29 @@ public class DungeonFinder extends BlockFinder {
             return false;
         });
 
+        if(result.size() != 1)return new ArrayList<>();
         Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 8, 8));
 
-        List<BlockPos> starts = result.stream()
-                .map(pos -> new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15)).collect(Collectors.toList());
+        BlockPos pos = result.get(0);
+        Vec3i size = this.getDungeonSize(pos);
+        int[] floorCalls = this.getFloorCalls(size, pos);
 
-        List<List<Integer>> floorCallsList = result.stream()
-                .map(pos -> this.getFloorCalls(this.getDungeonSize(pos), pos)).collect(Collectors.toList());
+        float bitsCount = 0.0F;
 
-        result.forEach(pos -> {
-            if(SeedCracker.get().getDataStorage().addBaseData(new DungeonData(this.chunkPos, biome, starts.get(0), floorCallsList))) {
-                this.renderers.add(new Cube(pos, new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
-                Vec3i size = this.getDungeonSize(pos);
-                this.renderers.add(new Cuboid(pos.subtract(size), pos.add(size).add(1, -1, 1), new Vector4f(1.0f, 0.0f, 0.0f, 1.0f)));
+        if(floorCalls != null) {
+            for(int call: floorCalls) {
+                bitsCount += call == DungeonData.COBBLESTONE_CALL ? 2.0F : 0.0F;
             }
-        });
+        }
+
+        //Add the spawner data.
+        if(SeedCracker.get().getDataStorage().addBaseData(new DungeonData(this.chunkPos, biome, pos, size, floorCalls, (int)bitsCount))) {
+            this.renderers.add(new Cube(pos, new Color(255, 0, 0)));
+
+            if(floorCalls != null && bitsCount >= 32) {
+                this.renderers.add(new Cuboid(pos.subtract(size), pos.add(size).add(1, -1, 1), new Color(255, 0, 0)));
+            }
+        }
 
         return result;
     }
@@ -93,17 +103,20 @@ public class DungeonFinder extends BlockFinder {
         return Vec3i.ZERO;
     }
 
-    public List<Integer> getFloorCalls(Vec3i dungeonSize, BlockPos spawnerPos) {
-        List<Integer> floorCalls = new ArrayList<>();
+    public int[] getFloorCalls(Vec3i dungeonSize, BlockPos spawnerPos) {
+        int[] floorCalls = new int[(dungeonSize.getX() * 2 + 1) * (dungeonSize.getZ() * 2 + 1)];
+        int i = 0;
 
         for(int xo = -dungeonSize.getX(); xo <= dungeonSize.getX(); xo++) {
             for(int zo = -dungeonSize.getZ(); zo <= dungeonSize.getZ(); zo++) {
                 Block block = this.world.getBlockState(spawnerPos.add(xo, -1, zo)).getBlock();
 
                 if(block == Blocks.MOSSY_COBBLESTONE) {
-                    floorCalls.add(DungeonData.MOSSY_COBBLESTONE_CALL);
+                    floorCalls[i++] = DungeonData.MOSSY_COBBLESTONE_CALL;
                 } else if(block == Blocks.COBBLESTONE) {
-                    floorCalls.add(DungeonData.COBBLESTONE_CALL);
+                    floorCalls[i++] = DungeonData.COBBLESTONE_CALL;
+                } else {
+                    return null;
                 }
             }
         }
