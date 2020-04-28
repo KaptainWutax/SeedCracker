@@ -72,19 +72,12 @@ public class DungeonFinder extends BlockFinder {
         Vec3i size = this.getDungeonSize(pos);
         int[] floorCalls = this.getFloorCalls(size, pos);
 
-        float bitsCount = 0.0F;
+        DungeonData data = new DungeonData(this.chunkPos, biome, pos, size, floorCalls);
 
-        if(floorCalls != null) {
-            for(int call: floorCalls) {
-                bitsCount += call == DungeonData.COBBLESTONE_CALL ? 2.0F : 0.0F;
-            }
-        }
-
-        //Add the spawner data.
-        if(SeedCracker.get().getDataStorage().addBaseData(new DungeonData(this.chunkPos, biome, pos, size, floorCalls, (int)bitsCount))) {
+        if(SeedCracker.get().getDataStorage().addBaseData(data)) {
             this.renderers.add(new Cube(pos, new Color(255, 0, 0)));
 
-            if(floorCalls != null && bitsCount >= 32) {
+            if(data.usesFloor()) {
                 this.renderers.add(new Cuboid(pos.subtract(size), pos.add(size).add(1, -1, 1), new Color(255, 0, 0)));
             }
         }
