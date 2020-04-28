@@ -32,7 +32,7 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 
-	implementation('com.github.mjtb49:JavaRandomReverser:d3490c2') {
+	implementation('com.github.KaptainWutax:JavaRandomReverser:2051c8c') {
 		transitive = true
 	}
 }

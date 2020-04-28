@@ -12,6 +12,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.biome.Biome;
 import randomreverser.RandomReverser;
+import randomreverser.call.NextInt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,14 +86,17 @@ public class DungeonData extends DecoratorData {
         Log.warn("Short-cutting to dungeons...");
 
         RandomReverser device = new RandomReverser();
-        device.addNextIntCall(16, this.start.getX(), this.start.getX());
-        device.addNextIntCall(16, this.start.getZ(), this.start.getZ());
-        device.addNextIntCall(256, this.start.getY(), this.start.getY());
-        device.consumeNextIntCalls(2); //Skip size.
+        device.addCall(NextInt.withValue(16, this.start.getX()));
+        device.addCall(NextInt.withValue(16, this.start.getZ()));
+        device.addCall(NextInt.withValue(256, this.start.getY()));
+        device.addCall(NextInt.consume(2, 2)); //Skip size.
 
         for(int call: this.floorCalls) {
-            if(call == COBBLESTONE_CALL)device.addNextIntCall(4, 0, 0);
-            else if(call == MOSSY_COBBLESTONE_CALL)device.consumeNextIntCalls(1); //Skip mossy.
+            if(call == COBBLESTONE_CALL) {
+                device.addCall(NextInt.withValue(4, 0));
+            } else if(call == MOSSY_COBBLESTONE_CALL) {
+                device.addCall(NextInt.consume(4, 1)); //Skip mossy.
+            }
         }
 
         List<Long> decoratorSeeds = device.findAllValidSeeds();
