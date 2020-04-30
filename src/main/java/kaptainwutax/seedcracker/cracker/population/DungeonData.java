@@ -3,7 +3,6 @@ package kaptainwutax.seedcracker.cracker.population;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import kaptainwutax.seedcracker.magic.PopulationReversal;
-import kaptainwutax.seedcracker.magic.RandomSeed;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.math.LCG;
@@ -11,13 +10,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.biome.Biome;
-import randomreverser.RandomReverser;
+import randomreverser.ReverserDevice;
+import randomreverser.call.FilteredSkip;
 import randomreverser.call.NextInt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DungeonData extends DecoratorData {
 
@@ -85,7 +83,7 @@ public class DungeonData extends DecoratorData {
 
         Log.warn("Short-cutting to dungeons...");
 
-        RandomReverser device = new RandomReverser();
+        ReverserDevice device = new ReverserDevice();
         device.addCall(NextInt.withValue(16, this.start.getX()));
         device.addCall(NextInt.withValue(16, this.start.getZ()));
         device.addCall(NextInt.withValue(256, this.start.getY()));
@@ -95,7 +93,8 @@ public class DungeonData extends DecoratorData {
             if(call == COBBLESTONE_CALL) {
                 device.addCall(NextInt.withValue(4, 0));
             } else if(call == MOSSY_COBBLESTONE_CALL) {
-                device.addCall(NextInt.consume(4, 1)); //Skip mossy.
+                //Skip mossy, brute-force later.
+                device.addCall(FilteredSkip.filter(r -> r.nextInt(4) != 0));
             }
         }
 
@@ -105,20 +104,6 @@ public class DungeonData extends DecoratorData {
             Log.error("Finished dungeon search with no seeds.");
             return;
         }
-
-        //Checks for the mossy cobblestone that was skipped above.
-        decoratorSeeds = decoratorSeeds.stream().filter(decoratorSeed -> {
-            Rand rand = new Rand(decoratorSeed, false);
-            rand.advance(5);
-
-            for(int call: this.floorCalls) {
-                int v = rand.nextInt(4);
-                if(call == COBBLESTONE_CALL && v != 0)return false;
-                if(call == MOSSY_COBBLESTONE_CALL && v == 0)return false;
-            }
-
-            return true;
-        }).collect(Collectors.toList());
 
         dataStorage.getTimeMachine().structureSeeds = new ArrayList<>();
         LCG failedDungeon = Rand.JAVA_LCG.combine(-5);
