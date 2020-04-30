@@ -1,7 +1,7 @@
 package kaptainwutax.seedcracker.finder;
 
 import kaptainwutax.seedcracker.finder.profile.FinderProfile;
-import kaptainwutax.seedcracker.finder.profile.YoloProfile;
+import kaptainwutax.seedcracker.finder.profile.VanillaProfile;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class FinderConfig {
 
-    protected FinderProfile finderProfile = new YoloProfile();
+    protected FinderProfile finderProfile = new VanillaProfile();
     protected Map<Finder.Type, ConcurrentLinkedQueue<Finder>> activeFinders = new ConcurrentHashMap<>();
 
     public FinderConfig() {
