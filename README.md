@@ -15,9 +15,9 @@
 
 ## Usage
 
-  Run minecraft with the mod installed and run around in the world. Once the mod has collected enough data, it will start the cracking process automatically and output the seed in chat. For the process to start, you are required to locate atleast 5 combined struture and decorator features, 5 biomes and the end pillars.
+  Run minecraft with the mod installed and run around in the world. Once the mod has collected enough data, it will start the cracking process automatically and output the seed in chat. For the process to start, the amount of data that needs to be collected varies depending on the type of feature. `/seed data bits` can be used to see how much progress has been done. 
   
-  ### Supported Structures(from best to worst)
+  ### Supported Structures
     - Ocean Monument
     - End City
     - Buried Treasure
@@ -26,7 +26,7 @@
     - Swamp Hut
     - Shipwreck
   
-  ### Supported Decorators(from best to worst)
+  ### Supported Decorators
     - Dungeon
     - End Gateway
     - Desert Well
@@ -60,7 +60,7 @@
   ### Cracker Command
   - `/seed cracker <ON/OFF>`
  
-  Enables or disables the seed crack completely. Unlike the other commands, this one is persistent across reloads.
+  Enables or disables the mod completely. Unlike the other commands, this one is persistent across reloads.
   
 ## Video Tutorial
 
