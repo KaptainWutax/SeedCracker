@@ -1,12 +1,14 @@
 package kaptainwutax.seedcracker;
 
 import com.google.common.hash.Hashing;
+import kaptainwutax.seedcracker.command.ClientCommand;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedcracker.util.Rand;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
@@ -16,6 +18,7 @@ public class SeedCracker implements ModInitializer {
 
     private static final SeedCracker INSTANCE = new SeedCracker();
     private DataStorage dataStorage = new DataStorage();
+	private boolean active = true;
 
 	@Override
 	public void onInitialize() {
@@ -27,7 +30,21 @@ public class SeedCracker implements ModInitializer {
 	    return INSTANCE;
     }
 
-    public DataStorage getDataStorage() {
+	public boolean isActive() {
+		return this.active;
+	}
+
+    public void setActive(boolean active) {
+		this.active = active;
+
+	    if(this.active) {
+		    ClientCommand.sendFeedback("SeedCracker is active.", Formatting.GREEN, true);
+	    } else {
+		    ClientCommand.sendFeedback("SeedCracker is not active.", Formatting.RED, true);
+	    }
+    }
+
+	public DataStorage getDataStorage() {
 		return this.dataStorage;
 	}
 

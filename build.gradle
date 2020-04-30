@@ -25,8 +25,8 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	implementation 'com.github.KaptainWutax:LattiCG:6fc1084ace331896b2efd6bccb36de182b970c0e'
-	include 'com.github.KaptainWutax:LattiCG:6fc1084ace331896b2efd6bccb36de182b970c0e'
+	implementation 'com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8'
+	include 'com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8'
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

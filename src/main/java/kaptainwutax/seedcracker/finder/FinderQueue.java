@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker.finder;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.finder.profile.VanillaProfile;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.ChunkPos;
@@ -28,6 +29,8 @@ public class FinderQueue {
     }
 
     public void onChunkData(World world, ChunkPos chunkPos) {
+        if(!SeedCracker.get().isActive())return;
+
         this.finderProfile.getActiveFinderTypes().forEach(type -> {
             SERVICE.submit(() -> {
                try {

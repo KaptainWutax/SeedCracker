@@ -28,13 +28,13 @@ public class RenderCommand extends ClientCommand {
     }
 
     private int printRenderMode() {
-        this.sendFeedback("Current render mode is set to [" + FinderQueue.get().renderType + "].", Formatting.AQUA, false);
+        sendFeedback("Current render mode is set to [" + FinderQueue.get().renderType + "].", Formatting.AQUA, false);
         return 0;
     }
 
     private int setRenderMode(FinderQueue.RenderType renderType) {
         FinderQueue.get().renderType = renderType;
-        this.sendFeedback("Set render mode to [" + FinderQueue.get().renderType + "].", Formatting.AQUA, false);
+        sendFeedback("Set render mode to [" + FinderQueue.get().renderType + "].", Formatting.AQUA, false);
         return 0;
     }
 

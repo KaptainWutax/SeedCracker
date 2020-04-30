@@ -29,14 +29,14 @@ public class DataCommand extends ClientCommand {
 
 	public int clear(CommandContext<ServerCommandSource> context) {
 		SeedCracker.get().reset();
-		this.sendFeedback("Cleared data storage and finders.", Formatting.GREEN, false);
+		sendFeedback("Cleared data storage and finders.", Formatting.GREEN, false);
 		return 0;
 	}
 
 	private int printBits(CommandContext<ServerCommandSource> context) {
 		DataStorage s = SeedCracker.get().getDataStorage();
 		String message = "You currently have collected " + (int)s.getBaseBits() + " bits out of " + (int)s.getWantedBits() + ".";
-		this.sendFeedback(message, Formatting.GREEN, false);
+		sendFeedback(message, Formatting.GREEN, false);
 		return 0;
 	}
 

@@ -3,6 +3,7 @@ package kaptainwutax.seedcracker.mixin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.command.ClientCommand;
 import kaptainwutax.seedcracker.cracker.biome.GeneratorTypeData;
 import kaptainwutax.seedcracker.init.ClientCommands;
 import kaptainwutax.seedcracker.cracker.biome.HashedSeedData;
@@ -20,6 +21,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.ChunkPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -63,6 +65,8 @@ public abstract class ClientPlayNetworkHandlerMixin {
             Log.error("THIS GENERATOR IS NOT SUPPORTED!");
             Log.error("Overworld biome search WILL NOT run.");
         }
+
+        SeedCracker.get().setActive(SeedCracker.get().isActive());
     }
 
     @Inject(method = "onPlayerRespawn", at = @At(value = "TAIL"))

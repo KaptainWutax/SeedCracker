@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,11 +23,13 @@ public class ClientCommands {
     public static RenderCommand RENDER;
     public static FinderCommand FINDER;
     public static DataCommand DATA;
+    public static CrackerCommand CRACKER;
 
     static {
         COMMANDS.add(RENDER = new RenderCommand());
         COMMANDS.add(FINDER = new FinderCommand());
         COMMANDS.add(DATA = new DataCommand());
+        COMMANDS.add(CRACKER = new CrackerCommand());
     }
 
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -52,13 +55,13 @@ public class ClientCommands {
         try {
             return player.networkHandler.getCommandDispatcher().execute(reader, new FakeCommandSource(player));
         } catch(CommandException e) {
-            //lazy
+            ClientCommand.sendFeedback("ur bad, git gud command", Formatting.RED, false);
             e.printStackTrace();
         } catch(CommandSyntaxException e) {
-            //lazy
+            ClientCommand.sendFeedback("ur bad, git gud syntax", Formatting.RED, false);
             e.printStackTrace();
         } catch(Exception e) {
-            //lazy
+            ClientCommand.sendFeedback("ur bad, wat did u do", Formatting.RED, false);
             e.printStackTrace();
         }
 

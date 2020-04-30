@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
+import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.biome.BiomeData;
 import kaptainwutax.seedcracker.cracker.biome.source.OverworldBiomeSource;
 import kaptainwutax.seedcracker.util.Log;
@@ -57,7 +58,7 @@ public class TimeMachine {
 
 		for(int pillarSeed = 0; pillarSeed < 1 << 16 && !this.shouldTerminate; pillarSeed++) {
 			if(this.dataStorage.pillarData.test(pillarSeed, null)) {
-				Log.warn("Found pillar seed [" + pillarSeed + "].");
+				Log.printSeed("Found pillar seed ${SEED}.", pillarSeed);
 				this.pillarSeeds.add(pillarSeed);
 			}
 		}
@@ -118,7 +119,7 @@ public class TimeMachine {
 
 						if(matches) {
 							this.structureSeeds.add(seed);
-							Log.warn("Found structure seed [" + seed + "].");
+							Log.printSeed("Found structure seed ${SEED}.", seed);
 						}
 					}
 
@@ -150,7 +151,7 @@ public class TimeMachine {
 	protected boolean pokeBiomes() {
 		if(this.structureSeeds == null || this.worldSeeds != null)return false;
 		if(this.dataStorage.hashedSeedData == null &&
-				(this.dataStorage.biomeSeedData.size() < 5 || !this.dataStorage.generatorTypeData.isSupported()))return false;
+				(this.dataStorage.biomeSeedData.size() < 5 || !this.dataStorage.generatorTypeData.isSupported() || this.structureSeeds.size() > 3))return false;
 
 		this.worldSeeds = new ArrayList<>();
 		Log.debug("====================================");
@@ -166,7 +167,7 @@ public class TimeMachine {
 						continue;
 					} else {
 						this.worldSeeds.add(worldSeed);
-						Log.warn("Found world seed [" + worldSeed + "].");
+						Log.printSeed("Found world seed ${SEED}.", worldSeed);
 					}
 
 					if(this.shouldTerminate) {
@@ -187,7 +188,7 @@ public class TimeMachine {
 			Log.warn("Looking for world seeds...");
 
 			for(long structureSeed : this.structureSeeds) {
-				for(long upperBits = 0; upperBits < 1 << 16; upperBits++) {
+				for(long upperBits = 0; upperBits < 1 << 16 && !this.shouldTerminate; upperBits++) {
 					long worldSeed = (upperBits << 48) | structureSeed;
 
 					OverworldBiomeSource source = new OverworldBiomeSource(
@@ -205,7 +206,7 @@ public class TimeMachine {
 
 					if(matches) {
 						this.worldSeeds.add(worldSeed);
-						Log.warn("Found world seed [" + worldSeed + "].");
+						Log.printSeed("Found world seed ${SEED}.", worldSeed);
 					}
 
 					if(this.shouldTerminate) {

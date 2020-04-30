@@ -24,8 +24,8 @@ public class DungeonData extends DecoratorData {
     private static final double BITS = Math.log(256 * 16 * 16 * 0.125D) / Math.log(2);
     public static final int COBBLESTONE_CALL = 0;
     public static final int MOSSY_COBBLESTONE_CALL = 1;
-    public static final float MIN_FLOOR_BITS = 28.0F;
-    public static final float MAX_FLOOR_BITS = 34.0F;
+    public static final float MIN_FLOOR_BITS = 26.0F;
+    public static final float MAX_FLOOR_BITS = 48.0F;
     public static final int SALT = 20003;
 
     private BlockPos start;
@@ -100,7 +100,7 @@ public class DungeonData extends DecoratorData {
             }
         }
 
-        Set<Long> decoratorSeeds = device.streamSeeds().limit(1).collect(Collectors.toSet());
+        Set<Long> decoratorSeeds = device.streamSeeds().sequential().limit(1).collect(Collectors.toSet());
 
         if(decoratorSeeds.isEmpty()) {
             Log.error("Finished dungeon search with no seeds.");
@@ -114,7 +114,7 @@ public class DungeonData extends DecoratorData {
             for(int i = 0; i < 8; i++) {
                 PopulationReversal.getWorldSeeds((decoratorSeed ^ Rand.JAVA_LCG.multiplier) - SALT,
                         this.getChunkPos().x << 4, this.getChunkPos().z << 4).forEach(structureSeed -> {
-                    Log.debug("Found structure seed [" + structureSeed + "].");
+                    Log.printSeed("Found structure seed ${SEED}.", structureSeed);
                     dataStorage.getTimeMachine().structureSeeds.add(structureSeed);
                 });
 
