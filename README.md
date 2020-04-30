@@ -1,4 +1,4 @@
-# SeedCracker
+# SeedCracker [![Github All Releases](https://img.shields.io/github/downloads/KaptainWutax/SeedCracker/total.svg)]()
 
 ## Installation
 
