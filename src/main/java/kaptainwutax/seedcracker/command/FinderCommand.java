@@ -19,19 +19,19 @@ public class FinderCommand extends ClientCommand {
     public void build(LiteralArgumentBuilder<ServerCommandSource> builder) {
         for(Finder.Type finderType: Finder.Type.values()) {
             builder.then(literal("type")
-                    .executes(context -> this.printFinderType(finderType))
                     .then(literal(finderType.toString())
                             .then(literal("ON").executes(context -> this.setFinderType(finderType, true)))
                             .then(literal("OFF").executes(context -> this.setFinderType(finderType, false))))
+                    .executes(context -> this.printFinderType(finderType))
             );
         }
 
         for(Finder.Category finderCategory: Finder.Category.values()) {
             builder.then(literal("category")
-                    .executes(context -> this.printFinderCategory(finderCategory))
                     .then(literal(finderCategory.toString())
                             .then(literal("ON").executes(context -> this.setFinderCategory(finderCategory, true)))
                             .then(literal("OFF").executes(context -> this.setFinderCategory(finderCategory, false))))
+                    .executes(context -> this.printFinderCategory(finderCategory))
             );
         }
     }

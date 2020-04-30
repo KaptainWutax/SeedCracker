@@ -9,7 +9,8 @@
     "GameRendererMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
-    "ClientPlayerEntityMixin"
+    "ClientPlayerEntityMixin",
+    "ServerChunkManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

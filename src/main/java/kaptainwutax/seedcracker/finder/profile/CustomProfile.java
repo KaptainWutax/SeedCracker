@@ -2,9 +2,9 @@ package kaptainwutax.seedcracker.finder.profile;
 
 public class CustomProfile extends FinderProfile {
 
-	public CustomProfile() {
-		super(false);
-		this.author = "";
+	public CustomProfile(String author) {
+		super(true);
+		this.author = author;
 		this.locked = false;
 	}
 

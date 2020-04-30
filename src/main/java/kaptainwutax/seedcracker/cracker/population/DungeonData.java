@@ -16,6 +16,8 @@ import randomreverser.call.NextInt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DungeonData extends DecoratorData {
 
@@ -98,7 +100,7 @@ public class DungeonData extends DecoratorData {
             }
         }
 
-        List<Long> decoratorSeeds = device.findAllValidSeeds();
+        Set<Long> decoratorSeeds = device.streamSeeds().limit(1).collect(Collectors.toSet());
 
         if(decoratorSeeds.isEmpty()) {
             Log.error("Finished dungeon search with no seeds.");
