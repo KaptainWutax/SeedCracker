@@ -5,7 +5,7 @@
   "mixins": [
   ],
   "client": [
-    "DisableableProfilerMixin",
+    "DummyProfilerMixin",
     "GameRendererMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",

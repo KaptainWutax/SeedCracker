@@ -1,16 +1,27 @@
 package kaptainwutax.seedcracker.cracker.biome.source;
 
+import net.minecraft.class_5217;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.biome.source.FixedBiomeSource;
-import net.minecraft.world.biome.source.FixedBiomeSourceConfig;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSourceConfig;
+import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 
-public class NetherBiomeSource extends FixedBiomeSource implements IFakeBiomeSource {
+public class NetherBiomeSource extends MultiNoiseBiomeSource implements IFakeBiomeSource {
 
-	public NetherBiomeSource() {
-		super(new FixedBiomeSourceConfig(null).setBiome(Biomes.NETHER));
+	private final long worldSeed;
+	private final long hashedWorldSeed;
+
+	public NetherBiomeSource(long worldSeed) {
+		this(worldSeed, class_5217.method_27418(worldSeed));
 	}
+
+	public NetherBiomeSource(long worldSeed, long hashedWorldSeed) {
+		super(new MultiNoiseBiomeSourceConfig(worldSeed));
+		this.worldSeed = worldSeed;
+		this.hashedWorldSeed = hashedWorldSeed;
+	}
+
 
 	@Override
 	public long getWorldSeed() {
@@ -24,7 +35,7 @@ public class NetherBiomeSource extends FixedBiomeSource implements IFakeBiomeSou
 
 	@Override
 	public Biome sample(int x, int y, int z) {
-		return Biomes.NETHER;
+		return VoronoiBiomeAccessType.INSTANCE.getBiome(this.getHashedWorldSeed(), x, y, z, this);
 	}
 
 	@Override

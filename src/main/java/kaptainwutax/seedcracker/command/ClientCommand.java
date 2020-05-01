@@ -17,7 +17,7 @@ public abstract class ClientCommand {
     public abstract void build(LiteralArgumentBuilder<ServerCommandSource> builder);
 
     public static void sendFeedback(String message, Formatting color, boolean overlay) {
-        MinecraftClient.getInstance().player.addChatMessage(new LiteralText(message).formatted(color), overlay);
+        MinecraftClient.getInstance().player.sendMessage(new LiteralText(message).formatted(color), overlay);
     }
 
     public final void register(CommandDispatcher<ServerCommandSource> dispatcher) {

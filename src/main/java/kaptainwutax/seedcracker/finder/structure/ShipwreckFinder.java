@@ -13,6 +13,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.util.math.Vector4f;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -63,7 +64,7 @@ public class ShipwreckFinder extends BlockFinder {
      * Source: https://github.com/skyrising/casual-mod/blob/master/src/main/java/de/skyrising/casual/ShipwreckFinder.java
      * */
     private boolean onChestFound(BlockPos pos) {
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable(pos);
+        BlockPos.Mutable mutablePos = new BlockPos.Mutable(pos.getX(), pos.getY(), pos.getZ());
         Direction chestFacing = world.getBlockState(pos).get(ChestBlock.FACING);
 
         int[] stairs = new int[4];
@@ -133,9 +134,9 @@ public class ShipwreckFinder extends BlockFinder {
             }
 
             mutablePos.set(pos);
-            mutablePos.setOffset(0, -chestY, 0);
-            mutablePos.setOffset(direction.rotateYClockwise(), chestX - 4);
-            mutablePos.setOffset(direction, -chestZ - 1);
+            mutablePos.move(0, -chestY, 0);
+            mutablePos.move(direction.rotateYClockwise(), chestX - 4);
+            mutablePos.move(direction, -chestZ - 1);
 
             if(this.world.getBlockState(mutablePos).getMaterial() == Material.WOOD) {
                 if(length == 17) { // sideways
@@ -145,9 +146,11 @@ public class ShipwreckFinder extends BlockFinder {
                     chestZ += 12;
                     length += 12;
                 }
-                mutablePos.setOffset(0, 10, 0);
+                mutablePos.move(0, 10, 0);
 
-                if(this.world.getBlockState(mutablePos).getBlock() instanceof LogBlock) {
+                BlockState b = this.world.getBlockState(mutablePos);
+
+                if(this.world.getBlockState(mutablePos).isIn(BlockTags.LOGS)) {
                     height = 21;
                 }
             }
@@ -158,22 +161,22 @@ public class ShipwreckFinder extends BlockFinder {
 
         if(chestZ != 0) {
             mutablePos.set(pos);
-            mutablePos.setOffset(direction, 15 - chestZ);
-            mutablePos.setOffset(direction.rotateYClockwise(), chestX - 4);
-            BlockPos.Mutable pos2 = new BlockPos.Mutable(mutablePos);
-            pos2.setOffset(0, -chestY, 0);
-            pos2.setOffset(direction, -15);
-            pos2.setOffset(direction.rotateYClockwise(), 4);
-            BlockPos.Mutable pos3 = new BlockPos.Mutable(pos2);
-            pos3.setOffset(direction, length - 1);
-            pos3.setOffset(direction.rotateYClockwise(), -8);
-            pos3.setOffset(0, height - 1, 0);
+            mutablePos.move(direction, 15 - chestZ);
+            mutablePos.move(direction.rotateYClockwise(), chestX - 4);
+            BlockPos.Mutable pos2 = new BlockPos.Mutable(mutablePos.getX(), mutablePos.getY(), mutablePos.getZ());
+            pos2.move(0, -chestY, 0);
+            pos2.move(direction, -15);
+            pos2.move(direction.rotateYClockwise(), 4);
+            BlockPos.Mutable pos3 = new BlockPos.Mutable(pos2.getX(), pos2.getY(), pos2.getZ());
+            pos3.move(direction, length - 1);
+            pos3.move(direction.rotateYClockwise(), -8);
+            pos3.move(0, height - 1, 0);
 
             BlockBox box = new BlockBox(
                     Math.min(pos2.getX(), pos3.getX()), pos2.getY(), Math.min(pos2.getZ(), pos3.getZ()),
                     Math.max(pos2.getX(), pos3.getX()) + 1, pos3.getY() + 1, Math.max(pos2.getZ(), pos3.getZ()) + 1);
 
-            mutablePos.setOffset(-4, -chestY, -15);
+            mutablePos.move(-4, -chestY, -15);
 
             if((mutablePos.getX() & 0xf) == 0 && (mutablePos.getZ() & 0xf) == 0) {
                 if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(new ChunkPos(mutablePos), StructureFeatures.SHIPWRECK))) {

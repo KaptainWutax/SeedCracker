@@ -68,7 +68,7 @@ public class BiomeData implements ISeedStorage {
     @Override
     public int hashCode() {
         if(this.biomePredicate == null) {
-            return this.biome.getName().asFormattedString().hashCode();
+            return this.biome.getName().asString().hashCode();
         }
 
         return super.hashCode();
