@@ -1,7 +1,7 @@
 package kaptainwutax.seedcracker.cracker.structure.type;
 
 import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.minecraft.util.math.ChunkPos;
 
 public abstract class FeatureType<T extends StructureData> {
@@ -38,9 +38,9 @@ public abstract class FeatureType<T extends StructureData> {
 		data.offsetZ = chunkPos.z - regionZ;
 	}
 
-	public abstract boolean test(Rand rand, T data, long structureSeed);
+	public abstract boolean test(JRand rand, T data, long structureSeed);
 
-	public abstract ChunkPos getInRegion(Rand rand, long structureSeed, int regionX, int regionZ);
+	public abstract ChunkPos getInRegion(JRand rand, long structureSeed, int regionX, int regionZ);
 
 	public abstract double getBits();
 

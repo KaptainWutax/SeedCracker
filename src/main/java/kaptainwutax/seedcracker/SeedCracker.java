@@ -5,7 +5,7 @@ import kaptainwutax.seedcracker.command.ClientCommand;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
-import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Formatting;
@@ -57,7 +57,7 @@ public class SeedCracker implements ModInitializer {
 		int s = Hashing.sha256().hashString("joe" + ":why_so_salty#LazyCrypto", StandardCharsets.UTF_8).asInt() & Integer.MAX_VALUE;
 
 		for(int seed = 0; seed < Integer.MAX_VALUE; seed++) {
-			Rand rand = new Rand(seed, true);
+			JRand rand = new JRand(seed, true);
 			rand.nextInt(3); //0 = Normal Voronoi, 1 = Horizontal Voronoi, 2 = New Voronoi I don't comprehend
 			rand.nextBoolean(); //Does the dimension have skylight?
 			int propertiesSeed = rand.nextInt(); //This seed is used for creating dimension properties such as if vater vaporizes, if it's nether-like, etc. Will be documenting this soon.
@@ -114,7 +114,7 @@ public class SeedCracker implements ModInitializer {
 			}
 
 			if(rand.nextInt(4) == 0) {
-				//this.field_23500 = this.method_26520(chunkRandom); //SKIP THIS SEED!
+				//this.field_23500 = this.method_26520(chunkJRandom); //SKIP THIS SEED!
 				continue;
 			}
 

@@ -2,14 +2,14 @@ package kaptainwutax.seedcracker.cracker.population;
 
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
-import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 
 public class DesertWellData extends DecoratorData {
 
-	public static final int SALT = 30010;
+	public static final int SALT = 30001;
 	private static final double BITS = Math.log(1000 * 16 * 16) / Math.log(2);
 	private BlockPos pos;
 
@@ -19,7 +19,7 @@ public class DesertWellData extends DecoratorData {
 	}
 
 	@Override
-	public boolean testDecorator(Rand rand) {
+	public boolean testDecorator(JRand rand) {
 		if(rand.nextFloat() >= 0.001F)return false;
 		if(rand.nextInt(16) != this.pos.getX())return false;
 		if(rand.nextInt(16) != this.pos.getZ())return false;

@@ -3,9 +3,8 @@ package kaptainwutax.seedcracker.cracker.biome;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.SeedData;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
-import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.minecraft.class_5217;
-import net.minecraft.world.level.LevelProperties;
 
 public class HashedSeedData extends SeedData {
 
@@ -16,7 +15,7 @@ public class HashedSeedData extends SeedData {
 	}
 
 	@Override
-	public boolean test(long seed, Rand rand) {
+	public boolean test(long seed, JRand rand) {
 		return class_5217.method_27418(seed) == this.hashedSeed;
 	}
 

@@ -6,28 +6,27 @@ import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
 import net.minecraft.util.math.ChunkPos;
 
-public class RarityType extends FeatureType<StructureData> {
+public class RegionType extends FeatureType<StructureData> {
 
-	private final float rarity;
-	private final double bits;
+	protected final int offset;
+	protected final double bits;
 
-	public RarityType(int salt, float rarity) {
-		super(salt, 1);
-		this.rarity = rarity;
-		this.bits = Math.log(1.0D / this.rarity) / Math.log(2);
+	public RegionType(int salt, int spacing, int separation) {
+		super(salt, spacing);
+		this.offset = spacing - separation;
+		this.bits = Math.log(this.offset * this.offset) / Math.log(2);
 	}
 
 	@Override
 	public boolean test(JRand rand, StructureData data, long structureSeed) {
-		return rand.nextFloat() < this.rarity;
+		return rand.nextInt(this.offset) == data.offsetX && rand.nextInt(this.offset) == data.offsetZ;
 	}
 
 	@Override
 	public ChunkPos getInRegion(JRand rand, long structureSeed, int regionX, int regionZ) {
 		long regionSeed = ChunkSeeds.getRegionSeed(structureSeed, regionX, regionZ, this.salt, MCVersion.v1_15);
 		rand.setSeed(regionSeed);
-		if(rand.nextFloat() >= this.rarity)return null;
-		return new ChunkPos(regionX, regionZ);
+		return new ChunkPos(regionX * this.distance + rand.nextInt(this.offset), regionZ * this.distance + rand.nextInt(this.offset));
 	}
 
 	@Override

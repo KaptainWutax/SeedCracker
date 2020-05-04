@@ -3,8 +3,9 @@ package kaptainwutax.seedcracker.cracker;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.SeedData;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
-import kaptainwutax.seedcracker.util.Rand;
-import kaptainwutax.seedcracker.util.Seeds;
+import kaptainwutax.seedutils.lcg.rand.JRand;
+import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
 import net.minecraft.util.math.ChunkPos;
 
 public class SlimeChunkData extends SeedData {
@@ -20,8 +21,9 @@ public class SlimeChunkData extends SeedData {
 	}
 
 	@Override
-	public boolean test(long seed, Rand rand) {
-		Seeds.setSlimeChunkSeed(rand, seed, this.chunkPos.x, this.chunkPos.z, 987234911L);
+	public boolean test(long seed, JRand rand) {
+		long chunkSeed = ChunkSeeds.getSlimeSeed(seed, this.chunkPos.x, this.chunkPos.z, 987234911L, MCVersion.v1_15);
+		rand.setSeed(chunkSeed);
 		return (rand.nextInt(10) == 0) == this.isSlimeChunk;
 	}
 

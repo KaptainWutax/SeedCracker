@@ -4,8 +4,9 @@ import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.SeedData;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import kaptainwutax.seedcracker.cracker.structure.type.FeatureType;
-import kaptainwutax.seedcracker.util.Rand;
-import kaptainwutax.seedcracker.util.Seeds;
+import kaptainwutax.seedutils.lcg.rand.JRand;
+import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
 import net.minecraft.util.math.ChunkPos;
 
 public class StructureData extends SeedData {
@@ -22,11 +23,11 @@ public class StructureData extends SeedData {
     public StructureData(ChunkPos chunkPos, FeatureType<StructureData> featureType) {
         this.featureType = featureType;
         this.featureType.build(this, chunkPos);
-        this.baseRegionSeed = Seeds.setRegionSeed(null, 0, this.regionX, this.regionZ, this.featureType.salt);
+        this.baseRegionSeed = ChunkSeeds.getRegionSeed(0L, this.regionX, this.regionZ, this.featureType.salt, MCVersion.v1_15);
     }
 
     @Override
-    public boolean test(long structureSeed, Rand rand) {
+    public boolean test(long structureSeed, JRand rand) {
         rand.setSeed(this.baseRegionSeed + structureSeed, true);
         return this.featureType.test(rand, this, structureSeed);
     }

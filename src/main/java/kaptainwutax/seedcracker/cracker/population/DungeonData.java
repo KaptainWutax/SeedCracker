@@ -4,8 +4,7 @@ import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import kaptainwutax.seedcracker.magic.PopulationReversal;
 import kaptainwutax.seedcracker.util.Log;
-import kaptainwutax.seedcracker.util.Rand;
-import kaptainwutax.seedcracker.util.math.LCG;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
@@ -13,9 +12,9 @@ import net.minecraft.world.biome.Biome;
 import randomreverser.ReverserDevice;
 import randomreverser.call.FilteredSkip;
 import randomreverser.call.NextInt;
+import randomreverser.util.LCG;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,7 @@ public class DungeonData extends DecoratorData {
     }
 
     @Override
-    public boolean testDecorator(Rand rand) {
+    public boolean testDecorator(JRand rand) {
         for(int i = 0; i < 8; i++) {
             int x = rand.nextInt(16);
             int z = rand.nextInt(16);
@@ -108,11 +107,11 @@ public class DungeonData extends DecoratorData {
         }
 
         dataStorage.getTimeMachine().structureSeeds = new ArrayList<>();
-        LCG failedDungeon = Rand.JAVA_LCG.combine(-5);
+        LCG failedDungeon = LCG.JAVA.combine(-5);
 
         for(long decoratorSeed: decoratorSeeds) {
             for(int i = 0; i < 8; i++) {
-                PopulationReversal.getWorldSeeds((decoratorSeed ^ Rand.JAVA_LCG.multiplier) - SALT,
+                PopulationReversal.getWorldSeeds((decoratorSeed ^ LCG.JAVA.multiplier) - SALT,
                         this.getChunkPos().x << 4, this.getChunkPos().z << 4).forEach(structureSeed -> {
                     Log.printSeed("Found structure seed ${SEED}.", structureSeed);
                     dataStorage.getTimeMachine().structureSeeds.add(structureSeed);

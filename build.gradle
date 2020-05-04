@@ -28,6 +28,9 @@ dependencies {
 	implementation 'com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8'
 	include 'com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8'
 
+	implementation 'com.github.KaptainWutax:SeedUtils:3c204a3c206212b4a45432510fee3c4e26a00372'
+	include 'com.github.KaptainWutax:SeedUtils:3c204a3c206212b4a45432510fee3c4e26a00372'
+
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 

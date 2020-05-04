@@ -1,11 +1,10 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
-import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.biome.BiomeData;
 import kaptainwutax.seedcracker.cracker.biome.source.OverworldBiomeSource;
 import kaptainwutax.seedcracker.util.Log;
-import kaptainwutax.seedcracker.util.Rand;
-import kaptainwutax.seedcracker.util.math.LCG;
+import kaptainwutax.seedutils.lcg.LCG;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ public class TimeMachine {
 
 	public static ExecutorService SERVICE = Executors.newFixedThreadPool(5);
 
-	private LCG inverseLCG = Rand.JAVA_LCG.combine(-2);
+	private LCG inverseLCG = LCG.JAVA.combine(-2);
 	protected DataStorage dataStorage;
 
 	public boolean isRunning = false;
@@ -96,7 +95,7 @@ public class TimeMachine {
 				int fThreadId = threadId;
 
 				SERVICE.submit(() -> {
-					Rand rand = new Rand(0L, false);
+					JRand rand = new JRand(0L, false);
 
 					long lower = (long)fThreadId * (1L << 30);
 					long upper = (long)(fThreadId + 1) * (1L << 30);
@@ -232,7 +231,7 @@ public class TimeMachine {
 		currentSeed |= partialWorldSeed & 0xFFFFL;
 
 		currentSeed = this.inverseLCG.nextSeed(currentSeed);
-		currentSeed ^= Rand.JAVA_LCG.multiplier;
+		currentSeed ^= LCG.JAVA.multiplier;
 		return currentSeed;
 	}
 

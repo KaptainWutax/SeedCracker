@@ -1,18 +1,16 @@
 package kaptainwutax.seedcracker.magic;
 
-import kaptainwutax.seedcracker.util.Rand;
-import kaptainwutax.seedcracker.util.Seeds;
-import kaptainwutax.seedcracker.util.math.LCG;
+import kaptainwutax.seedutils.lcg.LCG;
+import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.IntStream;
 
 public class PopulationReversal {
 
-	private static final LCG SKIP_2 = Rand.JAVA_LCG.combine(2);
-	private static final LCG SKIP_4 = Rand.JAVA_LCG.combine(4);
+	private static final LCG SKIP_2 = LCG.JAVA.combine(2);
+	private static final LCG SKIP_4 = LCG.JAVA.combine(4);
 
 	public static ArrayList<Long> getWorldSeeds(long populationSeed, int x, int z) {
 		populationSeed &= MagicMath.MASK_48;
@@ -45,7 +43,7 @@ public class PopulationReversal {
 			long target = (c ^ f) & MagicMath.MASK_16; //now that we've guessed 16 bits of worldseed we can undo the mask
 
 			//We need to handle the four different cases of the effect the two | 1s have on the seed
-			long magic = x * ((SKIP_2.multiplier * ((c ^ Rand.JAVA_LCG.multiplier) & MagicMath.MASK_16) + SKIP_2.addend) >>> 16) + z * ((SKIP_4.multiplier * ((c ^ Rand.JAVA_LCG.multiplier) & MagicMath.MASK_16) + SKIP_4.addend) >>> 16);
+			long magic = x * ((SKIP_2.multiplier * ((c ^ LCG.JAVA.multiplier) & MagicMath.MASK_16) + SKIP_2.addend) >>> 16) + z * ((SKIP_4.multiplier * ((c ^ LCG.JAVA.multiplier) & MagicMath.MASK_16) + SKIP_4.addend) >>> 16);
 
 			addWorldSeed(worldSeeds, target - (magic & MagicMath.MASK_16), multTrailingZeroes, firstMultInv, c, e, x, z, populationSeed); //case both nextLongs were odd
 			addWorldSeed(worldSeeds, target - ((magic + x) & MagicMath.MASK_16), multTrailingZeroes, firstMultInv, c, e, x, z, populationSeed); //case where x nextLong even
@@ -57,13 +55,13 @@ public class PopulationReversal {
 	}
 
 	public static long makeSecondAddend(int x, long k, int z) {
-		return ((x*((((SKIP_2.multiplier * ((k ^ Rand.JAVA_LCG.multiplier) & MagicMath.MASK_32) + SKIP_2.addend) & MagicMath.MASK_48) >>> 16) | 1L) +
-				z*((((SKIP_4.multiplier * ((k ^ Rand.JAVA_LCG.multiplier) & MagicMath.MASK_32) + SKIP_4.addend) & MagicMath.MASK_48) >>> 16) | 1L)) >>> 16) & MagicMath.MASK_16;
+		return ((x*((((SKIP_2.multiplier * ((k ^ LCG.JAVA.multiplier) & MagicMath.MASK_32) + SKIP_2.addend) & MagicMath.MASK_48) >>> 16) | 1L) +
+				z*((((SKIP_4.multiplier * ((k ^ LCG.JAVA.multiplier) & MagicMath.MASK_32) + SKIP_4.addend) & MagicMath.MASK_48) >>> 16) | 1L)) >>> 16) & MagicMath.MASK_16;
 	}
 
 	public static void addWorldSeed(List<Long> worldSeeds, long firstAddend, int multTrailingZeroes, long firstMultInv, long c, long e, int x, int z, long populationSeed) {
 		if(MagicMath.countTrailingZeroes(firstAddend) >= multTrailingZeroes) { //Does there exist a set of 16 bits which work for bits 17-32
-			long b = ((((firstMultInv * firstAddend)>>> multTrailingZeroes) ^ (Rand.JAVA_LCG.multiplier >> 16)) & ((1L << (16 - multTrailingZeroes)) - 1));
+			long b = ((((firstMultInv * firstAddend)>>> multTrailingZeroes) ^ (LCG.JAVA.multiplier >> 16)) & ((1L << (16 - multTrailingZeroes)) - 1));
 
 			for(; b < (1L << 16); b += (1L << (16 - multTrailingZeroes))) { //if the previous multiplier had a power of 2 divisor, we get multiple solutions for b
 				long k = (b << 16) + c;
@@ -71,10 +69,10 @@ public class PopulationReversal {
 				long secondAddend = makeSecondAddend(x, k, z);
 
 				if (MagicMath.countTrailingZeroes(target2 - secondAddend) >= multTrailingZeroes) { //Does there exist a set of 16 bits which work for bits 33-48
-					long a = ((((firstMultInv * (target2 - secondAddend)) >>> multTrailingZeroes) ^ (Rand.JAVA_LCG.multiplier >> 32)) & ((1L << (16-multTrailingZeroes)) - 1));
+					long a = ((((firstMultInv * (target2 - secondAddend)) >>> multTrailingZeroes) ^ (LCG.JAVA.multiplier >> 32)) & ((1L << (16-multTrailingZeroes)) - 1));
 
 					for(; a < (1L << 16); a += (1L << (16 - multTrailingZeroes))) { //if the previous multiplier had a power of 2 divisor, we get multiple solutions for a
-						if((Seeds.setPopulationSeed(null, (a << 32) + k, x, z) & MagicMath.MASK_48) == populationSeed) { //lazy check if the test has succeeded
+						if(ChunkSeeds.getPopulationSeed((a << 32) + k, x, z, MCVersion.v1_15) == populationSeed) { //lazy check if the test has succeeded
 							worldSeeds.add((a << 32) + k);
 						}
 					}
@@ -86,6 +84,7 @@ public class PopulationReversal {
 	/*
 	* Left as reference if I need to test this mess again. :P
 	* */
+	/*
 	public static void main(String[] args) {
 		LCG lcg = Rand.JAVA_LCG.combine(760);
 		long popSeed = Seeds.setPopulationSeed(null,170588374350891L, -121 << 4, 42 << 4);
@@ -100,7 +99,7 @@ public class PopulationReversal {
 		long seed;
 		int x , z;
 		ArrayList<Long> seeds;
-        /*long seed = 40820992642153L;
+        long seed = 40820992642153L;
         int x = 2;
         int z = 4;
         ArrayList<Long> seeds = getSeedFromChunkseed(getChunkseed(seed, x, z), x, z);
@@ -108,7 +107,7 @@ public class PopulationReversal {
         for (long a : seeds) {
             System.out.println(a);
         }
-        System.out.println("done");*/
+        System.out.println("done");
 		Random r = new Random();
 		int failcount = 0;
 		System.out.println("start");
@@ -129,6 +128,6 @@ public class PopulationReversal {
 		}
 		System.out.println("End: "+((System.currentTimeMillis()-start)/1000.0));
 		System.out.println(failcount+" failures.");
-	}
+	}*/
 
 }

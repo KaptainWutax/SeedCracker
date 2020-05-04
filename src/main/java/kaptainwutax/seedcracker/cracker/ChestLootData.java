@@ -1,7 +1,7 @@
 package kaptainwutax.seedcracker.cracker;
 
-import kaptainwutax.seedcracker.util.Rand;
 import kaptainwutax.seedcracker.util.loot.LootBuilder;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
@@ -32,7 +32,7 @@ public class ChestLootData {
 		}
 	}
 
-	public boolean test(long lootSeed, Rand rand) {
+	public boolean test(long lootSeed, JRand rand) {
 		rand.setSeed(lootSeed, true);
 
 		LootContext lootContext = new LootBuilder().setRandom(rand.toRandom())

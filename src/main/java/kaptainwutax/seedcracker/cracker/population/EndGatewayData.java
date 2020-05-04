@@ -2,7 +2,7 @@ package kaptainwutax.seedcracker.cracker.population;
 
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
-import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
@@ -24,7 +24,7 @@ public class EndGatewayData extends DecoratorData {
     }
 
     @Override
-    public boolean testDecorator(Rand rand) {
+    public boolean testDecorator(JRand rand) {
         if(rand.nextInt(700) != 0)return false;
         if(rand.nextInt(16) != this.xOffset)return false;
         if(rand.nextInt(16) != this.zOffset)return false;

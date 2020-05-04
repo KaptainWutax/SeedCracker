@@ -1,10 +1,12 @@
 package kaptainwutax.seedcracker.cracker.population;
 
 import kaptainwutax.seedcracker.cracker.storage.SeedData;
-import kaptainwutax.seedcracker.util.Rand;
-import kaptainwutax.seedcracker.util.Seeds;
+import kaptainwutax.seedutils.lcg.rand.JRand;
+import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
+import randomreverser.util.LCG;
 
 public abstract class DecoratorData extends SeedData {
 
@@ -19,17 +21,17 @@ public abstract class DecoratorData extends SeedData {
     }
 
     @Override
-    public final boolean test(long seed, Rand rand) {
-        long decoratorSeed = Seeds.setPopulationSeed(null, seed, this.chunkPos.x << 4, this.chunkPos.z << 4);
+    public final boolean test(long seed, JRand rand) {
+        long decoratorSeed = ChunkSeeds.getPopulationSeed(seed, this.chunkPos.x << 4, this.chunkPos.z << 4, MCVersion.v1_15);
 
         decoratorSeed += salt;
-        decoratorSeed ^= Rand.JAVA_LCG.multiplier;
-        decoratorSeed &= Rand.JAVA_LCG.modulo - 1;
+        decoratorSeed ^= LCG.JAVA.multiplier;
+        decoratorSeed &= LCG.JAVA.modulus - 1;
         rand.setSeed(decoratorSeed, false);
         return this.testDecorator(rand);
     }
 
-    public abstract boolean testDecorator(Rand rand);
+    public abstract boolean testDecorator(JRand rand);
 
     public ChunkPos getChunkPos() {
         return this.chunkPos;

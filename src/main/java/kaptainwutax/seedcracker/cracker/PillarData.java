@@ -3,7 +3,7 @@ package kaptainwutax.seedcracker.cracker;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.SeedData;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
-import kaptainwutax.seedcracker.util.Rand;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class PillarData extends SeedData {
 	}
 
 	@Override
-	public boolean test(long seed, Rand rand) {
+	public boolean test(long seed, JRand rand) {
 		List<Integer> h = this.getPillarHeights((int)seed);
 		return h.equals(this.heights);
 	}
