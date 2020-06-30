@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.finder.population;
+package kaptainwutax.seedcracker.finder.decorator;
 
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.util.PosIterator;
@@ -95,7 +95,7 @@ public abstract class OreFinder extends BlockFinder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return this.isOverworld(dimension);
     }
 
     /*

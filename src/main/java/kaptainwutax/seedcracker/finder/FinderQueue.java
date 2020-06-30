@@ -3,7 +3,6 @@ package kaptainwutax.seedcracker.finder;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.finder.profile.VanillaProfile;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -37,7 +36,7 @@ public class FinderQueue {
                    List<Finder> finders = type.finderBuilder.build(world, chunkPos);
 
                    finders.forEach(finder -> {
-                       if(finder.isValidDimension(world.dimension.getType())) {
+                       if(finder.isValidDimension(world.getDimension())) {
                            finder.findInChunk();
                            this.finderProfile.addFinder(type, finder);
                        }

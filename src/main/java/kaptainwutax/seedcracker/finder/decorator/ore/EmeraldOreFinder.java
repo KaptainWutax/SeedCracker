@@ -1,15 +1,16 @@
-package kaptainwutax.seedcracker.finder.population.ore;
+package kaptainwutax.seedcracker.finder.decorator.ore;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.population.EmeraldOreData;
+import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
@@ -35,10 +36,15 @@ public class EmeraldOreFinder extends BlockFinder {
         Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 0, 8));
 
         List<BlockPos> result = super.findInChunk();
+        if(result.isEmpty())return result;
 
-        if(!result.isEmpty() && SeedCracker.get().getDataStorage().addBaseData(new EmeraldOreData(this.chunkPos, biome, result))) {
-            //TODO: support more ores.
-            this.renderers.add(new Cube(result.get(0), new Color(0, 255, 0)));
+        BlockPos pos = result.get(0);
+
+        EmeraldOre.Data data = SeedCracker.EMERALD_ORE.at(pos.getX(), pos.getY(), pos.getZ(),
+                kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome)));
+
+        if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
+            this.renderers.add(new Cube(pos, new Color(0, 255, 0)));
         }
 
         return result;
@@ -46,7 +52,7 @@ public class EmeraldOreFinder extends BlockFinder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return this.isOverworld(dimension);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

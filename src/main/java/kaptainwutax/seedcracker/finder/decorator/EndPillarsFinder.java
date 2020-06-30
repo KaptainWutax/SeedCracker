@@ -1,13 +1,12 @@
-package kaptainwutax.seedcracker.finder.population;
+package kaptainwutax.seedcracker.finder.decorator;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.PillarData;
+import kaptainwutax.seedcracker.cracker.misc.PillarData;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -60,7 +59,7 @@ public class EndPillarsFinder extends Finder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.THE_END;
+        return this.isEnd(dimension);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

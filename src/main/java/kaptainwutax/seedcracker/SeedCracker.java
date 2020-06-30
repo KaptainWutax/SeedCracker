@@ -1,20 +1,21 @@
 package kaptainwutax.seedcracker;
 
-import com.google.common.hash.Hashing;
+import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.seedcracker.command.ClientCommand;
+import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
+import kaptainwutax.seedcracker.cracker.decorator.Dungeon;
+import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
+import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
-import kaptainwutax.seedutils.lcg.rand.JRand;
+import kaptainwutax.seedutils.mc.MCVersion;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-
-import java.nio.charset.StandardCharsets;
 
 public class SeedCracker implements ModInitializer {
+
+	public static final MCVersion MC_VERSION = MCVersion.v1_16;
 
     private static final SeedCracker INSTANCE = new SeedCracker();
     private DataStorage dataStorage = new DataStorage();
@@ -23,12 +24,15 @@ public class SeedCracker implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		RenderQueue.get().add("hand", FinderQueue.get()::renderFinders);
-		//SeedCracker.main(null);
 	}
 
 	public static SeedCracker get() {
 	    return INSTANCE;
     }
+
+	public DataStorage getDataStorage() {
+		return this.dataStorage;
+	}
 
 	public boolean isActive() {
 		return this.active;
@@ -44,103 +48,33 @@ public class SeedCracker implements ModInitializer {
 	    }
     }
 
-	public DataStorage getDataStorage() {
-		return this.dataStorage;
-	}
-
 	public void reset() {
 		SeedCracker.get().getDataStorage().clear();
 		FinderQueue.get().clear();
 	}
 
-	public static void main(String[] args) {
-		int s = Hashing.sha256().hashString("joe" + ":why_so_salty#LazyCrypto", StandardCharsets.UTF_8).asInt() & Integer.MAX_VALUE;
+	public static final BastionRemnant BASTION_REMNANT = new BastionRemnant(SeedCracker.MC_VERSION);
+	public static final BuriedTreasure BURIED_TREASURE = new BuriedTreasure(SeedCracker.MC_VERSION);
+	public static final DesertPyramid DESERT_PYRAMID = new DesertPyramid(SeedCracker.MC_VERSION);
+	public static final EndCity END_CITY = new EndCity(SeedCracker.MC_VERSION);
+	public static final Fortress FORTRESS = new Fortress(SeedCracker.MC_VERSION);
+	public static final Igloo IGLOO = new Igloo(SeedCracker.MC_VERSION);
+	public static final JunglePyramid JUNGLE_PYRAMID = new JunglePyramid(SeedCracker.MC_VERSION);
+	public static final Mansion MANSION = new Mansion(SeedCracker.MC_VERSION);
+	public static final Mineshaft MINESHAFT = new Mineshaft(SeedCracker.MC_VERSION, Mineshaft.Type.EITHER);
+	public static final Monument MONUMENT = new Monument(SeedCracker.MC_VERSION);
+	public static final NetherFossil NETHER_FOSSIL = new NetherFossil(SeedCracker.MC_VERSION);
+	public static final OceanRuin OCEAN_RUIN = new OceanRuin(SeedCracker.MC_VERSION);
+	public static final PillagerOutpost PILLAGER_OUTPOST = new PillagerOutpost(SeedCracker.MC_VERSION);
+	public static final RuinedPortal RUINED_PORTAL = new RuinedPortal(SeedCracker.MC_VERSION);
+	public static final Shipwreck SHIPWRECK = new Shipwreck(SeedCracker.MC_VERSION);
+	public static final Stronghold STRONGHOLD = new Stronghold(SeedCracker.MC_VERSION);
+	public static final SwampHut SWAMP_HUT = new SwampHut(SeedCracker.MC_VERSION);
+	public static final Village VILLAGE = new Village(SeedCracker.MC_VERSION);
 
-		for(int seed = 0; seed < Integer.MAX_VALUE; seed++) {
-			JRand rand = new JRand(seed, true);
-			rand.nextInt(3); //0 = Normal Voronoi, 1 = Horizontal Voronoi, 2 = New Voronoi I don't comprehend
-			rand.nextBoolean(); //Does the dimension have skylight?
-			int propertiesSeed = rand.nextInt(); //This seed is used for creating dimension properties such as if vater vaporizes, if it's nether-like, etc. Will be documenting this soon.
-
-			rand.setSeed((long)propertiesSeed, true);
-			rand.nextFloat(); //Defines the light level to brightness conversion.
-			boolean vaporize = rand.nextInt(5) == 0; //Does water vaporize?
-			rand.nextBoolean(); //Is this dimension nether-like?
-			rand.nextBoolean(); //Is the sky immobile?
-			rand.nextFloat(); //If the sky is immobile, this is the angle it's stuck at.
-			rand.nextBoolean();
-			boolean endSky = rand.nextInt(8) == 0; //Does it have an end sky?
-			Math.max(100.0D, rand.nextGaussian() * 3.0D * 24000.0D); //Number of ticks per day.
-			Vec3d thing = new Vec3d(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()); //Fog color multiplier.
-			thing = new Vec3d(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()); //Fog color addend.
-			rand.nextBoolean(); //Is the dimension foggy?
-			float d = (float) Math.max(5.0D, 30.0D * (1.0D + 4.0D * rand.nextGaussian())); //Sun size scalar.
-			d = (float)Math.max(5.0D, 30.0D * (1.0D + 4.0D * rand.nextGaussian())); //Moon size scalar.
-			Vector3f thing2 = rand.nextBoolean() ? new Vector3f(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()) : new Vector3f(1.0F, 1.0F, 1.0F); //Sun Color.
-			thing2 = rand.nextBoolean() ? new Vector3f(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()) : new Vector3f(1.0F, 1.0F, 1.0F); //Moon Color.
-			rand.nextInt(255); //Cloud height.
-
-			rand.nextInt();
-			int n = rand.nextInt(15);
-
-			for(int i = 2; i < n; i++) {
-				rand.nextInt();
-
-				do {
-					rand.nextFloat();
-					rand.nextFloat();
-					rand.nextFloat();
-					rand.nextFloat();
-					rand.nextFloat();
-				} while(rand.nextBoolean());
-			}
-
-			while(rand.nextBoolean()) {
-				rand.nextInt(81); //81 biomes.
-
-				do {
-					rand.nextFloat();
-					rand.nextFloat();
-					rand.nextFloat();
-					rand.nextFloat();
-					rand.nextFloat();
-				} while(rand.nextBoolean());
-			}
-
-			if(rand.nextInt(7) == 0) {
-				for(int var9 = 0; var9 < Direction.values().length; ++var9) {
-					rand.nextGaussian();
-				}
-			}
-
-			if(rand.nextInt(4) == 0) {
-				//this.field_23500 = this.method_26520(chunkJRandom); //SKIP THIS SEED!
-				continue;
-			}
-
-			if(rand.nextInt(3) == 0) {
-				int i = rand.nextInt(6) + 2;
-
-				for(int j = 0; j < i; ++j) {
-					rand.nextFloat();
-					rand.nextFloat();
-					rand.nextFloat();
-				}
-			}
-
-			int i = rand.nextInt();
-
-			if(rand.nextInt(3) == 0) {
-				rand.setSeed(i, true);
-				rand.nextInt(128);
-				int v = rand.nextInt(8) + 1;
-				v = rand.nextInt(8) + 1;
-
-				if(rand.nextInt(252) == 37 && rand.nextInt(5) == 2 && rand.nextInt(252) == 69) {
-					System.out.println(seed);
-				}
-			}
-		}
-	}
+	public static final EndGateway END_GATEWAY = new EndGateway(SeedCracker.MC_VERSION);
+	public static final DesertWell DESERT_WELL = new DesertWell(SeedCracker.MC_VERSION);
+	public static final EmeraldOre EMERALD_ORE = new EmeraldOre(SeedCracker.MC_VERSION);
+	public static final Dungeon DUNGEON = new Dungeon(SeedCracker.MC_VERSION);
 
 }

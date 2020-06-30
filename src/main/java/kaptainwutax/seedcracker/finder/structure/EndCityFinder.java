@@ -1,15 +1,14 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
@@ -17,7 +16,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +79,7 @@ public class EndCityFinder extends Finder {
     public List<BlockPos> findInChunk() {
         Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
 
-        if(!biome.hasStructureFeature(Feature.END_CITY)) {
+        if(!biome.hasStructureFeature(StructureFeature.END_CITY)) {
             return new ArrayList<>();
         }
 
@@ -96,7 +95,9 @@ public class EndCityFinder extends Finder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.END_CITY))) {
+                RegionStructure.Data<?> data = SeedCracker.END_CITY.at(this.chunkPos.x, this.chunkPos.z);
+
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(153, 0, 153)));
                     this.renderers.add(new Cube(pos, new Color(153, 0, 153)));
                 }
@@ -118,7 +119,7 @@ public class EndCityFinder extends Finder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.THE_END;
+        return this.isEnd(dimension);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

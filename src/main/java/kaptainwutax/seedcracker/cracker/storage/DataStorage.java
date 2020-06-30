@@ -1,12 +1,19 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
 import io.netty.util.internal.ConcurrentSet;
-import kaptainwutax.seedcracker.cracker.biome.BiomeData;
-import kaptainwutax.seedcracker.cracker.PillarData;
-import kaptainwutax.seedcracker.cracker.biome.GeneratorTypeData;
-import kaptainwutax.seedcracker.cracker.biome.HashedSeedData;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import net.minecraft.world.level.LevelGeneratorType;
+import kaptainwutax.featureutils.Feature;
+import kaptainwutax.featureutils.structure.BuriedTreasure;
+import kaptainwutax.featureutils.structure.Structure;
+import kaptainwutax.featureutils.structure.TriangularStructure;
+import kaptainwutax.featureutils.structure.UniformStructure;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
+import kaptainwutax.seedcracker.cracker.misc.PillarData;
+import kaptainwutax.seedcracker.cracker.misc.BiomeData;
+import kaptainwutax.seedcracker.cracker.misc.HashedSeedData;
+import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
+import kaptainwutax.seedcracker.cracker.decorator.Dungeon;
+import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
+import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -14,9 +21,13 @@ import java.util.function.Consumer;
 
 public class DataStorage {
 
-	public static final Comparator<SeedData> SEED_DATA_COMPARATOR = (s1, s2) -> {
-		boolean isStructure1 = s1 instanceof StructureData;
-		boolean isStructure2 = s2 instanceof StructureData;
+	public static final DataAddedEvent POKE_PILLARS = s -> s.timeMachine.poke(TimeMachine.Phase.PILLARS);
+	public static final DataAddedEvent POKE_STRUCTURES = s -> s.timeMachine.poke(TimeMachine.Phase.STRUCTURES);
+	public static final DataAddedEvent POKE_BIOMES = s -> s.timeMachine.poke(TimeMachine.Phase.BIOMES);
+
+	public static final Comparator<Entry> SEED_DATA_COMPARATOR = (s1, s2) -> {
+		boolean isStructure1 = s1.data.feature instanceof Structure;
+		boolean isStructure2 = s2.data.feature instanceof Structure;
 
 		//Structures always come before decorators.
 		if(isStructure1 != isStructure2) {
@@ -27,7 +38,7 @@ public class DataStorage {
 			return 0;
 		}
 
-		double diff = s2.getBits() - s1.getBits();
+		double diff = getBits(s2.data.feature) - getBits(s1.data.feature);
 		return diff == 0 ? 1 : (int)Math.signum(diff);
 	};
 
@@ -35,9 +46,8 @@ public class DataStorage {
 	protected Set<Consumer<DataStorage>> scheduledData = new ConcurrentSet<>();
 
 	protected PillarData pillarData = null;
-	protected ScheduledSet<SeedData> baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);
+	protected ScheduledSet<Entry> baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);
 	protected ScheduledSet<BiomeData> biomeSeedData = new ScheduledSet<>(null);
-	protected GeneratorTypeData generatorTypeData = null;
 	protected HashedSeedData hashedSeedData = null;
 
 	public void tick() {
@@ -73,13 +83,15 @@ public class DataStorage {
 		return isAdded;
 	}
 
-	public synchronized boolean addBaseData(SeedData seedData) {
-		if(this.baseSeedData.contains(seedData)) {
+	public synchronized boolean addBaseData(Feature.Data<?> data, DataAddedEvent event) {
+		Entry e = new Entry(data, event);
+
+		if(this.baseSeedData.contains(e)) {
 			return false;
 		}
 
-		this.baseSeedData.scheduleAdd(seedData);
-		this.schedule(seedData::onDataAdded);
+		this.baseSeedData.scheduleAdd(e);
+		this.schedule(event::onDataAdded);
 		return true;
 	}
 
@@ -91,11 +103,6 @@ public class DataStorage {
 		this.biomeSeedData.scheduleAdd(biomeData);
 		this.schedule(biomeData::onDataAdded);
 		return true;
-	}
-
-	public synchronized boolean addGeneratorTypeData(GeneratorTypeData generatorTypeData) {
-		this.generatorTypeData = generatorTypeData;
-		return generatorTypeData.isSupported();
 	}
 
 	public synchronized boolean addHashedSeedData(HashedSeedData hashedSeedData) {
@@ -119,8 +126,8 @@ public class DataStorage {
 	public double getBaseBits() {
 		double bits = 0.0D;
 
-		for(SeedData baseSeedDatum: this.baseSeedData) {
-			bits += baseSeedDatum.getBits();
+		for(Entry e: this.baseSeedData) {
+			bits += getBits(e.data.feature);
 		}
 
 		return bits;
@@ -128,6 +135,24 @@ public class DataStorage {
 
 	public double getWantedBits() {
 		return 32.0D;
+	}
+
+	public static double getBits(Feature<?, ?> feature) {
+		if(feature instanceof UniformStructure) {
+			UniformStructure<?> s = (UniformStructure<?>)feature;
+			return Math.log(s.getOffset() * s.getOffset()) / Math.log(2);
+		} else if(feature instanceof TriangularStructure) {
+			TriangularStructure<?> s = (TriangularStructure<?>)feature;
+			return Math.log(s.getPeak() * s.getPeak()) / Math.log(2);
+		}
+
+		if(feature instanceof BuriedTreasure)return Math.log(100) / Math.log(2);
+		if(feature instanceof DesertWell)return Math.log(1000 * 16 * 16) / Math.log(2);
+		if(feature instanceof Dungeon)return Math.log(256 * 16 * 16 * 0.125D) / Math.log(2);
+		if(feature instanceof EmeraldOre)return Math.log(28 * 16 * 16 * 0.5D) / Math.log(2);
+		if(feature instanceof EndGateway)return Math.log(700 * 16 * 16 * 7) / Math.log(2);
+
+		throw new UnsupportedOperationException("go do implement bits count for " + feature.getName() + " you fool");
 	}
 
 	public void clear() {
@@ -138,6 +163,25 @@ public class DataStorage {
 		this.hashedSeedData = null;
 		this.timeMachine.shouldTerminate = true;
 		this.timeMachine = new TimeMachine(this);
+	}
+
+	public static class Entry {
+		public final Feature.Data<?> data;
+		public final DataAddedEvent event;
+
+		public Entry(Feature.Data<?> data, DataAddedEvent event) {
+			this.data = data;
+			this.event = event;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if(this == o)return true;
+			if(!(o instanceof Entry))return false;
+			Entry entry = (Entry)o;
+			return data.feature == entry.data.feature
+					&& data.chunkX == entry.data.chunkX && data.chunkZ == entry.data.chunkZ;
+		}
 	}
 
 }

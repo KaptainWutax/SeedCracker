@@ -1,21 +1,18 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
@@ -46,7 +43,9 @@ public class IglooFinder extends AbstractTempleFinder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.IGLOO))) {
+                RegionStructure.Data<?> data = SeedCracker.IGLOO.at(this.chunkPos.x, this.chunkPos.z);
+
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(0, 255, 255)));
                     this.renderers.add(new Cube(pos, new Color(0, 255, 255)));
                 }
@@ -89,12 +88,7 @@ public class IglooFinder extends AbstractTempleFinder {
 
     @Override
     protected StructureFeature<?> getStructureFeature() {
-        return Feature.IGLOO;
-    }
-
-    @Override
-    public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return StructureFeature.IGLOO;
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

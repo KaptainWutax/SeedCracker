@@ -1,12 +1,12 @@
 package kaptainwutax.seedcracker.finder;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.biome.BiomeData;
+import kaptainwutax.seedcracker.cracker.misc.BiomeData;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -36,7 +36,8 @@ public class BiomeFinder extends Finder {
                     continue;
                 }
 
-                if(SeedCracker.get().getDataStorage().addBiomeData(new BiomeData(blockPos, biome))) {
+                if(SeedCracker.get().getDataStorage().addBiomeData(new BiomeData(blockPos,
+                        kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome))))) {
                     blockPos = this.world.getTopPosition(Heightmap.Type.WORLD_SURFACE, blockPos).down();
                     result.add(blockPos);
                 }
@@ -52,7 +53,7 @@ public class BiomeFinder extends Finder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return this.isOverworld(dimension);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

@@ -1,19 +1,17 @@
-package kaptainwutax.seedcracker.cracker.biome;
+package kaptainwutax.seedcracker.cracker.misc;
 
-import kaptainwutax.seedcracker.cracker.biome.source.IFakeBiomeSource;
+import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.ISeedStorage;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 
 import java.util.function.Predicate;
 
 public class BiomeData implements ISeedStorage {
 
     private BlockPos pos;
-
     private Biome biome;
     private Predicate<Biome> biomePredicate;
 
@@ -24,7 +22,7 @@ public class BiomeData implements ISeedStorage {
 
     public BiomeData(BlockPos pos, int biomeId) {
         this.pos = pos;
-        this.biome = Registry.BIOME.get(biomeId);
+        this.biome = Biome.REGISTRY.get(biomeId);
     }
 
 
@@ -33,12 +31,12 @@ public class BiomeData implements ISeedStorage {
         this.biomePredicate = biomePredicate;
     }
 
-    public boolean test(IFakeBiomeSource source) {
+    public boolean test(BiomeSource source) {
         if(this.biome == null) {
-            return this.biomePredicate.test(source.sample(this.pos));
+            return this.biomePredicate.test(source.getBiome(this.pos.getX(), this.pos.getY(), this.pos.getZ()));
         }
 
-        return source.sample(this.pos) == this.biome;
+        return source.getBiome(this.pos.getX(), this.pos.getY(), this.pos.getZ()) == this.biome;
     }
 
     public BlockPos getPos() {
@@ -68,9 +66,10 @@ public class BiomeData implements ISeedStorage {
     @Override
     public int hashCode() {
         if(this.biomePredicate == null) {
-            return this.biome.getName().asString().hashCode();
+            return this.biome.getName().hashCode();
         }
 
         return super.hashCode();
     }
+
 }

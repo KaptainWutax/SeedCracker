@@ -1,15 +1,14 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OceanMonumentFinder extends Finder {
+public class MonumentFinder extends Finder {
 
     protected static List<BlockPos> SEARCH_POSITIONS = buildSearchPositions(CHUNK_POSITIONS, pos -> {
         if(pos.getY() != 56)return true;
@@ -32,7 +31,7 @@ public class OceanMonumentFinder extends Finder {
     protected List<PieceFinder> finders = new ArrayList<>();
     protected final Vec3i size = new Vec3i(8, 5, 8);
 
-    public OceanMonumentFinder(World world, ChunkPos chunkPos) {
+    public MonumentFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos);
 
         PieceFinder finder = new PieceFinder(world, chunkPos, Direction.NORTH, size);
@@ -58,8 +57,9 @@ public class OceanMonumentFinder extends Finder {
 
             positions.forEach(pos -> {
                 ChunkPos monumentStart = new ChunkPos(this.chunkPos.x + 1, this.chunkPos.z + 1);
+                RegionStructure.Data<?> data = SeedCracker.MONUMENT.at(monumentStart.x, monumentStart.z);
 
-                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(monumentStart, StructureFeatures.OCEAN_MONUMENT))) {
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(0, 0, 255)));
                     this.renderers.add(new Cube(monumentStart.getCenterBlockPos().add(0, pos.getY(), 0), new Color(0, 0, 255)));
                 }
@@ -81,7 +81,7 @@ public class OceanMonumentFinder extends Finder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return this.isOverworld(dimension);
     }
     
     public void buildStructure(PieceFinder finder) {
@@ -128,10 +128,10 @@ public class OceanMonumentFinder extends Finder {
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {
         List<Finder> finders = new ArrayList<>();
-        finders.add(new OceanMonumentFinder(world, chunkPos));
-        finders.add(new OceanMonumentFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z)));
-        finders.add(new OceanMonumentFinder(world, new ChunkPos(chunkPos.x, chunkPos.z - 1)));
-        finders.add(new OceanMonumentFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z - 1)));
+        finders.add(new MonumentFinder(world, chunkPos));
+        finders.add(new MonumentFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z)));
+        finders.add(new MonumentFinder(world, new ChunkPos(chunkPos.x, chunkPos.z - 1)));
+        finders.add(new MonumentFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z - 1)));
         return finders;
     }
     

@@ -1,29 +1,27 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.StairsBlock;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DesertTempleFinder extends AbstractTempleFinder {
+public class DesertPyramidFinder extends AbstractTempleFinder {
     
-    public DesertTempleFinder(World world, ChunkPos chunkPos) {
+    public DesertPyramidFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos, new Vec3i(21, 15, 21));
     }
 
@@ -36,7 +34,9 @@ public class DesertTempleFinder extends AbstractTempleFinder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.DESERT_PYRAMID))) {
+                RegionStructure.Data<?> data = SeedCracker.DESERT_PYRAMID.at(this.chunkPos.x, this.chunkPos.z);
+
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                     this.addRenderers(pieceFinder, pos, new Color(255, 0, 255));
                 }
             });
@@ -47,7 +47,7 @@ public class DesertTempleFinder extends AbstractTempleFinder {
 
     @Override
     protected StructureFeature<?> getStructureFeature() {
-        return Feature.DESERT_PYRAMID;
+        return StructureFeature.DESERT_PYRAMID;
     }
 
     @Override
@@ -221,10 +221,10 @@ public class DesertTempleFinder extends AbstractTempleFinder {
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {
         List<Finder> finders = new ArrayList<>();
-        finders.add(new DesertTempleFinder(world, chunkPos));
-        finders.add(new DesertTempleFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z)));
-        finders.add(new DesertTempleFinder(world, new ChunkPos(chunkPos.x, chunkPos.z - 1)));
-        finders.add(new DesertTempleFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z - 1)));
+        finders.add(new DesertPyramidFinder(world, chunkPos));
+        finders.add(new DesertPyramidFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z)));
+        finders.add(new DesertPyramidFinder(world, new ChunkPos(chunkPos.x, chunkPos.z - 1)));
+        finders.add(new DesertPyramidFinder(world, new ChunkPos(chunkPos.x - 1, chunkPos.z - 1)));
         return finders;
     }
     

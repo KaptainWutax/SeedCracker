@@ -1,7 +1,7 @@
-package kaptainwutax.seedcracker.finder.population;
+package kaptainwutax.seedcracker.finder.decorator;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.population.DungeonData;
+import kaptainwutax.seedcracker.cracker.decorator.Dungeon;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
@@ -12,19 +12,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DungeonFinder extends BlockFinder {
 
@@ -72,9 +70,10 @@ public class DungeonFinder extends BlockFinder {
         Vec3i size = this.getDungeonSize(pos);
         int[] floorCalls = this.getFloorCalls(size, pos);
 
-        DungeonData data = new DungeonData(this.chunkPos, biome, pos, size, floorCalls);
+        Dungeon.Data data = SeedCracker.DUNGEON.at(pos.getX(), pos.getY(), pos.getZ(), size, floorCalls,
+                kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome)));
 
-        if(SeedCracker.get().getDataStorage().addBaseData(data)) {
+        if(SeedCracker.get().getDataStorage().addBaseData(data, data::onDataAdded)) {
             this.renderers.add(new Cube(pos, new Color(255, 0, 0)));
 
             if(data.usesFloor()) {
@@ -105,9 +104,9 @@ public class DungeonFinder extends BlockFinder {
                 Block block = this.world.getBlockState(spawnerPos.add(xo, -1, zo)).getBlock();
 
                 if(block == Blocks.MOSSY_COBBLESTONE) {
-                    floorCalls[i++] = DungeonData.MOSSY_COBBLESTONE_CALL;
+                    floorCalls[i++] = Dungeon.Data.MOSSY_COBBLESTONE_CALL;
                 } else if(block == Blocks.COBBLESTONE) {
-                    floorCalls[i++] = DungeonData.COBBLESTONE_CALL;
+                    floorCalls[i++] = Dungeon.Data.COBBLESTONE_CALL;
                 } else {
                     return null;
                 }
@@ -119,7 +118,7 @@ public class DungeonFinder extends BlockFinder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return this.isOverworld(dimension);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

@@ -1,10 +1,10 @@
 package kaptainwutax.seedcracker.finder;
 
-import kaptainwutax.seedcracker.finder.population.DesertWellFinder;
-import kaptainwutax.seedcracker.finder.population.DungeonFinder;
-import kaptainwutax.seedcracker.finder.population.EndGatewayFinder;
-import kaptainwutax.seedcracker.finder.population.EndPillarsFinder;
-import kaptainwutax.seedcracker.finder.population.ore.EmeraldOreFinder;
+import kaptainwutax.seedcracker.finder.decorator.DesertWellFinder;
+import kaptainwutax.seedcracker.finder.decorator.DungeonFinder;
+import kaptainwutax.seedcracker.finder.decorator.EndGatewayFinder;
+import kaptainwutax.seedcracker.finder.decorator.EndPillarsFinder;
+import kaptainwutax.seedcracker.finder.decorator.ore.EmeraldOreFinder;
 import kaptainwutax.seedcracker.finder.structure.*;
 import kaptainwutax.seedcracker.render.Renderer;
 import net.minecraft.client.MinecraftClient;
@@ -58,8 +58,8 @@ public abstract class Finder {
     public abstract List<BlockPos> findInChunk();
 
     public boolean shouldRender() {
-        DimensionType finderDim = this.world.dimension.getType();
-        DimensionType playerDim = mc.player.world.dimension.getType();
+        DimensionType finderDim = this.world.getDimension();
+        DimensionType playerDim = mc.player.world.getDimension();
 
         if(finderDim != playerDim)return false;
 
@@ -84,7 +84,19 @@ public abstract class Finder {
     }
 
     public abstract boolean isValidDimension(DimensionType dimension);
-    
+
+    public boolean isOverworld(DimensionType dimension) {
+        return dimension.isBedWorking() && dimension.hasSkyLight();
+    }
+
+    public boolean isNether(DimensionType dimension) {
+        return dimension.isUltrawarm() && !dimension.isBedWorking() && !dimension.hasSkyLight();
+    }
+
+    public boolean isEnd(DimensionType dimension) {
+        return dimension.hasEnderDragonFight() && !dimension.isBedWorking() && !dimension.hasSkyLight();
+    }
+
     public static List<BlockPos> buildSearchPositions(List<BlockPos> base, Predicate<BlockPos> removeIf) {
         List<BlockPos> newList = new ArrayList<>();
         
@@ -99,27 +111,26 @@ public abstract class Finder {
 
     public enum Category {
         STRUCTURES,
+        DECORATORS,
         BIOMES,
-        ORES,
-        OTHERS
     }
 
     public enum Type {
         BURIED_TREASURE(BuriedTreasureFinder::create, Category.STRUCTURES),
-        DESERT_TEMPLE(DesertTempleFinder::create, Category.STRUCTURES),
+        DESERT_TEMPLE(DesertPyramidFinder::create, Category.STRUCTURES),
         END_CITY(EndCityFinder::create, Category.STRUCTURES),
         //IGLOO(IglooFinder::create, Category.STRUCTURES),
-        JUNGLE_TEMPLE(JungleTempleFinder::create, Category.STRUCTURES),
-        MONUMENT(OceanMonumentFinder::create, Category.STRUCTURES),
+        JUNGLE_TEMPLE(JunglePyramidFinder::create, Category.STRUCTURES),
+        MONUMENT(MonumentFinder::create, Category.STRUCTURES),
         SWAMP_HUT(SwampHutFinder::create, Category.STRUCTURES),
         //MANSION(MansionFinder::create, Category.STRUCTURES),
         SHIPWRECK(ShipwreckFinder::create, Category.STRUCTURES),
 
-        END_PILLARS(EndPillarsFinder::create, Category.OTHERS),
-        END_GATEWAY(EndGatewayFinder::create, Category.OTHERS),
-        DUNGEON(DungeonFinder::create, Category.OTHERS),
-        EMERALD_ORE(EmeraldOreFinder::create, Category.ORES),
-        DESERT_WELL(DesertWellFinder::create, Category.OTHERS),
+        END_PILLARS(EndPillarsFinder::create, Category.DECORATORS),
+        END_GATEWAY(EndGatewayFinder::create, Category.DECORATORS),
+        DUNGEON(DungeonFinder::create, Category.DECORATORS),
+        EMERALD_ORE(EmeraldOreFinder::create, Category.DECORATORS),
+        DESERT_WELL(DesertWellFinder::create, Category.DECORATORS),
         BIOME(BiomeFinder::create, Category.BIOMES);
 
         public final FinderBuilder finderBuilder;

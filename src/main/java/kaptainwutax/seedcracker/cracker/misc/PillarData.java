@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.cracker;
+package kaptainwutax.seedcracker.cracker.misc;
 
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.SeedData;

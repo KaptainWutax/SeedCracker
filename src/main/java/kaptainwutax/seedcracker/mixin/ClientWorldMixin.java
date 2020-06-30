@@ -1,7 +1,6 @@
 package kaptainwutax.seedcracker.mixin;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.finder.FinderQueue;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;

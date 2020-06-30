@@ -1,21 +1,19 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.enums.StairShape;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
@@ -37,7 +35,9 @@ public class SwampHutFinder extends AbstractTempleFinder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.SWAMP_HUT))) {
+                RegionStructure.Data<?> data = SeedCracker.SWAMP_HUT.at(this.chunkPos.x, this.chunkPos.z);
+
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                     this.addRenderers(pieceFinder, pos, new Color(255, 0, 255));
                 }
             });
@@ -48,7 +48,7 @@ public class SwampHutFinder extends AbstractTempleFinder {
 
     @Override
     protected StructureFeature<?> getStructureFeature() {
-        return Feature.SWAMP_HUT;
+        return StructureFeature.SWAMP_HUT;
     }
 
     @Override

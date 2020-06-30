@@ -1,8 +1,8 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
@@ -12,7 +12,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +20,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,7 @@ public class ShipwreckFinder extends BlockFinder {
     public List<BlockPos> findInChunk() {
         Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
 
-        if(!biome.hasStructureFeature(Feature.SHIPWRECK)) {
+        if(!biome.hasStructureFeature(StructureFeature.SHIPWRECK)) {
             return new ArrayList<>();
         }
 
@@ -179,7 +178,9 @@ public class ShipwreckFinder extends BlockFinder {
             mutablePos.move(-4, -chestY, -15);
 
             if((mutablePos.getX() & 0xf) == 0 && (mutablePos.getZ() & 0xf) == 0) {
-                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(new ChunkPos(mutablePos), StructureFeatures.SHIPWRECK))) {
+                RegionStructure.Data<?> data = SeedCracker.SHIPWRECK.at(new ChunkPos(mutablePos).x, new ChunkPos(mutablePos).z);
+
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(box, new Color(0, 255, 255)));
                     this.renderers.add(new Cube(new ChunkPos(mutablePos).getCenterBlockPos().offset(Direction.UP, mutablePos.getY()), new Color(0, 255, 255)));
                     return true;
@@ -192,7 +193,7 @@ public class ShipwreckFinder extends BlockFinder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return this.isOverworld(dimension);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

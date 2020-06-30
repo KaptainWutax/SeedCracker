@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.2.5-SNAPSHOT'
+	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -25,11 +25,33 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	implementation 'com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8'
-	include 'com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8'
+	implementation('com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8') {
+		transitive = false
+	}
+	include('com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8') {
+		transitive = false
+	}
 
-	implementation 'com.github.KaptainWutax:SeedUtils:3c204a3c206212b4a45432510fee3c4e26a00372'
-	include 'com.github.KaptainWutax:SeedUtils:3c204a3c206212b4a45432510fee3c4e26a00372'
+	implementation('com.github.KaptainWutax:SeedUtils:991e7b86896887ffa529ab4d9dde3c5c91371fac') {
+		transitive = false
+	}
+	include('com.github.KaptainWutax:SeedUtils:991e7b86896887ffa529ab4d9dde3c5c91371fac') {
+		transitive = false
+	}
+
+	implementation('com.github.KaptainWutax:FeatureUtils:86e526577cf8e0183fb629592ff9bf0eee132823') {
+		transitive = false
+	}
+	include('com.github.KaptainWutax:FeatureUtils:86e526577cf8e0183fb629592ff9bf0eee132823') {
+		transitive = false
+	}
+
+	implementation('com.github.KaptainWutax:BiomeUtils:9b9b468901fc2550e826e9099debb46db0c6959f') {
+		transitive = false
+	}
+	include('com.github.KaptainWutax:BiomeUtils:9b9b468901fc2550e826e9099debb46db0c6959f') {
+		transitive = false
+	}
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

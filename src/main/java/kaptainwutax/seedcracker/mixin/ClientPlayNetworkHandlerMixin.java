@@ -3,16 +3,13 @@ package kaptainwutax.seedcracker.mixin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.command.ClientCommand;
-import kaptainwutax.seedcracker.cracker.biome.GeneratorTypeData;
-import kaptainwutax.seedcracker.init.ClientCommands;
-import kaptainwutax.seedcracker.cracker.biome.HashedSeedData;
+import kaptainwutax.seedcracker.cracker.misc.HashedSeedData;
 import kaptainwutax.seedcracker.finder.FinderQueue;
+import kaptainwutax.seedcracker.init.ClientCommands;
 import kaptainwutax.seedcracker.util.Log;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
@@ -21,7 +18,6 @@ import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.ChunkPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -56,17 +52,18 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At(value = "TAIL"))
     public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        GeneratorTypeData generatorTypeData = new GeneratorTypeData(packet.getGeneratorType());
+        //PRE-1.16 SUPPORTED GENERATOR TYPES
+        //GeneratorTypeData generatorTypeData = new GeneratorTypeData(packet.getGeneratorType());
 
-        Log.warn("Fetched the generator type [" +
-                I18n.translate(generatorTypeData.getGeneratorType().getStoredName()).toUpperCase() + "].");
+        //Log.warn("Fetched the generator type [" +
+        //        I18n.translate(generatorTypeData.getGeneratorType().getStoredName()).toUpperCase() + "].");
 
-        if(!SeedCracker.get().getDataStorage().addGeneratorTypeData(generatorTypeData)) {
-            Log.error("THIS GENERATOR IS NOT SUPPORTED!");
-            Log.error("Overworld biome search WILL NOT run.");
-        }
+        //if(!SeedCracker.get().getDataStorage().addGeneratorTypeData(generatorTypeData)) {
+        //    Log.error("THIS GENERATOR IS NOT SUPPORTED!");
+        //    Log.error("Overworld biome search WILL NOT run.");
+        //}
 
-        HashedSeedData hashedSeedData = new HashedSeedData(packet.getSeed());
+        HashedSeedData hashedSeedData = new HashedSeedData(packet.getSha256Seed());
 
         if(SeedCracker.get().getDataStorage().addHashedSeedData(hashedSeedData)) {
             Log.warn("Fetched hashed world seed [" + hashedSeedData.getHashedSeed() + "].");

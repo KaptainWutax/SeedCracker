@@ -1,8 +1,8 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
@@ -10,13 +10,12 @@ import kaptainwutax.seedcracker.render.Cube;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +57,7 @@ public class BuriedTreasureFinder extends BlockFinder {
     @Override
     public List<BlockPos> findInChunk() {
         Biome biome = world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
-        if(!biome.hasStructureFeature(Feature.BURIED_TREASURE))return new ArrayList<>();
+        if(!biome.hasStructureFeature(StructureFeature.BURIED_TREASURE))return new ArrayList<>();
 
         List<BlockPos> result = super.findInChunk();
 
@@ -73,7 +72,9 @@ public class BuriedTreasureFinder extends BlockFinder {
         });
 
         result.forEach(pos -> {
-            if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.BURIED_TREASURE))) {
+            RegionStructure.Data<?> data = SeedCracker.BURIED_TREASURE.at(this.chunkPos.x, this.chunkPos.z);
+
+            if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                 this.renderers.add(new Cube(pos, new Color(255, 255, 0)));
             }
         });
@@ -83,7 +84,7 @@ public class BuriedTreasureFinder extends BlockFinder {
 
     @Override
     public boolean isValidDimension(DimensionType dimension) {
-        return dimension == DimensionType.OVERWORLD;
+        return this.isOverworld(dimension);
     }
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {

@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.cracker;
+package kaptainwutax.seedcracker.cracker.misc;
 
 import kaptainwutax.seedcracker.util.loot.LootBuilder;
 import kaptainwutax.seedutils.lcg.rand.JRand;
@@ -35,10 +35,10 @@ public class ChestLootData {
 	public boolean test(long lootSeed, JRand rand) {
 		rand.setSeed(lootSeed, true);
 
-		LootContext lootContext = new LootBuilder().setRandom(rand.toRandom())
-				.put(LootContextParameters.POSITION, new BlockPos(0, 0, 0)).build(LootContextTypes.CHEST);
+		LootContext lootContext = new LootBuilder().random(rand.toRandom())
+				.parameter(LootContextParameters.POSITION, new BlockPos(0, 0, 0)).build(LootContextTypes.CHEST);
 
-		List<ItemStack> itemStacks = this.lootTable.getDrops(lootContext);
+		List<ItemStack> itemStacks = this.lootTable.generateLoot(lootContext);
 		Map<Item, Integer> lootItems = new HashMap<>();
 
 		itemStacks.forEach(itemStack -> {

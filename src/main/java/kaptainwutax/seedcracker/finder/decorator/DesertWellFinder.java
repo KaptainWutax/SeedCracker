@@ -1,7 +1,9 @@
-package kaptainwutax.seedcracker.finder.population;
+package kaptainwutax.seedcracker.finder.decorator;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.population.DesertWellData;
+import kaptainwutax.seedcracker.cracker.misc.BiomeFixer;
+import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.finder.structure.PieceFinder;
 import kaptainwutax.seedcracker.render.Color;
@@ -9,16 +11,12 @@ import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.DesertBiome;
-import net.minecraft.world.biome.DesertHillsBiome;
-import net.minecraft.world.biome.DesertLakesBiome;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ public class DesertWellFinder extends PieceFinder {
 	public List<BlockPos> findInChunk() {
 		Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 0, 8));
 
-		if(!(biome instanceof DesertBiome) && !(biome instanceof DesertHillsBiome) && !(biome instanceof DesertLakesBiome)) {
+		if(!SeedCracker.DESERT_WELL.isValidBiome(BiomeFixer.swap(biome))) {
 			return new ArrayList<>();
 		}
 
@@ -50,7 +48,10 @@ public class DesertWellFinder extends PieceFinder {
 
 		result.forEach(pos -> {
 			pos = pos.add(2, 1, 2);
-			if(SeedCracker.get().getDataStorage().addBaseData(new DesertWellData(new ChunkPos(pos), biome, pos))) {
+
+			DesertWell.Data data = SeedCracker.DESERT_WELL.at(pos.getX(), pos.getZ(), BiomeFixer.swap(biome));
+
+			if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
 				this.renderers.add(new Cuboid(pos.add(-2, -1, -2), SIZE, new Color(128, 128, 255)));
 				this.renderers.add(new Cube(pos, new Color(128, 128, 255)));
 			}
@@ -61,7 +62,7 @@ public class DesertWellFinder extends PieceFinder {
 
 	@Override
 	public boolean isValidDimension(DimensionType dimension) {
-		return dimension == DimensionType.OVERWORLD;
+		return this.isOverworld(dimension);
 	}
 
 	protected void buildStructure() {

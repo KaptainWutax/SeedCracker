@@ -1,29 +1,27 @@
 package kaptainwutax.seedcracker.finder.structure;
 
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.structure.StructureData;
-import kaptainwutax.seedcracker.cracker.structure.StructureFeatures;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.block.enums.WireConnection;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JungleTempleFinder extends AbstractTempleFinder {
+public class JunglePyramidFinder extends AbstractTempleFinder {
 
-    public JungleTempleFinder(World world, ChunkPos chunkPos) {
+    public JunglePyramidFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos, new Vec3i(12, 10, 15));
     }
 
@@ -36,7 +34,9 @@ public class JungleTempleFinder extends AbstractTempleFinder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                if(SeedCracker.get().getDataStorage().addBaseData(new StructureData(this.chunkPos, StructureFeatures.JUNGLE_TEMPLE))) {
+                RegionStructure.Data<?> data = SeedCracker.JUNGLE_PYRAMID.at(this.chunkPos.x, this.chunkPos.z);
+
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
                     this.addRenderers(pieceFinder, pos, new Color(255, 0, 255));
                 }
             });
@@ -47,7 +47,7 @@ public class JungleTempleFinder extends AbstractTempleFinder {
 
     @Override
     protected StructureFeature<?> getStructureFeature() {
-        return Feature.JUNGLE_TEMPLE;
+        return StructureFeature.JUNGLE_PYRAMID;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class JungleTempleFinder extends AbstractTempleFinder {
 
     public static List<Finder> create(World world, ChunkPos chunkPos) {
         List<Finder> finders = new ArrayList<>();
-        finders.add(new JungleTempleFinder(world, chunkPos));
+        finders.add(new JunglePyramidFinder(world, chunkPos));
         return finders;
     }
     
