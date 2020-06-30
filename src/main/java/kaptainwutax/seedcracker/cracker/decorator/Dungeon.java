@@ -23,8 +23,7 @@ public class Dungeon extends Decorator<Decorator.Config, Dungeon.Data> {
 	public static final VersionMap<Decorator.Config> CONFIGS = new VersionMap<Decorator.Config>()
 			.add(MCVersion.v1_13, new Decorator.Config(2, 3))
 			.add(MCVersion.v1_16, new Decorator.Config(3, 2)
-									.add(3, 3, Biome.BEACH, Biome.SNOWY_BEACH,
-											Biome.DESERT, Biome.SWAMP, Biome.SWAMP_HILLS));
+									.add(3, 3, Biome.DESERT, Biome.SWAMP, Biome.SWAMP_HILLS));
 
 	public Dungeon(MCVersion version) {
 		super(CONFIGS.getAsOf(version), version);

@@ -9,9 +9,7 @@ public class DesertWell extends Decorator<Decorator.Config, DesertWell.Data> {
 
 	public static final VersionMap<Decorator.Config> CONFIGS = new VersionMap<Decorator.Config>()
 			.add(MCVersion.v1_13, new Decorator.Config(3, 1))
-			.add(MCVersion.v1_16, new Decorator.Config(4, 4)
-									.add(4, 2, Biome.DESERT_HILLS)
-									.add(4, 1, Biome.DESERT_LAKES));
+			.add(MCVersion.v1_16, new Decorator.Config(4, 13));
 
 	public DesertWell(MCVersion version) {
 		super(CONFIGS.getAsOf(version), version);

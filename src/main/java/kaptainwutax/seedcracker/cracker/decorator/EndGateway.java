@@ -9,7 +9,7 @@ public class EndGateway extends Decorator<EndGateway.Config, EndGateway.Data> {
 
 	public static final VersionMap<EndGateway.Config> CONFIGS = new VersionMap<EndGateway.Config>()
 			.add(MCVersion.v1_13, new EndGateway.Config(3, 0, 700))
-			.add(MCVersion.v1_16, new Config(4, 1, 700));
+			.add(MCVersion.v1_16, new EndGateway.Config(4, 13, 700));
 
 	public EndGateway(MCVersion version) {
 		super(CONFIGS.getAsOf(version), version);
