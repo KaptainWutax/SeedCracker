@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.seedcracker.Features;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.finder.Finder;
@@ -57,7 +58,7 @@ public class MonumentFinder extends Finder {
 
             positions.forEach(pos -> {
                 ChunkPos monumentStart = new ChunkPos(this.chunkPos.x + 1, this.chunkPos.z + 1);
-                RegionStructure.Data<?> data = SeedCracker.MONUMENT.at(monumentStart.x, monumentStart.z);
+                RegionStructure.Data<?> data = Features.MONUMENT.at(monumentStart.x, monumentStart.z);
 
                 if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(0, 0, 255)));

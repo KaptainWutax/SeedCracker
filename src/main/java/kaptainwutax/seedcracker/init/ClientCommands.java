@@ -24,12 +24,14 @@ public class ClientCommands {
     public static FinderCommand FINDER;
     public static DataCommand DATA;
     public static CrackerCommand CRACKER;
+    public static VersionCommand VERSION;
 
     static {
         COMMANDS.add(RENDER = new RenderCommand());
         COMMANDS.add(FINDER = new FinderCommand());
         COMMANDS.add(DATA = new DataCommand());
         COMMANDS.add(CRACKER = new CrackerCommand());
+        COMMANDS.add(VERSION = new VersionCommand());
     }
 
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {

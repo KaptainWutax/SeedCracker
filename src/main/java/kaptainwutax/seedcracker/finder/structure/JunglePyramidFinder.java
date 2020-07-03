@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.seedcracker.Features;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.finder.Finder;
@@ -34,7 +35,7 @@ public class JunglePyramidFinder extends AbstractTempleFinder {
             combinedResult.addAll(positions);
 
             positions.forEach(pos -> {
-                RegionStructure.Data<?> data = SeedCracker.JUNGLE_PYRAMID.at(this.chunkPos.x, this.chunkPos.z);
+                RegionStructure.Data<?> data = Features.JUNGLE_PYRAMID.at(this.chunkPos.x, this.chunkPos.z);
 
                 if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.addRenderers(pieceFinder, pos, new Color(255, 0, 255));

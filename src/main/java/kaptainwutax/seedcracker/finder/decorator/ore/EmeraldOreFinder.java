@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker.finder.decorator.ore;
 
+import kaptainwutax.seedcracker.Features;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
@@ -40,7 +41,7 @@ public class EmeraldOreFinder extends BlockFinder {
 
         BlockPos pos = result.get(0);
 
-        EmeraldOre.Data data = SeedCracker.EMERALD_ORE.at(pos.getX(), pos.getY(), pos.getZ(), BiomeFixer.swap(biome));
+        EmeraldOre.Data data = Features.EMERALD_ORE.at(pos.getX(), pos.getY(), pos.getZ(), BiomeFixer.swap(biome));
 
         if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
             this.renderers.add(new Cube(pos, new Color(0, 255, 0)));
