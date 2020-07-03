@@ -1,16 +1,16 @@
 package kaptainwutax.seedcracker.finder.decorator.ore;
 
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
+import kaptainwutax.seedcracker.util.BiomeFixer;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
@@ -40,10 +40,9 @@ public class EmeraldOreFinder extends BlockFinder {
 
         BlockPos pos = result.get(0);
 
-        EmeraldOre.Data data = SeedCracker.EMERALD_ORE.at(pos.getX(), pos.getY(), pos.getZ(),
-                kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome)));
+        EmeraldOre.Data data = SeedCracker.EMERALD_ORE.at(pos.getX(), pos.getY(), pos.getZ(), BiomeFixer.swap(biome));
 
-        if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
+        if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
             this.renderers.add(new Cube(pos, new Color(0, 255, 0)));
         }
 

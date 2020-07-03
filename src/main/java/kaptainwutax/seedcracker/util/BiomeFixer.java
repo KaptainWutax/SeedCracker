@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.cracker.misc;
+package kaptainwutax.seedcracker.util;
 
 import net.minecraft.util.registry.Registry;
 

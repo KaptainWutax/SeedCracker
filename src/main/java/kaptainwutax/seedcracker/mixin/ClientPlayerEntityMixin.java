@@ -25,7 +25,6 @@ public abstract class ClientPlayerEntityMixin {
             StringReader reader = new StringReader(message);
             reader.skip();
 
-            //Removing this kill the mixin. Son of a bitch.
             int cursor = reader.getCursor();
             reader.setCursor(cursor);
 

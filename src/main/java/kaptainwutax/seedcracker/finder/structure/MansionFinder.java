@@ -2,7 +2,7 @@ package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
@@ -64,7 +64,7 @@ public class MansionFinder extends Finder {
             positions.forEach(pos -> {
                 RegionStructure.Data<?> data = SeedCracker.MANSION.at(this.chunkPos.x, this.chunkPos.z);
 
-                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(102, 66, 33)));
                     this.renderers.add(new Cube(this.chunkPos.getCenterBlockPos().add(0, pos.getY(), 0), new Color(102, 66, 33)));
                 }

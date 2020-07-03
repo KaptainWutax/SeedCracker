@@ -1,6 +1,5 @@
-package kaptainwutax.seedcracker.cracker.misc;
+package kaptainwutax.seedcracker.util.loot;
 
-import kaptainwutax.seedcracker.util.loot.LootBuilder;
 import kaptainwutax.seedutils.lcg.rand.JRand;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

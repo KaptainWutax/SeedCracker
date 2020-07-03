@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.finder.profile;
+package kaptainwutax.seedcracker.profile;
 
 import kaptainwutax.seedcracker.finder.Finder;
 

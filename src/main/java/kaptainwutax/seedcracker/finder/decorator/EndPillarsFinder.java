@@ -1,8 +1,8 @@
 package kaptainwutax.seedcracker.finder.decorator;
 
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.cracker.PillarData;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
@@ -27,7 +27,7 @@ public class EndPillarsFinder extends Finder {
     public EndPillarsFinder(World world, ChunkPos chunkPos) {
         super(world, chunkPos);
 
-        this.alreadyFound = !SeedCracker.get().getDataStorage().addPillarData(null, DataStorage.POKE_PILLARS);
+        this.alreadyFound = !SeedCracker.get().getDataStorage().addPillarData(null, DataAddedEvent.POKE_PILLARS);
         if(this.alreadyFound)return;
 
         for(int i = 0; i < this.bedrockMarkers.length; i++) {
@@ -49,7 +49,7 @@ public class EndPillarsFinder extends Finder {
         if(result.size() == this.bedrockMarkers.length) {
             PillarData pillarData = new PillarData(result.stream().map(Vec3i::getY).collect(Collectors.toList()));
 
-            if(SeedCracker.get().getDataStorage().addPillarData(pillarData, DataStorage.POKE_PILLARS)) {
+            if(SeedCracker.get().getDataStorage().addPillarData(pillarData, DataAddedEvent.POKE_PILLARS)) {
                 result.forEach(pos -> this.renderers.add(new Cube(pos, new Color(128, 0, 128))));
             }
 

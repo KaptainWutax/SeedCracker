@@ -1,4 +1,4 @@
-package kaptainwutax.seedcracker.finder.profile;
+package kaptainwutax.seedcracker.profile;
 
 public abstract class CustomProfile extends FinderProfile {
 

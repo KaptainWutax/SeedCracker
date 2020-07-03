@@ -16,15 +16,10 @@ import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
 import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class DataStorage {
-
-	public static final DataAddedEvent POKE_PILLARS = s -> s.timeMachine.poke(TimeMachine.Phase.PILLARS);
-	public static final DataAddedEvent POKE_STRUCTURES = s -> s.timeMachine.poke(TimeMachine.Phase.STRUCTURES);
-	public static final DataAddedEvent POKE_BIOMES = s -> s.timeMachine.poke(TimeMachine.Phase.BIOMES);
 
 	public static final Comparator<Entry<Feature.Data<?>>> SEED_DATA_COMPARATOR = (s1, s2) -> {
 		boolean isStructure1 = s1.data.feature instanceof Structure;

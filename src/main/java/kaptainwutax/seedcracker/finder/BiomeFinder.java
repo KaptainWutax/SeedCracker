@@ -1,12 +1,12 @@
 package kaptainwutax.seedcracker.finder;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
+import kaptainwutax.seedcracker.util.BiomeFixer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -36,10 +36,9 @@ public class BiomeFinder extends Finder {
                     continue;
                 }
 
-                if(SeedCracker.get().getDataStorage().addBiomeData(
-                        new kaptainwutax.biomeutils.Biome.Data(
-                                kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome)),
-                                blockPos.getX(), blockPos.getZ()), DataStorage.POKE_BIOMES)) {
+                kaptainwutax.biomeutils.Biome.Data data = new kaptainwutax.biomeutils.Biome.Data(BiomeFixer.swap(biome), blockPos.getX(), blockPos.getZ());
+
+                if(SeedCracker.get().getDataStorage().addBiomeData(data, DataAddedEvent.POKE_BIOMES)) {
                     blockPos = this.world.getTopPosition(Heightmap.Type.WORLD_SURFACE, blockPos).down();
                     result.add(blockPos);
                 }

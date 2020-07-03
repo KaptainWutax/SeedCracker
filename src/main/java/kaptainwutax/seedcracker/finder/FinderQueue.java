@@ -3,6 +3,7 @@ package kaptainwutax.seedcracker.finder;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.profile.FinderConfig;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;

@@ -1,17 +1,17 @@
 package kaptainwutax.seedcracker.finder.decorator;
 
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cuboid;
+import kaptainwutax.seedcracker.util.BiomeFixer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
@@ -43,10 +43,9 @@ public class EndGatewayFinder extends BlockFinder {
             if(height >= 3 && height <= 9) {
                 newResult.add(pos);
 
-                EndGateway.Data data = SeedCracker.END_GATEWAY.at(pos.getX(), pos.getZ(), height,
-                        kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome)));
+                EndGateway.Data data = SeedCracker.END_GATEWAY.at(pos.getX(), pos.getZ(), height, BiomeFixer.swap(biome));
 
-                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos.add(-1, -2, -1), pos.add(2, 3, 2), new Color(102, 102, 210)));
                 }
             }

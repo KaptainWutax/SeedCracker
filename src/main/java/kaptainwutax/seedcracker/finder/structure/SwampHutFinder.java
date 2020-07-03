@@ -2,7 +2,7 @@ package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import net.minecraft.block.BlockState;
@@ -37,7 +37,7 @@ public class SwampHutFinder extends AbstractTempleFinder {
             positions.forEach(pos -> {
                 RegionStructure.Data<?> data = SeedCracker.SWAMP_HUT.at(this.chunkPos.x, this.chunkPos.z);
 
-                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.addRenderers(pieceFinder, pos, new Color(255, 0, 255));
                 }
             });

@@ -2,7 +2,7 @@ package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
@@ -180,7 +180,7 @@ public class ShipwreckFinder extends BlockFinder {
             if((mutablePos.getX() & 0xf) == 0 && (mutablePos.getZ() & 0xf) == 0) {
                 RegionStructure.Data<?> data = SeedCracker.SHIPWRECK.at(new ChunkPos(mutablePos).x, new ChunkPos(mutablePos).z);
 
-                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(box, new Color(0, 255, 255)));
                     this.renderers.add(new Cube(new ChunkPos(mutablePos).getCenterBlockPos().offset(Direction.UP, mutablePos.getY()), new Color(0, 255, 255)));
                     return true;

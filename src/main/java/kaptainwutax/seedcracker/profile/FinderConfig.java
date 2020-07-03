@@ -1,7 +1,6 @@
-package kaptainwutax.seedcracker.finder;
+package kaptainwutax.seedcracker.profile;
 
-import kaptainwutax.seedcracker.finder.profile.FinderProfile;
-import kaptainwutax.seedcracker.finder.profile.VanillaProfile;
+import kaptainwutax.seedcracker.finder.Finder;
 
 import java.util.List;
 import java.util.Map;

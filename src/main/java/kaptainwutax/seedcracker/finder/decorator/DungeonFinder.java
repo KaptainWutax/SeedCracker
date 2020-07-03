@@ -7,6 +7,7 @@ import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
 import kaptainwutax.seedcracker.render.Cuboid;
+import kaptainwutax.seedcracker.util.BiomeFixer;
 import kaptainwutax.seedcracker.util.PosIterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -15,7 +16,6 @@ import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
@@ -70,8 +70,7 @@ public class DungeonFinder extends BlockFinder {
         Vec3i size = this.getDungeonSize(pos);
         int[] floorCalls = this.getFloorCalls(size, pos);
 
-        Dungeon.Data data = SeedCracker.DUNGEON.at(pos.getX(), pos.getY(), pos.getZ(), size, floorCalls,
-                kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome)));
+        Dungeon.Data data = SeedCracker.DUNGEON.at(pos.getX(), pos.getY(), pos.getZ(), size, floorCalls, BiomeFixer.swap(biome));
 
         if(SeedCracker.get().getDataStorage().addBaseData(data, data::onDataAdded)) {
             this.renderers.add(new Cube(pos, new Color(255, 0, 0)));

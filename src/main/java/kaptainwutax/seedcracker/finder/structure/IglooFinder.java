@@ -2,7 +2,7 @@ package kaptainwutax.seedcracker.finder.structure;
 
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
+import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
@@ -45,7 +45,7 @@ public class IglooFinder extends AbstractTempleFinder {
             positions.forEach(pos -> {
                 RegionStructure.Data<?> data = SeedCracker.IGLOO.at(this.chunkPos.x, this.chunkPos.z);
 
-                if(SeedCracker.get().getDataStorage().addBaseData(data, DataStorage.POKE_STRUCTURES)) {
+                if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos, pieceFinder.getLayout(), new Color(0, 255, 255)));
                     this.renderers.add(new Cube(pos, new Color(0, 255, 255)));
                 }
