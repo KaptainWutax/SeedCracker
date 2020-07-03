@@ -3,7 +3,8 @@ package kaptainwutax.seedcracker.mixin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.misc.HashedSeedData;
+import kaptainwutax.seedcracker.cracker.HashedSeedData;
+import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.init.ClientCommands;
 import kaptainwutax.seedcracker.util.Log;
@@ -65,7 +66,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         HashedSeedData hashedSeedData = new HashedSeedData(packet.getSha256Seed());
 
-        if(SeedCracker.get().getDataStorage().addHashedSeedData(hashedSeedData)) {
+        if(SeedCracker.get().getDataStorage().addHashedSeedData(hashedSeedData, DataStorage.POKE_BIOMES)) {
             Log.warn("Fetched hashed world seed [" + hashedSeedData.getHashedSeed() + "].");
         }
 
@@ -76,7 +77,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
         HashedSeedData hashedSeedData = new HashedSeedData(packet.getSha256Seed());
 
-        if(SeedCracker.get().getDataStorage().addHashedSeedData(hashedSeedData)) {
+        if(SeedCracker.get().getDataStorage().addHashedSeedData(hashedSeedData, DataStorage.POKE_BIOMES)) {
             Log.warn("Fetched hashed world seed [" + hashedSeedData.getHashedSeed() + "].");
         }
     }

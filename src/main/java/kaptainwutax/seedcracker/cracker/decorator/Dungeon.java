@@ -1,9 +1,9 @@
 package kaptainwutax.seedcracker.cracker.decorator;
 
 import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
-import kaptainwutax.seedcracker.magic.PopulationReversal;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.MCVersion;
@@ -152,9 +152,9 @@ public class Dungeon extends Decorator<Decorator.Config, Dungeon.Data> {
 
 			for(long decoratorSeed: decoratorSeeds) {
 				for(int i = 0; i < 8; i++) {
-					PopulationReversal.getWorldSeeds((decoratorSeed ^ LCG.JAVA.multiplier)
+					SeedCracker.REVERSER.reversePopulationSeed((decoratorSeed ^ LCG.JAVA.multiplier)
 									- this.feature.getConfig().getSalt(this.biome),
-							this.chunkX << 4, this.chunkZ << 4).forEach(structureSeed -> {
+							this.chunkX << 4, this.chunkZ << 4, SeedCracker.MC_VERSION).forEach(structureSeed -> {
 						Log.printSeed("Found structure seed ${SEED}.", structureSeed);
 						dataStorage.getTimeMachine().structureSeeds.add(structureSeed);
 					});

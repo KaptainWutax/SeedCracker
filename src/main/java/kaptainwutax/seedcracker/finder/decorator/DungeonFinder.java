@@ -64,7 +64,7 @@ public class DungeonFinder extends BlockFinder {
         });
 
         if(result.size() != 1)return new ArrayList<>();
-        Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 8, 8));
+        Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
 
         BlockPos pos = result.get(0);
         Vec3i size = this.getDungeonSize(pos);

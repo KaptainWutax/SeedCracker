@@ -10,12 +10,14 @@ import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedutils.mc.MCVersion;
+import mjtb49.hashreversals.ChunkRandomReverser;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Formatting;
 
 public class SeedCracker implements ModInitializer {
 
 	public static final MCVersion MC_VERSION = MCVersion.v1_16;
+	public static final ChunkRandomReverser REVERSER = new ChunkRandomReverser();
 
     private static final SeedCracker INSTANCE = new SeedCracker();
     private DataStorage dataStorage = new DataStorage();

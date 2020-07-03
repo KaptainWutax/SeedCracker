@@ -1,21 +1,22 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
 import io.netty.util.internal.ConcurrentSet;
+import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.BuriedTreasure;
 import kaptainwutax.featureutils.structure.Structure;
 import kaptainwutax.featureutils.structure.TriangularStructure;
 import kaptainwutax.featureutils.structure.UniformStructure;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
-import kaptainwutax.seedcracker.cracker.misc.PillarData;
-import kaptainwutax.seedcracker.cracker.misc.BiomeData;
-import kaptainwutax.seedcracker.cracker.misc.HashedSeedData;
+import kaptainwutax.seedcracker.cracker.HashedSeedData;
+import kaptainwutax.seedcracker.cracker.PillarData;
 import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
 import kaptainwutax.seedcracker.cracker.decorator.Dungeon;
 import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
 import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -25,7 +26,7 @@ public class DataStorage {
 	public static final DataAddedEvent POKE_STRUCTURES = s -> s.timeMachine.poke(TimeMachine.Phase.STRUCTURES);
 	public static final DataAddedEvent POKE_BIOMES = s -> s.timeMachine.poke(TimeMachine.Phase.BIOMES);
 
-	public static final Comparator<Entry> SEED_DATA_COMPARATOR = (s1, s2) -> {
+	public static final Comparator<Entry<Feature.Data<?>>> SEED_DATA_COMPARATOR = (s1, s2) -> {
 		boolean isStructure1 = s1.data.feature instanceof Structure;
 		boolean isStructure2 = s2.data.feature instanceof Structure;
 
@@ -46,8 +47,8 @@ public class DataStorage {
 	protected Set<Consumer<DataStorage>> scheduledData = new ConcurrentSet<>();
 
 	protected PillarData pillarData = null;
-	protected ScheduledSet<Entry> baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);
-	protected ScheduledSet<BiomeData> biomeSeedData = new ScheduledSet<>(null);
+	protected ScheduledSet<Entry<Feature.Data<?>>> baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);
+	protected ScheduledSet<Entry<Biome.Data>> biomeSeedData = new ScheduledSet<>(null);
 	protected HashedSeedData hashedSeedData = null;
 
 	public void tick() {
@@ -72,19 +73,19 @@ public class DataStorage {
 		}
 	}
 
-	public synchronized boolean addPillarData(PillarData pillarData) {
+	public synchronized boolean addPillarData(PillarData data, DataAddedEvent event) {
 		boolean isAdded = this.pillarData == null;
 
-		if(isAdded && pillarData != null) {
-			this.pillarData = pillarData;
-			this.schedule(pillarData::onDataAdded);
+		if(isAdded && data != null) {
+			this.pillarData = data;
+			this.schedule(event::onDataAdded);
 		}
 
 		return isAdded;
 	}
 
 	public synchronized boolean addBaseData(Feature.Data<?> data, DataAddedEvent event) {
-		Entry e = new Entry(data, event);
+		Entry<Feature.Data<?>> e = new Entry<>(data, event);
 
 		if(this.baseSeedData.contains(e)) {
 			return false;
@@ -95,20 +96,22 @@ public class DataStorage {
 		return true;
 	}
 
-	public synchronized boolean addBiomeData(BiomeData biomeData) {
-		if(this.biomeSeedData.contains(biomeData)) {
+	public synchronized boolean addBiomeData(Biome.Data data, DataAddedEvent event) {
+		Entry<Biome.Data> e = new Entry<>(data, event);
+
+		if(this.biomeSeedData.contains(e)) {
 			return false;
 		}
 
-		this.biomeSeedData.scheduleAdd(biomeData);
-		this.schedule(biomeData::onDataAdded);
+		this.biomeSeedData.scheduleAdd(e);
+		this.schedule(event::onDataAdded);
 		return true;
 	}
 
-	public synchronized boolean addHashedSeedData(HashedSeedData hashedSeedData) {
-		if(this.hashedSeedData == null || this.hashedSeedData.getHashedSeed() != hashedSeedData.getHashedSeed()) {
-			this.hashedSeedData = hashedSeedData;
-			this.schedule(hashedSeedData::onDataAdded);
+	public synchronized boolean addHashedSeedData(HashedSeedData data, DataAddedEvent event) {
+		if(this.hashedSeedData == null || this.hashedSeedData.getHashedSeed() != data.getHashedSeed()) {
+			this.hashedSeedData = data;
+			this.schedule(event::onDataAdded);
 			return true;
 		}
 
@@ -126,7 +129,7 @@ public class DataStorage {
 	public double getBaseBits() {
 		double bits = 0.0D;
 
-		for(Entry e: this.baseSeedData) {
+		for(Entry<Feature.Data<?>> e: this.baseSeedData) {
 			bits += getBits(e.data.feature);
 		}
 
@@ -165,11 +168,11 @@ public class DataStorage {
 		this.timeMachine = new TimeMachine(this);
 	}
 
-	public static class Entry {
-		public final Feature.Data<?> data;
+	public static class Entry<T> {
+		public final T data;
 		public final DataAddedEvent event;
 
-		public Entry(Feature.Data<?> data, DataAddedEvent event) {
+		public Entry(T data, DataAddedEvent event) {
 			this.data = data;
 			this.event = event;
 		}
@@ -178,9 +181,30 @@ public class DataStorage {
 		public boolean equals(Object o) {
 			if(this == o)return true;
 			if(!(o instanceof Entry))return false;
-			Entry entry = (Entry)o;
-			return data.feature == entry.data.feature
-					&& data.chunkX == entry.data.chunkX && data.chunkZ == entry.data.chunkZ;
+			Entry<?> entry = (Entry<?>)o;
+
+			if(this.data instanceof Feature.Data<?> && entry.data instanceof Feature.Data<?>) {
+				Feature.Data<?> d1 = (Feature.Data<?>)this.data;
+				Feature.Data<?> d2 = (Feature.Data<?>)entry.data;
+				return d1.feature == d2.feature && d1.chunkX == d2.chunkX && d1.chunkZ == d2.chunkZ;
+			} else if(this.data instanceof Biome.Data && entry.data instanceof Biome.Data) {
+				Biome.Data d1 = (Biome.Data)this.data;
+				Biome.Data d2 = (Biome.Data)entry.data;
+				return d1.biome == d2.biome;
+			}
+
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			if(this.data instanceof Feature.Data<?>) {
+				return ((Feature.Data<?>)this.data).chunkX * 31 + ((Feature.Data<?>)this.data).chunkZ;
+			} else if(this.data instanceof Biome.Data) {
+				return ((Biome.Data)this.data).biome.getName().hashCode();
+			}
+
+			return super.hashCode();
 		}
 	}
 

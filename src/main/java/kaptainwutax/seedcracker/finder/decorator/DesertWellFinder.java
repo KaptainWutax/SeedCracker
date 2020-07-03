@@ -1,8 +1,8 @@
 package kaptainwutax.seedcracker.finder.decorator;
 
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.misc.BiomeFixer;
 import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
+import kaptainwutax.seedcracker.cracker.misc.BiomeFixer;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.finder.structure.PieceFinder;
@@ -38,7 +38,7 @@ public class DesertWellFinder extends PieceFinder {
 
 	@Override
 	public List<BlockPos> findInChunk() {
-		Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 0, 8));
+		Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
 
 		if(!SeedCracker.DESERT_WELL.isValidBiome(BiomeFixer.swap(biome))) {
 			return new ArrayList<>();

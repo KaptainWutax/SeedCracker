@@ -46,10 +46,17 @@ dependencies {
 		transitive = false
 	}
 
-	implementation('com.github.KaptainWutax:BiomeUtils:9b9b468901fc2550e826e9099debb46db0c6959f') {
+	implementation('com.github.KaptainWutax:BiomeUtils:f5f6ef3982b19b64660ddef59204614fcb3475c2') {
 		transitive = false
 	}
-	include('com.github.KaptainWutax:BiomeUtils:9b9b468901fc2550e826e9099debb46db0c6959f') {
+	include('com.github.KaptainWutax:BiomeUtils:f5f6ef3982b19b64660ddef59204614fcb3475c2') {
+		transitive = false
+	}
+
+	implementation('com.github.mjtb49:ChunkRandomReversal:ed537896dac72563dcd72d0c356a9486f5960922') {
+		transitive = false
+	}
+	include('com.github.mjtb49:ChunkRandomReversal:ed537896dac72563dcd72d0c356a9486f5960922') {
 		transitive = false
 	}
 

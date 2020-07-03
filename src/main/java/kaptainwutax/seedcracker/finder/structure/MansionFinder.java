@@ -49,7 +49,7 @@ public class MansionFinder extends Finder {
 
     @Override
     public List<BlockPos> findInChunk() {
-        Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(9, 0, 9));
+        Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
 
         if(!biome.hasStructureFeature(StructureFeature.MANSION)) {
             return new ArrayList<>();

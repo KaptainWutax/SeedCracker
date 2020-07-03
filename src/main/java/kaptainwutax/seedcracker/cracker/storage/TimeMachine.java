@@ -1,9 +1,9 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
+import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.seedcracker.SeedCracker;
-import kaptainwutax.seedcracker.cracker.misc.BiomeData;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedutils.lcg.LCG;
 import kaptainwutax.seedutils.mc.ChunkRand;
@@ -59,7 +59,7 @@ public class TimeMachine {
 		Log.warn("Looking for pillar seeds...");
 
 		for(int pillarSeed = 0; pillarSeed < 1 << 16 && !this.shouldTerminate; pillarSeed++) {
-			if(this.dataStorage.pillarData.test(pillarSeed, null)) {
+			if(this.dataStorage.pillarData.test(pillarSeed)) {
 				Log.printSeed("Found pillar seed ${SEED}.", pillarSeed);
 				this.pillarSeeds.add(pillarSeed);
 			}
@@ -83,7 +83,7 @@ public class TimeMachine {
 		Feature.Data<?>[] cache = new Feature.Data<?>[this.dataStorage.baseSeedData.size()];
 		int id = 0;
 
-		for(DataStorage.Entry entry: this.dataStorage.baseSeedData) {
+		for(DataStorage.Entry<Feature.Data<?>> entry: this.dataStorage.baseSeedData) {
 			cache[id++] = entry.data;
 		}
 
@@ -190,8 +190,8 @@ public class TimeMachine {
 
 				boolean matches = true;
 
-				for(BiomeData biomeSeedDatum : this.dataStorage.biomeSeedData) {
-					if(!biomeSeedDatum.test(source)) {
+				for(DataStorage.Entry<Biome.Data> e: this.dataStorage.biomeSeedData) {
+					if(!e.data.test(source)) {
 						matches = false;
 						break;
 					}

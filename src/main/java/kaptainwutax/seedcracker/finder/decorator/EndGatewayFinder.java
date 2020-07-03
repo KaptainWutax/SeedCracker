@@ -32,8 +32,7 @@ public class EndGatewayFinder extends BlockFinder {
 
     @Override
     public List<BlockPos> findInChunk() {
-        //If no end gateway is supposed to populate in this chunk, return.
-        Biome biome = this.world.getBiome(this.chunkPos.getCenterBlockPos().add(8, 0, 8));
+        Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
 
         List<BlockPos> result = super.findInChunk();
         List<BlockPos> newResult = new ArrayList<>();

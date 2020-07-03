@@ -1,16 +1,11 @@
-package kaptainwutax.seedcracker.cracker.misc;
-
-import kaptainwutax.seedcracker.cracker.storage.DataStorage;
-import kaptainwutax.seedcracker.cracker.storage.SeedData;
-import kaptainwutax.seedcracker.cracker.storage.TimeMachine;
-import kaptainwutax.seedutils.lcg.rand.JRand;
+package kaptainwutax.seedcracker.cracker;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class PillarData extends SeedData {
+public class PillarData {
 
 	private List<Integer> heights;
 
@@ -18,8 +13,7 @@ public class PillarData extends SeedData {
 		this.heights = heights;
 	}
 
-	@Override
-	public boolean test(long seed, JRand rand) {
+	public boolean test(long seed) {
 		List<Integer> h = this.getPillarHeights((int)seed);
 		return h.equals(this.heights);
 	}
@@ -40,16 +34,6 @@ public class PillarData extends SeedData {
 		}
 
 		return heights;
-	}
-
-	@Override
-	public double getBits() {
-		return 16;
-	}
-
-	@Override
-	public void onDataAdded(DataStorage dataStorage) {
-		dataStorage.getTimeMachine().poke(TimeMachine.Phase.PILLARS);
 	}
 
 }
