@@ -1,11 +1,6 @@
 package kaptainwutax.seedcracker;
 
-import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.seedcracker.command.ClientCommand;
-import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
-import kaptainwutax.seedcracker.cracker.decorator.Dungeon;
-import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
-import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 import kaptainwutax.seedcracker.cracker.storage.DataStorage;
 import kaptainwutax.seedcracker.finder.FinderQueue;
 import kaptainwutax.seedcracker.render.RenderQueue;
@@ -55,7 +50,5 @@ public class SeedCracker implements ModInitializer {
 		SeedCracker.get().getDataStorage().clear();
 		FinderQueue.get().clear();
 	}
-
-
 
 }

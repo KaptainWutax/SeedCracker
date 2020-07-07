@@ -8,6 +8,7 @@ import kaptainwutax.seedcracker.finder.decorator.ore.EmeraldOreFinder;
 import kaptainwutax.seedcracker.finder.structure.*;
 import kaptainwutax.seedcracker.render.Renderer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
@@ -86,15 +87,15 @@ public abstract class Finder {
     public abstract boolean isValidDimension(DimensionType dimension);
 
     public boolean isOverworld(DimensionType dimension) {
-        return dimension.isBedWorking() && dimension.hasSkyLight();
+        return ((DimensionTypeCaller)dimension).getInfiniburn().getPath().endsWith("overworld");
     }
 
     public boolean isNether(DimensionType dimension) {
-        return dimension.isUltrawarm() && !dimension.isBedWorking() && !dimension.hasSkyLight();
+        return ((DimensionTypeCaller)dimension).getInfiniburn().getPath().endsWith("nether");
     }
 
     public boolean isEnd(DimensionType dimension) {
-        return dimension.hasEnderDragonFight() && !dimension.isBedWorking() && !dimension.hasSkyLight();
+        return ((DimensionTypeCaller)dimension).getInfiniburn().getPath().endsWith("end");
     }
 
     public static List<BlockPos> buildSearchPositions(List<BlockPos> base, Predicate<BlockPos> removeIf) {
@@ -144,6 +145,10 @@ public abstract class Finder {
         public static List<Type> getForCategory(Category category) {
             return Arrays.stream(values()).filter(type -> type.category == category).collect(Collectors.toList());
         }
+    }
+
+    public interface DimensionTypeCaller {
+        Identifier getInfiniburn();
     }
 
 }

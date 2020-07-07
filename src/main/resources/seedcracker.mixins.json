@@ -11,7 +11,8 @@
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
     "ClientPlayerEntityMixin",
-    "ServerChunkManagerMixin"
+    "ServerChunkManagerMixin",
+    "DimensionTypeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

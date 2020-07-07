@@ -31,7 +31,7 @@ public class ClientCommands {
         COMMANDS.add(FINDER = new FinderCommand());
         COMMANDS.add(DATA = new DataCommand());
         COMMANDS.add(CRACKER = new CrackerCommand());
-        COMMANDS.add(VERSION = new VersionCommand());
+        //COMMANDS.add(VERSION = new VersionCommand());
     }
 
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
