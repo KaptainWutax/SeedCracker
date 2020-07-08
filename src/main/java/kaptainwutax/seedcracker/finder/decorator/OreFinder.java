@@ -63,7 +63,7 @@ public abstract class OreFinder extends BlockFinder {
             for(Direction direction: Direction.values()) {
                 BlockState state = this.world.getBlockState(pos.offset(direction));
                 if(!state.equals(this.oreFeatureConfig.state) &&
-                        !this.oreFeatureConfig.target.getCondition().test(state))return false;
+                        !this.oreFeatureConfig.target.test(state, null))return false;
             }
         }
 

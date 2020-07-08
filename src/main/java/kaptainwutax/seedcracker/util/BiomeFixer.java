@@ -1,15 +1,16 @@
 package kaptainwutax.seedcracker.util;
 
-import net.minecraft.util.registry.Registry;
+import net.minecraft.class_5458;
+import net.minecraft.world.biome.Biomes;
 
 public class BiomeFixer {
 
 	public static kaptainwutax.biomeutils.Biome swap(net.minecraft.world.biome.Biome biome) {
-		return kaptainwutax.biomeutils.Biome.REGISTRY.get(Registry.BIOME.getRawId(biome));
+		return kaptainwutax.biomeutils.Biome.REGISTRY.get(class_5458.field_25933.getRawId(biome));
 	}
 
 	public static net.minecraft.world.biome.Biome swap(kaptainwutax.biomeutils.Biome biome) {
-		return Registry.BIOME.get(biome.getId());
+		return Biomes.field_25821.get(biome.getId());
 	}
 
 }
