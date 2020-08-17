@@ -80,7 +80,7 @@ public class EndCityFinder extends Finder {
     public List<BlockPos> findInChunk() {
         Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
 
-        if(!biome.hasStructureFeature(StructureFeature.END_CITY)) {
+        if(!biome.getGenerationSettings().hasStructureFeature(StructureFeature.END_CITY)) {
             return new ArrayList<>();
         }
 

@@ -1,19 +1,19 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
 import io.netty.util.internal.ConcurrentSet;
-import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.featureutils.decorator.DesertWell;
+import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.structure.BuriedTreasure;
 import kaptainwutax.featureutils.structure.Structure;
 import kaptainwutax.featureutils.structure.TriangularStructure;
 import kaptainwutax.featureutils.structure.UniformStructure;
+import kaptainwutax.seedcracker.cracker.BiomeData;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.cracker.HashedSeedData;
 import kaptainwutax.seedcracker.cracker.PillarData;
-import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
 import kaptainwutax.seedcracker.cracker.decorator.Dungeon;
 import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
-import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -43,7 +43,7 @@ public class DataStorage {
 
 	protected PillarData pillarData = null;
 	protected ScheduledSet<Entry<Feature.Data<?>>> baseSeedData = new ScheduledSet<>(SEED_DATA_COMPARATOR);
-	protected ScheduledSet<Entry<Biome.Data>> biomeSeedData = new ScheduledSet<>(null);
+	protected ScheduledSet<Entry<BiomeData>> biomeSeedData = new ScheduledSet<>(null);
 	protected HashedSeedData hashedSeedData = null;
 
 	public void tick() {
@@ -91,8 +91,8 @@ public class DataStorage {
 		return true;
 	}
 
-	public synchronized boolean addBiomeData(Biome.Data data, DataAddedEvent event) {
-		Entry<Biome.Data> e = new Entry<>(data, event);
+	public synchronized boolean addBiomeData(BiomeData data, DataAddedEvent event) {
+		Entry<BiomeData> e = new Entry<>(data, event);
 
 		if(this.biomeSeedData.contains(e)) {
 			return false;
@@ -182,10 +182,8 @@ public class DataStorage {
 				Feature.Data<?> d1 = (Feature.Data<?>)this.data;
 				Feature.Data<?> d2 = (Feature.Data<?>)entry.data;
 				return d1.feature == d2.feature && d1.chunkX == d2.chunkX && d1.chunkZ == d2.chunkZ;
-			} else if(this.data instanceof Biome.Data && entry.data instanceof Biome.Data) {
-				Biome.Data d1 = (Biome.Data)this.data;
-				Biome.Data d2 = (Biome.Data)entry.data;
-				return d1.biome == d2.biome;
+			} else if(this.data instanceof BiomeData && entry.data instanceof BiomeData) {
+				return this.data.equals(entry.data);
 			}
 
 			return false;
@@ -195,8 +193,8 @@ public class DataStorage {
 		public int hashCode() {
 			if(this.data instanceof Feature.Data<?>) {
 				return ((Feature.Data<?>)this.data).chunkX * 31 + ((Feature.Data<?>)this.data).chunkZ;
-			} else if(this.data instanceof Biome.Data) {
-				return ((Biome.Data)this.data).biome.getName().hashCode();
+			} else if(this.data instanceof BiomeData) {
+				return this.data.hashCode();
 			}
 
 			return super.hashCode();

@@ -1,10 +1,10 @@
 package kaptainwutax.seedcracker;
 
+import kaptainwutax.featureutils.decorator.DesertWell;
+import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.structure.*;
-import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
 import kaptainwutax.seedcracker.cracker.decorator.Dungeon;
 import kaptainwutax.seedcracker.cracker.decorator.EmeraldOre;
-import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 public class Features {
@@ -42,7 +42,7 @@ public class Features {
 		safe(() -> IGLOO = new Igloo(version));
 		safe(() -> JUNGLE_PYRAMID = new JunglePyramid(version));
 		safe(() -> MANSION = new Mansion(version));
-		safe(() -> MINESHAFT = new Mineshaft(version, Mineshaft.Type.EITHER));
+		safe(() -> MINESHAFT = new Mineshaft(version));
 		safe(() -> MONUMENT = new Monument(version));
 		safe(() -> NETHER_FOSSIL = new NetherFossil(version));
 		safe(() -> OCEAN_RUIN = new OceanRuin(version));

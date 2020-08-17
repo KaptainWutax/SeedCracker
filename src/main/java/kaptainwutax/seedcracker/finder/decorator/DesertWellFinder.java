@@ -1,9 +1,9 @@
 package kaptainwutax.seedcracker.finder.decorator;
 
+import kaptainwutax.featureutils.decorator.DesertWell;
 import kaptainwutax.seedcracker.Features;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
-import kaptainwutax.seedcracker.cracker.decorator.DesertWell;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.finder.structure.PieceFinder;
 import kaptainwutax.seedcracker.render.Color;
@@ -50,7 +50,7 @@ public class DesertWellFinder extends PieceFinder {
 		result.forEach(pos -> {
 			pos = pos.add(2, 1, 2);
 
-			DesertWell.Data data = Features.DESERT_WELL.at(pos.getX(), pos.getZ(), BiomeFixer.swap(biome));
+			DesertWell.Data data = Features.DESERT_WELL.at(pos.getX(), pos.getZ());
 
 			if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
 				this.renderers.add(new Cuboid(pos.add(-2, -1, -2), SIZE, new Color(128, 128, 255)));

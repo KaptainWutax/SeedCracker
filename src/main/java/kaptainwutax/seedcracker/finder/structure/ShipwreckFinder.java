@@ -41,7 +41,7 @@ public class ShipwreckFinder extends BlockFinder {
     public List<BlockPos> findInChunk() {
         Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
 
-        if(!biome.hasStructureFeature(StructureFeature.SHIPWRECK)) {
+        if(!biome.getGenerationSettings().hasStructureFeature(StructureFeature.SHIPWRECK)) {
             return new ArrayList<>();
         }
 

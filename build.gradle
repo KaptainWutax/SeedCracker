@@ -25,40 +25,8 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	implementation('com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8') {
-		transitive = false
-	}
-	include('com.github.KaptainWutax:LattiCG:b2a338f7bd765dcd184136c2245ea5765b75edf8') {
-		transitive = false
-	}
-
-	implementation('com.github.KaptainWutax:SeedUtils:991e7b86896887ffa529ab4d9dde3c5c91371fac') {
-		transitive = false
-	}
-	include('com.github.KaptainWutax:SeedUtils:991e7b86896887ffa529ab4d9dde3c5c91371fac') {
-		transitive = false
-	}
-
-	implementation('com.github.KaptainWutax:FeatureUtils:86e526577cf8e0183fb629592ff9bf0eee132823') {
-		transitive = false
-	}
-	include('com.github.KaptainWutax:FeatureUtils:86e526577cf8e0183fb629592ff9bf0eee132823') {
-		transitive = false
-	}
-
-	implementation('com.github.KaptainWutax:BiomeUtils:f5f6ef3982b19b64660ddef59204614fcb3475c2') {
-		transitive = false
-	}
-	include('com.github.KaptainWutax:BiomeUtils:f5f6ef3982b19b64660ddef59204614fcb3475c2') {
-		transitive = false
-	}
-
-	implementation('com.github.mjtb49:ChunkRandomReversal:ed537896dac72563dcd72d0c356a9486f5960922') {
-		transitive = false
-	}
-	include('com.github.mjtb49:ChunkRandomReversal:ed537896dac72563dcd72d0c356a9486f5960922') {
-		transitive = false
-	}
+	implementation 'com.github.KaptainWutax:SEED:aa652432588edf5dbdf583b254b361049da607e5'
+	include 'com.github.KaptainWutax:SEED:aa652432588edf5dbdf583b254b361049da607e5'
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

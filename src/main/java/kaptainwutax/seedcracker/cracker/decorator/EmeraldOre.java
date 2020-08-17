@@ -2,6 +2,7 @@ package kaptainwutax.seedcracker.cracker.decorator;
 
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.seedutils.mc.ChunkRand;
+import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.VersionMap;
 
@@ -49,6 +50,11 @@ public class EmeraldOre extends Decorator<Decorator.Config, EmeraldOre.Data> {
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean isValidDimension(Dimension dimension) {
+		return dimension == Dimension.OVERWORLD;
 	}
 
 	@Override

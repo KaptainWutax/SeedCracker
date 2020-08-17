@@ -36,7 +36,7 @@ public class Log {
     public static void printSeed(String message, long seedValue) {
         String[] data = message.split(Pattern.quote("${SEED}"));
         String seed = String.valueOf(seedValue);
-        Text text = Texts.bracketed((new LiteralText(seed)).styled(style -> style.withColor(Formatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, seed)).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("chat.copy.click"))).withInsertion(seed)));
+        Text text = Texts.bracketed((new LiteralText(seed)).styled(style -> style.withColor(Formatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, seed)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("chat.copy.click"))).withInsertion(seed)));
 
         PlayerEntity player = getPlayer();
 

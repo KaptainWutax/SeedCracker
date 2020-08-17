@@ -1,14 +1,13 @@
 package kaptainwutax.seedcracker.finder.decorator;
 
+import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.seedcracker.Features;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
-import kaptainwutax.seedcracker.cracker.decorator.EndGateway;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cuboid;
-import kaptainwutax.seedcracker.util.BiomeFixer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +43,7 @@ public class EndGatewayFinder extends BlockFinder {
             if(height >= 3 && height <= 9) {
                 newResult.add(pos);
 
-                EndGateway.Data data = Features.END_GATEWAY.at(pos.getX(), pos.getZ(), height, BiomeFixer.swap(biome));
+                EndGateway.Data data = Features.END_GATEWAY.at(pos.getX(), pos.getZ(), height);
 
                 if(SeedCracker.get().getDataStorage().addBaseData(data, DataAddedEvent.POKE_STRUCTURES)) {
                     this.renderers.add(new Cuboid(pos.add(-1, -2, -1), pos.add(2, 3, 2), new Color(102, 102, 210)));

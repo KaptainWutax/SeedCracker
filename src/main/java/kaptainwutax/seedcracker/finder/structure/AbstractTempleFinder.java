@@ -48,7 +48,7 @@ public abstract class AbstractTempleFinder extends Finder {
     public List<BlockPos> findInChunkPiece(PieceFinder pieceFinder) {
         Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
 
-        if(!biome.hasStructureFeature(this.getStructureFeature())) {
+        if(!biome.getGenerationSettings().hasStructureFeature(this.getStructureFeature())) {
             return new ArrayList<>();
         }
 

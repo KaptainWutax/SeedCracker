@@ -1,9 +1,9 @@
 package kaptainwutax.seedcracker.cracker.storage;
 
-import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.BiomeData;
 import kaptainwutax.seedcracker.util.Log;
 import kaptainwutax.seedutils.lcg.LCG;
 import kaptainwutax.seedutils.mc.ChunkRand;
@@ -153,7 +153,7 @@ public class TimeMachine {
 	protected boolean pokeBiomes() {
 		if(this.structureSeeds == null || this.worldSeeds != null)return false;
 		if(this.dataStorage.hashedSeedData == null &&
-				(this.dataStorage.biomeSeedData.size() < 5 || this.structureSeeds.size() > 3))return false;
+				(this.dataStorage.biomeSeedData.size() < 5 || this.structureSeeds.size() > 20))return false;
 
 		this.worldSeeds = new ArrayList<>();
 		Log.debug("====================================");
@@ -190,7 +190,7 @@ public class TimeMachine {
 
 				boolean matches = true;
 
-				for(DataStorage.Entry<Biome.Data> e: this.dataStorage.biomeSeedData) {
+				for(DataStorage.Entry<BiomeData> e: this.dataStorage.biomeSeedData) {
 					if(!e.data.test(source)) {
 						matches = false;
 						break;

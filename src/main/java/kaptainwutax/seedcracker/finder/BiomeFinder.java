@@ -1,6 +1,7 @@
 package kaptainwutax.seedcracker.finder;
 
 import kaptainwutax.seedcracker.SeedCracker;
+import kaptainwutax.seedcracker.cracker.BiomeData;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cube;
@@ -26,17 +27,19 @@ public class BiomeFinder extends Finder {
     public List<BlockPos> findInChunk() {
         List<BlockPos> result = new ArrayList<>();
 
-        for(int x = 0; x < 16; x++) {
-            for(int z = 0; z < 16; z++) {
+        for(int x = 0; x < 16; x += 4) {
+            for(int z = 0; z < 16; z += 4) {
                 BlockPos blockPos = this.chunkPos.getCenterBlockPos().add(x, 0, z);
-                Biome biome = this.world.getBiome(blockPos);
+                Biome biome = this.world.getBiomeForNoiseGen(blockPos.getX() >> 2, 0, blockPos.getZ() >> 2);
 
                 //TODO: Fix this multi-threading issue.
                 if(biome == Biomes.THE_VOID) {
                     continue;
                 }
 
-                kaptainwutax.biomeutils.Biome.Data data = new kaptainwutax.biomeutils.Biome.Data(BiomeFixer.swap(biome), blockPos.getX(), blockPos.getZ());
+                kaptainwutax.biomeutils.Biome otherBiome = BiomeFixer.swap(biome);
+
+                BiomeData data = new BiomeData(otherBiome, blockPos.getX() >> 2, blockPos.getZ() >> 2);
 
                 if(SeedCracker.get().getDataStorage().addBiomeData(data, DataAddedEvent.POKE_BIOMES)) {
                     blockPos = this.world.getTopPosition(Heightmap.Type.WORLD_SURFACE, blockPos).down();
