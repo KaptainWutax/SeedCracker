@@ -92,6 +92,6 @@ A list of features I have on my mind... they won't necessarily be implemented in
 
 [KaptainWutax](https://github.com/KaptainWutax) - Author
 
-[neil](https://www.youtube.com/channel/UCbM3acUrR8Ku6pjgRUNPnbQ/featured) - Video Tutorial
+[neil](https://www.youtube.com/watch?v=aUuPSZVPH8E) - Video Tutorial
 
 [Nekzuris](https://github.com/Nekzuris) - README
