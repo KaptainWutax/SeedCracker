@@ -51,7 +51,7 @@ public class FinderQueue {
 
     public void renderFinders(MatrixStack matrixStack) {
         if(this.renderType == RenderType.OFF)return;
-
+        // TODO change the usage of deprecated methods pushMatrix and multMatrix.
         RenderSystem.pushMatrix();
         RenderSystem.multMatrix(matrixStack.peek().getModel());
 
@@ -67,7 +67,7 @@ public class FinderQueue {
                 finder.render();
             }
         });
-
+        // TODO change the usage of deprecated method popMatrix.
         RenderSystem.popMatrix();
     }
 

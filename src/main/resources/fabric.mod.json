@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Seed Cracker",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "This mod allow you to crack almost any world seed in the compatible versions!",
   "authors": [
     "KaptainWutax"
   ],
