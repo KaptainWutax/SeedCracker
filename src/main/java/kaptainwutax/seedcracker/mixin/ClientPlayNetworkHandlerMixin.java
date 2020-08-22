@@ -68,6 +68,8 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
         if(SeedCracker.get().getDataStorage().addHashedSeedData(hashedSeedData, DataAddedEvent.POKE_BIOMES)) {
             Log.warn("Fetched hashed world seed [" + hashedSeedData.getHashedSeed() + "].");
+            Log.warn("Please type : /seed finder type DUNGEON ON");
+            Log.warn("To enable dungeon short-cutting.");
         }
 
         SeedCracker.get().setActive(SeedCracker.get().isActive());

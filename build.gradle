@@ -98,3 +98,8 @@ publishing {
 		// mavenLocal()
 	}
 }
+
+compileJava {
+	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
