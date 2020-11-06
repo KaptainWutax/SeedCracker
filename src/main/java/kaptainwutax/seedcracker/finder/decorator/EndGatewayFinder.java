@@ -4,10 +4,12 @@ import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.seedcracker.Features;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
+import kaptainwutax.seedcracker.finder.BiomeFinder;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
 import kaptainwutax.seedcracker.render.Cuboid;
+import kaptainwutax.seedcracker.util.BiomeFixer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -33,6 +35,7 @@ public class EndGatewayFinder extends BlockFinder {
     @Override
     public List<BlockPos> findInChunk() {
         Biome biome = this.world.getBiomeForNoiseGen((this.chunkPos.x << 2) + 2, 0, (this.chunkPos.z << 2) + 2);
+        if(!Features.END_GATEWAY.isValidBiome(BiomeFixer.swap(biome)))return new ArrayList<>();
 
         List<BlockPos> result = super.findInChunk();
         List<BlockPos> newResult = new ArrayList<>();
