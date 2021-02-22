@@ -38,7 +38,8 @@ public class Line extends Renderer {
 
         //This is how thick the line is.
         GlStateManager.lineWidth(2.0f);
-        buffer.begin(VertexFormat.class_5596.field_27378, VertexFormats.POSITION_COLOR);
+
+        buffer.begin(1, VertexFormats.POSITION_COLOR);
 
         //Put the start and end vertices in the buffer.
         this.putVertex(buffer, camPos, this.start);
