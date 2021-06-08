@@ -5,7 +5,6 @@ import kaptainwutax.seedcracker.util.PosIterator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -20,9 +19,10 @@ public abstract class OreFinder extends BlockFinder {
 
     protected OreFeatureConfig oreFeatureConfig;
 
-    public OreFinder(World world, ChunkPos chunkPos, OreFeatureConfig oreFeatureConfig) {
-        super(world, chunkPos, oreFeatureConfig.state);
-        this.oreFeatureConfig = oreFeatureConfig;
+    public OreFinder(World world, ChunkPos chunkPos, BlockState state) {
+        //super(world, chunkPos, oreFeatureConfig.state);
+        super(world, chunkPos, state);
+        //this.oreFeatureConfig = oreFeatureConfig;
     }
 
     @Override
@@ -49,23 +49,25 @@ public abstract class OreFinder extends BlockFinder {
         PosIterator.create(new BlockPos(-1, -1, -1), new BlockPos(1, 1, 1)).forEach(offset -> {
             BlockPos pos = start.add(offset);
             BlockState state = this.world.getBlockState(pos);
-            
+
+            /*
             if(!progress.contains(pos) && state.equals(this.oreFeatureConfig.state)) {
                 this.buildVeinRecursively(pos, progress);
-            }
+            }*/
         });
 
         return progress;
     }
 
     private boolean isCompleteVein(Set<BlockPos> vein) {
+        /*
         for(BlockPos pos: vein) {
             for(Direction direction: Direction.values()) {
                 BlockState state = this.world.getBlockState(pos.offset(direction));
                 if(!state.equals(this.oreFeatureConfig.state) &&
                         !this.oreFeatureConfig.target.test(state, null))return false;
             }
-        }
+        }*/
 
         return true;
     }
