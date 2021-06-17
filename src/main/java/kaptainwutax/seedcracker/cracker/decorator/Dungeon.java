@@ -12,6 +12,7 @@ import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.VersionMap;
 import mjtb49.hashreversals.ChunkRandomReverser;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
 import randomreverser.call.java.FilteredSkip;
 import randomreverser.call.java.NextInt;
 import randomreverser.device.JavaRandomDevice;
@@ -55,7 +56,7 @@ public class Dungeon extends Decorator<Decorator.Config, Dungeon.Data> {
 			} else {
 				x = rand.nextInt(16);
 				z = rand.nextInt(16);
-				y = rand.nextInt(256);
+				y = rand.nextInt(data.world.getHeight());
 			}
 
 			if(y == data.blockY && x == data.offsetX && z == data.offsetZ) {
@@ -82,8 +83,8 @@ public class Dungeon extends Decorator<Decorator.Config, Dungeon.Data> {
 					&& biome != Biome.THE_VOID && biome == Biome.THE_END;
 	}
 
-	public Dungeon.Data at(int blockX, int blockY, int blockZ, Vec3i size, int[] floorCalls, Biome biome) {
-		return new Dungeon.Data(this, blockX, blockY, blockZ, size, floorCalls, biome);
+	public Dungeon.Data at(int blockX, int blockY, int blockZ, Vec3i size, int[] floorCalls, Biome biome, World world) {
+		return new Dungeon.Data(this, blockX, blockY, blockZ, size, floorCalls, biome, world);
 	}
 
 	public static class Data extends Decorator.Data<Dungeon> {
@@ -98,14 +99,16 @@ public class Dungeon extends Decorator<Decorator.Config, Dungeon.Data> {
 		public final Vec3i size;
 		public final int[] floorCalls;
 		public float bitsCount;
+		public World world;
 
-		public Data(Dungeon feature, int blockX, int blockY, int blockZ, Vec3i size, int[] floorCalls, Biome biome) {
+		public Data(Dungeon feature, int blockX, int blockY, int blockZ, Vec3i size, int[] floorCalls, Biome biome, World world) {
 			super(feature, blockX >> 4, blockZ >> 4, biome);
 			this.offsetX = blockX & 15;
 			this.blockY = blockY;
 			this.offsetZ = blockZ & 15;
 			this.size = size;
 			this.floorCalls = floorCalls;
+			this.world = world;
 
 			if(floorCalls != null) {
 				for(int call: floorCalls) {
@@ -134,7 +137,7 @@ public class Dungeon extends Decorator<Decorator.Config, Dungeon.Data> {
 			} else {
 				device.addCall(NextInt.withValue(16, this.offsetX));
 				device.addCall(NextInt.withValue(16, this.offsetZ));
-				device.addCall(NextInt.withValue(256, this.blockY));
+				device.addCall(NextInt.withValue(world.getHeight(), this.blockY - world.getBottomY()));
 			}
 
 			device.addCall(NextInt.consume(2, 2)); //Skip size.
