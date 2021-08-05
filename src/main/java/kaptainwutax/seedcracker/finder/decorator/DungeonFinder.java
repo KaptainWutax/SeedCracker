@@ -71,7 +71,7 @@ public class DungeonFinder extends BlockFinder {
         Vec3i size = this.getDungeonSize(pos);
         int[] floorCalls = this.getFloorCalls(size, pos);
 
-        Dungeon.Data data = Features.DUNGEON.at(pos.getX(), pos.getY(), pos.getZ(), size, floorCalls, BiomeFixer.swap(biome));
+        Dungeon.Data data = Features.DUNGEON.at(pos.getX(), pos.getY(), pos.getZ(), size, floorCalls, BiomeFixer.swap(biome), this.getWorld());
 
         if(SeedCracker.get().getDataStorage().addBaseData(data, data::onDataAdded)) {
             this.renderers.add(new Cube(pos, new Color(255, 0, 0)));

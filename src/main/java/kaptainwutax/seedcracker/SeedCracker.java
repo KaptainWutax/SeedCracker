@@ -7,6 +7,7 @@ import kaptainwutax.seedcracker.render.RenderQueue;
 import kaptainwutax.seedutils.mc.MCVersion;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
 
 public class SeedCracker implements ModInitializer {
 
