@@ -29,7 +29,7 @@ public class EmeraldOre extends Decorator<Decorator.Config, EmeraldOre.Data> {
 	public boolean canStart(Data data, long structureSeed, ChunkRand rand) {
 		super.canStart(data, structureSeed, rand);
 
-		int bound = rand.nextInt(6) + 3;
+		int bound = rand.nextInt(19) + 6;
 
 		for(int i = 0; i < bound; i++) {
 			int x, y, z;

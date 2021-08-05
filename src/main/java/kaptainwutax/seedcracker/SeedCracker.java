@@ -42,7 +42,7 @@ public class SeedCracker implements ModInitializer {
 	    } else {
 		    ClientCommand.sendFeedback("SeedCracker is not active.", Formatting.RED, true);
 	    }
-    }
+	}
 
 	public void reset() {
 		SeedCracker.get().getDataStorage().clear();

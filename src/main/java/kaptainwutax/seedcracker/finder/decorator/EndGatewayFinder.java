@@ -4,7 +4,6 @@ import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.seedcracker.Features;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.cracker.DataAddedEvent;
-import kaptainwutax.seedcracker.finder.BiomeFinder;
 import kaptainwutax.seedcracker.finder.BlockFinder;
 import kaptainwutax.seedcracker.finder.Finder;
 import kaptainwutax.seedcracker.render.Color;
