@@ -3,7 +3,6 @@ package kaptainwutax.seedcracker.util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.BuiltinBiomes;
 
 public class BiomeFixer {
 

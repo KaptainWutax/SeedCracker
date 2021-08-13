@@ -1,8 +1,9 @@
 package kaptainwutax.seedcracker.finder;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.seedcracker.SeedCracker;
 import kaptainwutax.seedcracker.profile.FinderConfig;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -48,17 +49,22 @@ public class FinderQueue {
         });
     }
 
-    public void renderFinders(MatrixStack matrixStack) {
+    public void renderFinders(MatrixStack matrices) {
         if(this.renderType == RenderType.OFF)return;
 
-        matrixStack.push();
-        matrixStack.method_34425(matrixStack.peek().getModel());
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
 
-        GlStateManager._disableTexture();
+        matrixStack.push();
+        matrixStack.method_34425(matrices.peek().getModel());
+        RenderSystem.applyModelViewMatrix();
+
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.disableTexture();
+        RenderSystem.disableBlend();
 
         //Makes it render through blocks.
         if(this.renderType == RenderType.XRAY) {
-            GlStateManager._disableDepthTest();
+            RenderSystem.disableDepthTest();
         }
 
         this.finderProfile.getActiveFinders().forEach(finder -> {
@@ -68,6 +74,7 @@ public class FinderQueue {
         });
 
         matrixStack.pop();
+        RenderSystem.applyModelViewMatrix();
     }
 
     public void clear() {

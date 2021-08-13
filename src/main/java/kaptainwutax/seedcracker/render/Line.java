@@ -1,5 +1,6 @@
 package kaptainwutax.seedcracker.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -35,8 +36,8 @@ public class Line extends Renderer {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        //GlStateManager.lineWidth(2.0f);
-        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+        RenderSystem.lineWidth(3.0F);
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
         this.putVertex(buffer, camPos, this.start);
         this.putVertex(buffer, camPos, this.end);
         tessellator.draw();
