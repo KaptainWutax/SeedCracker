@@ -1,4 +1,6 @@
-# SeedCracker <a href="https://github.com/KaptainWutax/SeedCracker/releases/latest">
+# SeedCracker [![](https://img.shields.io/github/downloads/KaptainWutax/SeedCracker/total.svg)](https://github.com/KaptainWutax/SeedCracker/releases/latest)
+
+<a href="https://github.com/KaptainWutax/SeedCracker/releases/latest">
 <img src="https://img.shields.io/github/downloads/KaptainWutax/SeedCracker/total.svg"></a>
 
 ## Installation
